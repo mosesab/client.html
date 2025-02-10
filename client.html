@@ -2813,7 +2813,6 @@
        SHARED FUNCTIONALITY 
        ==================== 
     */
-    const baseUrl = 'http://194.233.72.104:5000';
     let currentUser = {
         username: '',
         workspaces: [],
@@ -3291,7 +3290,7 @@
     $('#cancelButton, #endButton').on('click', () => $('#dialog').hide());
     $('#endButton').on('click', async () => {
         $('#openDialogButton').hide();
-        await axios.post(baseUrl + '/api/workspaces/stop_workspace', {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId});
+        await axios.post('/api/workspaces/stop_workspace', {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId});
         changeStatusToEnded();
         // refresh ui
         loadOverviewData();
@@ -3312,7 +3311,7 @@
         
         if (!message) return; // Prevent sending empty messages
         try {
-            await axios.post(baseUrl + '/api/chats/send_chat_to_workspace', {
+            await axios.post('/api/chats/send_chat_to_workspace', {
                 user_name: currentUser.username,
                 workspace_id: currentWorkspace.workspaceId,
                 message: message
