@@ -3690,12 +3690,49 @@
     */
 
     // Joyride setup
-    function startJoyride() {
-        let joyrideSteps = [];
+    
+function initializeJoyrideForScreen(screenSelector, joyrideSteps) {
+    if ($(screenSelector).length && $(screenSelector).is(':visible')) {
+        console.log(`Initializing Joyride for ${screenSelector}`); // Debugging
+        $(document).ready(function () {  // Ensure DOM is ready *again* within the screen's context
+            $('body').joyride({
+                autoStart: true,
+                modal: true,
+                expose: true,
+                postStepCallback: function(index, tip) {
+                    // Check if target element exists before proceeding
+                    const currentStep = joyrideSteps[index];
+                    if (!$(currentStep.element).length) {
+                        $(document).joyride('end');
+                        return;
+                    }
 
-        // Workspace Overview Screen Tour
+                    if (index + 1 === joyrideSteps.length) {
+                        setTimeout(() => $(document).joyride('end'), 500);
+                    }
+                },
+                stepCallback: function(index, tip) {
+                    if (!$(joyrideSteps[index].element).length) {
+                        $(document).joyride('end');
+                        return false;
+                    }
+                    return true;
+                },
+                steps: joyrideSteps
+            });
+        });
+        return true; // Indicate Joyride was initialized
+    }
+    return false; // Indicate Joyride was NOT initialized
+}
+
+
+function checkAndStartJoyride() {
+    if (currentUser.workspaces.length < 3 && !localStorage.getItem('joyrideShown')) {
+        let initialized = false;
+
         if ($('#workspace-overview-screen').is(':visible')) {
-            joyrideSteps = [
+            const joyrideSteps = [
                 {
                     'element': '.wo-stats-section',
                     'content': 'Here you can see a summary of your workspace activity.',
@@ -3715,10 +3752,9 @@
                     'expose': true
                 }
             ];
-        }
-        // Workspace Detailed Screen Tour
-        else if ($('#workspace-detailed-screen').is(':visible')) {
-            joyrideSteps = [
+            initialized = initializeJoyrideForScreen('#workspace-overview-screen', joyrideSteps);
+        } else if ($('#workspace-detailed-screen').is(':visible')) {
+            const joyrideSteps = [
                 {
                     'element': '.wd-heading',
                     'content': 'Welcome to your workspace overview. Create and manage workspaces easily.',
@@ -3744,10 +3780,9 @@
                     'expose': true
                 }
             ];
-        }
-        // Workspace Dashboard Screen Tour
-        else if ($('#workspace-dashboard-screen').is(':visible')) {
-            joyrideSteps = [
+            initialized = initializeJoyrideForScreen('#workspace-detailed-screen', joyrideSteps);
+        } else if ($('#workspace-dashboard-screen').is(':visible')) {
+            const joyrideSteps = [
                 {
                     'element': '.heading',
                     'content': 'Here you can end, share a link to, or open your current workspace.',
@@ -3779,22 +3814,19 @@
                     'expose': true
                 }
             ];
-        }
-        // Client Login Screen Tour
-        else if ($('#client-login-screen').is(':visible')) {
-            joyrideSteps = [
-            {
-                'element': '.lg-modal-content',
-                'content': 'Enter your username to continue to your workspace.',
-                'position': 'top',
-                'expose': true
-            }
+            initialized = initializeJoyrideForScreen('#workspace-dashboard-screen', joyrideSteps);
+        } else if ($('#client-login-screen').is(':visible')) {
+            const joyrideSteps = [
+                {
+                    'element': '.lg-modal-content',
+                    'content': 'Enter your username to continue to your workspace.',
+                    'position': 'top',
+                    'expose': true
+                }
             ];
-        }
-
-        // Create Overview Screen Tour
-        else if ($('#create-overview-screen').is(':visible')) {
-            joyrideSteps = [
+            initialized = initializeJoyrideForScreen('#client-login-screen', joyrideSteps);
+        } else if ($('#create-overview-screen').is(':visible')) {
+            const joyrideSteps = [
                 {
                     'element': '.co-content',
                     'content': 'Easily create and manage workspaces with Fortal IO. Follow these steps!',
@@ -3814,11 +3846,9 @@
                     'expose': true
                 }
             ];
-        }
-
-        // Create Detailed Screen Tour
-        else if ($('#create-detailed-screen').is(':visible')) {
-            joyrideSteps = [
+            initialized = initializeJoyrideForScreen('#create-overview-screen', joyrideSteps);
+        } else if ($('#create-detailed-screen').is(':visible')) {
+            const joyrideSteps = [
                 {
                     'element': '.cd-step[data-step="1"]',
                     'content': 'Provide essential details about your workspace, such as the type and name.',
@@ -3844,75 +3874,36 @@
                     'expose': true
                 }
             ];
+            initialized = initializeJoyrideForScreen('#create-detailed-screen', joyrideSteps);
         }
 
-        if (joyrideSteps.length > 0) {
-            // Add abort handler before starting new tour
-            if ($.joyride && $.joyride.isRunning && $.joyride.isRunning()) {
-                $(document).joyride('destroy');
-            }
-    
-            $('body').joyride({
-                autoStart: true,
-                modal: true,
-                expose: true,
-                postStepCallback: function(index, tip) {
-                    // Check if target element exists before proceeding
-                    const currentStep = joyrideSteps[index];
-                    if (!$(currentStep.element).length) {
-                        $(document).joyride('end');
-                        return;
-                    }
-                    
-                    if (index + 1 === joyrideSteps.length) {
-                        setTimeout(() => $(document).joyride('end'), 500);
-                    }
-                },
-                stepCallback: function(index, tip) {
-                    if (!$(joyrideSteps[index].element).length) {
-                        $(document).joyride('end');
-                        return false;
-                    }
-                    return true;
-                },
-                steps: joyrideSteps
-            });
+        if (initialized) {
+            localStorage.setItem('joyrideShown', 'true');
         }
     }
+}
 
-    // Ensure joyride is called only when the element is visible.
-    $(document).ready(function() {
 
-        function checkAndStartJoyride() {
-            try {
-                if (currentUser.workspaces.length < 3 && !localStorage.getItem('joyrideShown')) {
-                    startJoyride();
-                    localStorage.setItem('joyrideShown', 'true');
-                }
-            } catch (error) {
-                console.error('Joyride error:', error);
+$(document).ready(function() {
+    // Initial check on document ready
+    checkAndStartJoyride();
+
+    // Mutation Observer to detect screen changes dynamically
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                checkAndStartJoyride();
             }
-        }
-
-        // Initial check on document ready
-        checkAndStartJoyride();
-
-        // Mutation Observer to detect screen changes dynamically
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                    checkAndStartJoyride();
-                }
-            });
-        });
-
-        // Observe the body for style changes (screen visibility changes)
-        observer.observe(document.body, {
-            attributes: true,
-            subtree: true,
-            attributeFilter: ['style']
         });
     });
+
+    // Observe the body for style changes (screen visibility changes)
+    observer.observe(document.body, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ['style']
+    });
+});
     
 </script>
 
