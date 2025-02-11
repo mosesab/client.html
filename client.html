@@ -10,9 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.1.0/jquery.joyride.min.js" integrity="sha512-Ofdfs33jNz7IexaosZ4aZQ3oTOiqz6JXPhQaUCh8QncmY890e20xzrYkh2RvFL9w8PGpMDw/E2z0Q9cRJYlEYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.1.0/joyride.css" integrity="sha512-b+xQkU0vHFR0wDnS39ci0OZ9eDb72EGflAn/FwFwfGgYjiS/YyHQjUfS88F+Jz+LpR6QQxXC+OU8pYjPdxXeVg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.1.0/joyride.min.css" integrity="sha512-cuE+enEaIE7RXEDyH0nbi8s2QdIq3DgIQyptGBjtcC69QbUyVIMqeZDI71CBc3ifSlkiRT5+Zva2lGTqKfFIKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.1.0/jquery.joyride.js" integrity="sha512-2IuERdzoZ3SExSwBWvTqAD6Bzvy8W9nBHJ0vAQaFuTQUbmnqZWdQ8UNao4gdqnwJG2YOk+krAsppK3F1hPpmgw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <style>
         :root {
             --dark-bg: #1E1B13;
@@ -2862,6 +2861,9 @@
         
         $('.header').toggle(showHeader);
         $('.create-workspace').toggle(showHeaderCreateButton);
+        
+        // Delay Joyride start to ensure DOM is ready
+        setTimeout(checkAndStartJoyride, 100);
     }
 
 
@@ -3680,6 +3682,7 @@
 
     
 
+    
     /* 
        ==================== 
        Joyride LOGIC
@@ -3844,14 +3847,33 @@
         }
 
         if (joyrideSteps.length > 0) {
+            // Add abort handler before starting new tour
+            if ($.joyride && $.joyride.isRunning && $.joyride.isRunning()) {
+                $(document).joyride('destroy');
+            }
+    
             $('body').joyride({
                 autoStart: true,
                 modal: true,
                 expose: true,
-                postStepCallback: function (index, tip) {
-                    if (index + 1 === joyrideSteps.length) {
+                postStepCallback: function(index, tip) {
+                    // Check if target element exists before proceeding
+                    const currentStep = joyrideSteps[index];
+                    if (!$(currentStep.element).length) {
                         $(document).joyride('end');
+                        return;
                     }
+                    
+                    if (index + 1 === joyrideSteps.length) {
+                        setTimeout(() => $(document).joyride('end'), 500);
+                    }
+                },
+                stepCallback: function(index, tip) {
+                    if (!$(joyrideSteps[index].element).length) {
+                        $(document).joyride('end');
+                        return false;
+                    }
+                    return true;
                 },
                 steps: joyrideSteps
             });
@@ -3862,10 +3884,13 @@
     $(document).ready(function() {
 
         function checkAndStartJoyride() {
-            if (currentUser.workspaces.length < 3 && !localStorage.getItem('joyrideShown') ) {
+            try {
+                if (currentUser.workspaces.length < 3 && !localStorage.getItem('joyrideShown')) {
                     startJoyride();
                     localStorage.setItem('joyrideShown', 'true');
-
+                }
+            } catch (error) {
+                console.error('Joyride error:', error);
             }
         }
 
@@ -3887,24 +3912,8 @@
             subtree: true,
             attributeFilter: ['style']
         });
-
-        // Also re-check when screen visibility is toggled through showScreen function.
-        window.showScreen = function(screenId, displayType = 'block') {
-            $('.screen').hide();
-            const $screen = $('#' + screenId);
-            if ($screen.length) $screen.css('display', displayType);
-
-            // Toggle header and create workspace button
-            const showHeader = screenId.startsWith('workspace-');
-            const showHeaderCreateButton = screenId.startsWith('workspace-dashboard-');
-            
-            $('.header').toggle(showHeader);
-            $('.create-workspace').toggle(showHeaderCreateButton);
-
-            checkAndStartJoyride();  // Re-check and start joyride after showing a screen.
-        };
     });
-
+    
 </script>
 
 </body>
