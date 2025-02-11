@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.3.0/jquery.joyride-2.3.0.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.3.0/joyride-2.3.0.css"/>
     <style>
         :root {
             --dark-bg: #1E1B13;
@@ -2921,7 +2924,7 @@
             currentUser.workspaces = workspaces; 
             currentUser.totalFreelancers = workspaces.reduce((acc, ws) => acc + (ws.freelancers ? ws.freelancers.length : 0), 0);
             currentUser.totalFiles = totalFilesLength;
-            
+
             // log data
             // console.log("Workspaces data:", workspaces);
             // console.log("Max Workspaces:", maxWorkspaces);
@@ -2964,6 +2967,7 @@
     $('#createWorkspaceBtn').on('click', () => showScreen('create-overview-screen'));
     $('#viewWorkspacesBtn').on('click', () => {showScreen('workspace-detailed-screen');});
 
+    
     /* 
        ==================== 
        WORKSPACE DETAILED SCREEN 
@@ -3669,6 +3673,236 @@
             console.error('Error in document ready:', error);
         }
     });
+
+    
+
+    
+
+    /* 
+       ==================== 
+       Joyride LOGIC
+       ==================== 
+    */
+
+    // Joyride setup
+    function startJoyride() {
+        let joyrideSteps = [];
+
+        // Workspace Overview Screen Tour
+        if ($('#workspace-overview-screen').is(':visible')) {
+            joyrideSteps = [
+                {
+                    'element': '.wo-stats-section',
+                    'content': 'Here you can see a summary of your workspace activity.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.wo-welcome-section',
+                    'content': 'Click here to create your first workspace!',
+                    'position': 'bottom',
+                    'expose': true
+                },
+                {
+                    'element': '.header',
+                    'content': 'Here are some helpful resources that will help you build trust in your workspaces!',
+                    'position': 'bottom',
+                    'expose': true
+                }
+            ];
+        }
+        // Workspace Detailed Screen Tour
+        else if ($('#workspace-detailed-screen').is(':visible')) {
+            joyrideSteps = [
+                {
+                    'element': '.wd-heading',
+                    'content': 'Welcome to your workspace overview. Create and manage workspaces easily.',
+                    'position': 'bottom',
+                    'expose': true
+                },
+                {
+                    'element': '.wd-search-container',
+                    'content': 'Quickly find workspaces by name or freelancer.',
+                    'position': 'bottom',
+                    'expose': true
+                },
+                {
+                    'element': '.wd-stats',
+                    'content': 'Keep track of key workspace stats like total workspaces, files uploaded, and freelancers involved.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.wd-workspaces-section',
+                    'content': 'View and manage your active and ended workspaces in this section.',
+                    'position': 'top',
+                    'expose': true
+                }
+            ];
+        }
+        // Workspace Dashboard Screen Tour
+        else if ($('#workspace-dashboard-screen').is(':visible')) {
+            joyrideSteps = [
+                {
+                    'element': '.heading',
+                    'content': 'Here you can end, share a link to, or open your current workspace.',
+                    'position': 'bottom',
+                    'expose': true
+                },
+                {
+                    'element': '.sidebar',
+                    'content': 'Navigate between workspace overview, files and chats.',
+                    'position': 'right',
+                    'expose': true
+                },
+                {
+                    'element': '#overview',
+                    'content': 'See an overview of your workspace, freelancers, and blacklisted sites.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '#files',
+                    'content': 'Upload and manage your files in this workspace.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '#chats',
+                    'content': 'Communicate with team members in real time using our chat function.',
+                    'position': 'top',
+                    'expose': true
+                }
+            ];
+        }
+        // Client Login Screen Tour
+        else if ($('#client-login-screen').is(':visible')) {
+            joyrideSteps = [
+            {
+                'element': '.lg-modal-content',
+                'content': 'Enter your username to continue to your workspace.',
+                'position': 'top',
+                'expose': true
+            }
+            ];
+        }
+
+        // Create Overview Screen Tour
+        else if ($('#create-overview-screen').is(':visible')) {
+            joyrideSteps = [
+                {
+                    'element': '.co-content',
+                    'content': 'Easily create and manage workspaces with Fortal IO. Follow these steps!',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.co-steps-container',
+                    'content': 'We guide you through each step of the workspace creation process.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.co-create-workspace',
+                    'content': 'Click here to get started and create your first workspace!',
+                    'position': 'bottom',
+                    'expose': true
+                }
+            ];
+        }
+
+        // Create Detailed Screen Tour
+        else if ($('#create-detailed-screen').is(':visible')) {
+            joyrideSteps = [
+                {
+                    'element': '.cd-step[data-step="1"]',
+                    'content': 'Provide essential details about your workspace, such as the type and name.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.cd-step[data-step="2"]',
+                    'content': 'Describe your project in detail to help freelancers understand the scope.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.cd-step[data-step="3"]',
+                    'content': 'Specify security restrictions to protect your project and data.',
+                    'position': 'top',
+                    'expose': true
+                },
+                {
+                    'element': '.cd-footer',
+                    'content': 'Use the progress bar and buttons to navigate through the workspace creation steps.',
+                    'position': 'top',
+                    'expose': true
+                }
+            ];
+        }
+
+        if (joyrideSteps.length > 0) {
+            $('body').joyride({
+                autoStart: true,
+                modal: true,
+                expose: true,
+                postStepCallback: function (index, tip) {
+                    if (index + 1 === joyrideSteps.length) {
+                        $(document).joyride('end');
+                    }
+                },
+                steps: joyrideSteps
+            });
+        }
+    }
+
+    // Ensure joyride is called only when the element is visible.
+    $(document).ready(function() {
+
+        function checkAndStartJoyride() {
+            if (currentUser.workspaces.length < 3 && !localStorage.getItem('joyrideShown') ) {
+                    startJoyride();
+                    localStorage.setItem('joyrideShown', 'true');
+
+            }
+        }
+
+        // Initial check on document ready
+        checkAndStartJoyride();
+
+        // Mutation Observer to detect screen changes dynamically
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    checkAndStartJoyride();
+                }
+            });
+        });
+
+        // Observe the body for style changes (screen visibility changes)
+        observer.observe(document.body, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ['style']
+        });
+
+        // Also re-check when screen visibility is toggled through showScreen function.
+        window.showScreen = function(screenId, displayType = 'block') {
+            $('.screen').hide();
+            const $screen = $('#' + screenId);
+            if ($screen.length) $screen.css('display', displayType);
+
+            // Toggle header and create workspace button
+            const showHeader = screenId.startsWith('workspace-');
+            const showHeaderCreateButton = screenId.startsWith('workspace-dashboard-');
+            
+            $('.header').toggle(showHeader);
+            $('.create-workspace').toggle(showHeaderCreateButton);
+
+            checkAndStartJoyride();  // Re-check and start joyride after showing a screen.
+        };
+    });
+
 </script>
 
 </body>
