@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preview Client - Fortal.io</title>
+    <title>Client - Fortal.io</title>
     <link rel="icon" href="https://www.fortal.io/wp-content/uploads/2024/11/web-app-manifest-512x512-1-150x150.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Removed axios script include -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         
@@ -2190,8 +2189,6 @@
             }
 
 
-
-
         .custom-popup {
             position: absolute;
             background-color: #12111159; 
@@ -2199,16 +2196,34 @@
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             display: none; /* Hidden by default */
+            pointer-events: none;
+            border: 0.5px solid var(--gold-border);
         }
         .custom-popup-content {
             margin-bottom: 5px;
         }
         .custom-popup-buttons {
-            text-align: right;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
         }
+
         .custom-popup-buttons button {
-            margin-left: 5px;
+            padding: 0.5%;
+            border-radius: 6px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid var(--gold-border);
+            background-color: #12111159; 
+            color: var(--btn-secondary-text);
+            pointer-events: auto;
+        }
+
+        .custom-popup-buttons button:hover {
+            background-color: var(--gold);
+            color: var(--dark-bg);
+            border-color: var(--gold);
         }
     </style>
 </head>
@@ -2872,21 +2887,6 @@
         }
     };
 
-    function showScreen(screenId, displayType = 'block') {
-        $('.screen').hide();
-        const $screen = $('#' + screenId);
-        if ($screen.length) $screen.css('display', displayType);
-
-        // Toggle header and create workspace button
-        const showHeader = screenId.startsWith('workspace-');
-        const showHeaderCreateButton = screenId.startsWith('workspace-dashboard-');
-        
-        $('.header').toggle(showHeader);
-        $('.create-workspace').toggle(showHeaderCreateButton);
-        
-        // start interactive walk through popup
-        checkAndStartPopups();
-    }
 
     /* 
        ==================== 
@@ -2894,22 +2894,22 @@
        ==================== 
     */
     $('#lg-login-button').on('click', async () => { 
-    try {
-        const username = $('.lg-input-field').val().trim();
-        if (!username) return toast('Please enter a username');
-        showLoader(true);
+        try {
+            const username = $('.lg-input-field').val().trim();
+            if (!username) return toast('Please enter a username');
+            showLoader(true);
 
-        // Simulate successful login
-        currentUser.username = username;
-        showScreen('workspace-overview-screen', 'flex');
-        loadOverviewData();
-    } catch (error) {
-        toast('Failed to login.');
-        console.error('Error in login:', error);
-    } finally {
-        showLoader(false);
-    }
-});
+            // Simulate successful login
+            currentUser.username = username;
+            showScreen('workspace-overview-screen', 'flex');
+            loadOverviewData();
+        } catch (error) {
+            toast('Failed to login.');
+            console.error('Error in login:', error);
+        } finally {
+            showLoader(false);
+        }
+    });
 
     /* 
        ==================== 
@@ -3002,538 +3002,538 @@
             const inactiveWorkspaces = currentUser.workspaces.filter(ws => ws.status !== 'active');
             const oldestActiveWorkspace = activeWorkspaces.length ? activeWorkspaces.reduce((oldest, ws) => new Date(ws.created_at) < new Date(oldest.created_at) ? ws : oldest).created_at : 'N/A';
 
-        $('.wd-info-label').each(function (idx) {
-                    $(this).text(
-                        idx === 0 ? activeWorkspaces.length :
-                        idx === 1 ? inactiveWorkspaces.length :
-                        ''
-                    );
-        });
+            $('.wd-info-label').each(function (idx) {
+                        $(this).text(
+                            idx === 0 ? activeWorkspaces.length :
+                            idx === 1 ? inactiveWorkspaces.length :
+                            ''
+                        );
+            });
 
-        $('.wd-info-type').text(`${oldestActiveWorkspace}`);
+            $('.wd-info-type').text(`${oldestActiveWorkspace}`);
 
-        currentUser.workspaces.forEach(ws => {
-            const card = `
-                <div class="wd-workspace-card" data-id="${ws.id}" data-name="${ws.workspace_name}" data-url="${ws.url}" data-status="${ws.status}">
-                    <div class="wd-workspace-header">
-                        <div class="wd-workspace-tag">${ws.workspace_name}</div>
-                    </div>
-                    
-                    <div class="wd-workspace-title">${ws.project_name}</div>
-                    <div class="wd-workspace-description">${ws.project_description}</div>
-                    
-                    <hr class="wd-workspace-divider">  
-                                        <div class="wd-workspace-footer">
-                        <div class="wd-avatars">
-                        <img src="https://i.pravatar.cc/100?img=1" class="wd-avatar">
-                        <img src="https://i.pravatar.cc/100?img=2" class="wd-avatar">
-                        <div class="wd-more-avatars">${ws.freelancers.length}</div>
+            currentUser.workspaces.forEach(ws => {
+                const card = `
+                    <div class="wd-workspace-card" data-id="${ws.id}" data-name="${ws.workspace_name}" data-url="${ws.url}" data-status="${ws.status}">
+                        <div class="wd-workspace-header">
+                            <div class="wd-workspace-tag">${ws.workspace_name}</div>
                         </div>
-                        <div class="wd-timestamp"> <i class="fas fa-clock"></i> ${ws.created_at} </div>
+                        
+                        <div class="wd-workspace-title">${ws.project_name}</div>
+                        <div class="wd-workspace-description">${ws.project_description}</div>
+                        
+                        <hr class="wd-workspace-divider">  
+                                            <div class="wd-workspace-footer">
+                            <div class="wd-avatars">
+                            <img src="https://i.pravatar.cc/100?img=1" class="wd-avatar">
+                            <img src="https://i.pravatar.cc/100?img=2" class="wd-avatar">
+                            <div class="wd-more-avatars">${ws.freelancers.length}</div>
+                            </div>
+                            <div class="wd-timestamp"> <i class="fas fa-clock"></i> ${ws.created_at} </div>
+                        </div>
                     </div>
+                `;
+                ws.status === 'active' ? activeContainer.append(card) : endedContainer.append(card);
+            });
+
+            // Click event for workspace cards
+            $('.wd-workspace-card').on('click', function () {
+                try {
+                    currentWorkspace.workspaceId = Number($(this).data('id'));
+                    currentWorkspace.workspaceName = String($(this).data('name'));
+                    currentWorkspace.workspaceUrl = String($(this).data('url'));
+                    status = String($(this).data('status'));
+                    if (status =='active'){
+                        changeStatusToActive();
+                    }
+                    else{
+                        changeStatusToEnded();
+                    }
+                    // Find the corresponding workspace object
+                    const selectedWorkspace = currentUser.workspaces.find(ws => ws.id === currentWorkspace.workspaceId);
+                    if (!selectedWorkspace) {
+                        throw new Error('Workspace not found');
+                    }
+                    
+                    showScreen('workspace-dashboard-screen');
+                    loadWorkspaceDashboard();
+
+                    $('.workspace-title').text(`${selectedWorkspace.workspace_name}`);
+                    $('.summary-sidebar h4').text(`${selectedWorkspace.project_name}`);
+                    $('.summary-sidebar p').text(`${selectedWorkspace.project_description}`);
+                    $('#stat-item-freelancers span').text(`${selectedWorkspace.freelancers.length} `);
+                    $('#stat-item-chat span').text(`${selectedWorkspace.freelancers.length} `);
+                    $('.info-text').each(function (idx) {
+                        $(this).text(
+                            idx === 0 ? selectedWorkspace.created_at :
+                            idx === 1 ? (selectedWorkspace.ended_at || 'Ongoing') :
+                            idx === 2 ? selectedWorkspace.project_type :
+                            ''
+                        );
+                    });
+                } catch (error) {     
+                    toast('Failed to load workspace page.');
+                    console.error('Error in workspace card click:', error);
+                }
+            });
+        } catch (error) {
+            toast('Please, Refresh the page.');
+            console.error('Error in renderDetailedWorkspaces:', error);
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    $('#wd-home-button').on('click', () => showScreen("workspace-overview-screen", "flex"));
+    $('.wd-create-workspace').on('click', () => showScreen('create-detailed-screen'));
+
+    /* 
+    ==================== 
+    WORKSPACE DASHBOARD SCREEN 
+    ==================== 
+    */
+    async function downloadFileBtn(file) {
+        // Create the download URL
+        const downloadUrl = `/api/files/download_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`;
+        // Trigger the download action
+        window.location.href = downloadUrl;  // This will trigger the download
+    }
+
+    async function deleteFileBtn(file) {
+        try {
+            toast('File deleted successfully.');
+            // Refresh UI after deletion
+            loadWorkspaceDashboard();
+            loadOverviewData();
+        } catch (error) {
+            console.error('Error:', error);
+            toast('Failed to delete file.');
+        }
+    }
+
+    async function loadWorkspaceDashboard() {
+    try {
+        showLoader(true);
+
+        // Mock data for local testing
+        const localSites = ['example.com', 'test.com'];
+        const freelancers = [
+            { name: 'Freelancer 1', email: 'freelancer1@example.com', avatar_url: 'https://i.pravatar.cc/150' },
+            { name: 'Freelancer 2', email: 'freelancer2@example.com', avatar_url: 'https://i.pravatar.cc/150' }
+        ];
+        const files = ['file1.pdf', 'file2.docx'];
+        const chats = [
+            { message: 'Hello', email: 'freelancer1@example.com', timestamp: new Date() },
+            { message: 'Hi there!', email: null, timestamp: new Date() }
+        ];
+
+        // update local sites list
+        const siteItemsDiv = $('.sites');
+        siteItemsDiv.empty(); 
+        localSites.forEach((item) => {
+            siteItemsDiv.append(`<div class="site-link">${item}</div>`);
+        });
+        $('#stat-item-sites span').text(`${localSites.length} `);
+
+        // Update Freelancers List 
+        $('.freelancer-cards').html(freelancers.map(f => {
+            return `
+                <div class="freelancer-card">
+                    <div class="card-header">
+                        <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
+                        <button onClick="openChatBtn()" class="chat-btn"><i class="fas fa-comments"></i> Chat</button>
+                    </div>
+                    <div class="freelancer-name">${f.name}</div>
+                    <div class="freelancer-email">${f.email}</div>
                 </div>
             `;
-            ws.status === 'active' ? activeContainer.append(card) : endedContainer.append(card);
-        });
+        }).join(''));
+        $('.freelancer-chat-cards').html(freelancers.map(f => {
+            return `
+                <div class="freelancer-card 'chats-card'">
+                    <div class="card-header">
+                        <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
+                    </div>
+                    <div class="freelancer-name">${f.name}</div>
+                    <div class="freelancer-email">${f.email}</div>
+                </div>
+            `;
+        }).join(''));
 
-        // Click event for workspace cards
-        $('.wd-workspace-card').on('click', function () {
-            try {
-                currentWorkspace.workspaceId = Number($(this).data('id'));
-                currentWorkspace.workspaceName = String($(this).data('name'));
-                currentWorkspace.workspaceUrl = String($(this).data('url'));
-                status = String($(this).data('status'));
-                if (status =='active'){
-                    changeStatusToActive();
-                }
-                else{
-                    changeStatusToEnded();
-                }
-                // Find the corresponding workspace object
-                const selectedWorkspace = currentUser.workspaces.find(ws => ws.id === currentWorkspace.workspaceId);
-                if (!selectedWorkspace) {
-                    throw new Error('Workspace not found');
-                }
-                
-                showScreen('workspace-dashboard-screen');
-                loadWorkspaceDashboard();
+        // Update Files Table
+        $('.files-table tbody').html(files.map(file => `
+            <tr>
+                <td>${file}</td>
+                <td>${currentUser.username}</td>
+                <td>${new Date().toLocaleDateString()}</td>
+                <td class="file-action-buttons">
+                    <button onClick="downloadFileBtn('${file}')" class="btn file-action-button"><i class="fas fa-download"></i></button>
+                    <button onClick="deleteFileBtn('${file}')" class="btn file-action-button delete-file-action-button"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join(''));
 
-                $('.workspace-title').text(`${selectedWorkspace.workspace_name}`);
-                $('.summary-sidebar h4').text(`${selectedWorkspace.project_name}`);
-                $('.summary-sidebar p').text(`${selectedWorkspace.project_description}`);
-                $('#stat-item-freelancers span').text(`${selectedWorkspace.freelancers.length} `);
-                $('#stat-item-chat span').text(`${selectedWorkspace.freelancers.length} `);
-                $('.info-text').each(function (idx) {
-                    $(this).text(
-                        idx === 0 ? selectedWorkspace.created_at :
-                        idx === 1 ? (selectedWorkspace.ended_at || 'Ongoing') :
-                        idx === 2 ? selectedWorkspace.project_type :
-                        ''
-                    );
-                });
-            } catch (error) {     
-                toast('Failed to load workspace page.');
-                console.error('Error in workspace card click:', error);
-            }
-        });
+        // Update Chats List
+        $('.chat-messages').html(chats.map(chat => `
+            <div class="chat-message ${chat.email != null ? 'outgoing' : ''}">
+                <img src="${'https://i.pravatar.cc/40'}" class="avatar" alt="User avatar">
+                <div class="message-content">
+                    <p class="chat-message-name">${chat.email !== null ? chat.email : currentUser.username}</p>
+                    <p>${chat.message}</p>
+                    <div class="timestamp">${new Date(chat.timestamp).toLocaleTimeString()}</div>
+                </div>
+            </div>
+        `).join(''));
+
     } catch (error) {
-        toast('Please, Refresh the page.');
-        console.error('Error in renderDetailedWorkspaces:', error);
+        console.error('Error in loadWorkspaceDashboard:', error);
+        toast('Failed to load workspace data');
     } finally {
         showLoader(false);
     }
-}
-
-$('#wd-home-button').on('click', () => showScreen("workspace-overview-screen", "flex"));
-$('.wd-create-workspace').on('click', () => showScreen('create-detailed-screen'));
-
-/* 
-   ==================== 
-   WORKSPACE DASHBOARD SCREEN 
-   ==================== 
-*/
-async function downloadFileBtn(file) {
-    // Create the download URL
-    const downloadUrl = `/api/files/download_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`;
-    // Trigger the download action
-    window.location.href = downloadUrl;  // This will trigger the download
-}
-
-async function deleteFileBtn(file) {
-    try {
-        toast('File deleted successfully.');
-        // Refresh UI after deletion
-        loadWorkspaceDashboard();
-        loadOverviewData();
-    } catch (error) {
-        console.error('Error:', error);
-        toast('Failed to delete file.');
     }
-}
 
-async function loadWorkspaceDashboard() {
-try {
-    showLoader(true);
-
-    // Mock data for local testing
-    const localSites = ['example.com', 'test.com'];
-    const freelancers = [
-        { name: 'Freelancer 1', email: 'freelancer1@example.com', avatar_url: 'https://i.pravatar.cc/150' },
-        { name: 'Freelancer 2', email: 'freelancer2@example.com', avatar_url: 'https://i.pravatar.cc/150' }
-    ];
-    const files = ['file1.pdf', 'file2.docx'];
-    const chats = [
-        { message: 'Hello', email: 'freelancer1@example.com', timestamp: new Date() },
-        { message: 'Hi there!', email: null, timestamp: new Date() }
-    ];
-
-    // update local sites list
-    const siteItemsDiv = $('.sites');
-    siteItemsDiv.empty(); 
-    localSites.forEach((item) => {
-        siteItemsDiv.append(`<div class="site-link">${item}</div>`);
-    });
-    $('#stat-item-sites span').text(`${localSites.length} `);
-
-    // Update Freelancers List 
-    $('.freelancer-cards').html(freelancers.map(f => {
-        return `
-            <div class="freelancer-card">
-                <div class="card-header">
-                    <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
-                    <button onClick="openChatBtn()" class="chat-btn"><i class="fas fa-comments"></i> Chat</button>
-                </div>
-                <div class="freelancer-name">${f.name}</div>
-                <div class="freelancer-email">${f.email}</div>
-            </div>
-        `;
-    }).join(''));
-    $('.freelancer-chat-cards').html(freelancers.map(f => {
-        return `
-            <div class="freelancer-card 'chats-card'">
-                <div class="card-header">
-                    <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
-                </div>
-                <div class="freelancer-name">${f.name}</div>
-                <div class="freelancer-email">${f.email}</div>
-            </div>
-        `;
-    }).join(''));
-
-    // Update Files Table
-    $('.files-table tbody').html(files.map(file => `
-        <tr>
-            <td>${file}</td>
-            <td>${currentUser.username}</td>
-            <td>${new Date().toLocaleDateString()}</td>
-            <td class="file-action-buttons">
-                <button onClick="downloadFileBtn('${file}')" class="btn file-action-button"><i class="fas fa-download"></i></button>
-                <button onClick="deleteFileBtn('${file}')" class="btn file-action-button delete-file-action-button"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>
-    `).join(''));
-
-    // Update Chats List
-    $('.chat-messages').html(chats.map(chat => `
-        <div class="chat-message ${chat.email != null ? 'outgoing' : ''}">
-            <img src="${'https://i.pravatar.cc/40'}" class="avatar" alt="User avatar">
-            <div class="message-content">
-                <p class="chat-message-name">${chat.email !== null ? chat.email : currentUser.username}</p>
-                <p>${chat.message}</p>
-                <div class="timestamp">${new Date(chat.timestamp).toLocaleTimeString()}</div>
-            </div>
-        </div>
-    `).join(''));
-
-} catch (error) {
-    console.error('Error in loadWorkspaceDashboard:', error);
-    toast('Failed to load workspace data');
-} finally {
-    showLoader(false);
-}
-}
-
-// File handling
-$(document).ready(() => {
-    const uploadArea = $('.upload-area');
-    const fileInput = $('#fileInput');
-    // Drag & drop event handling
-    uploadArea.on('dragover', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.addClass('dragging');
-    });
-    uploadArea.on('dragleave', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.removeClass('dragging');
-    });
-    uploadArea.on('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.removeClass('dragging');
-        const files = e.originalEvent.dataTransfer.files;
-        if (files.length > 0) uploadFile(files[0]);
-    });
-    // Click event to trigger file input
-    uploadArea.on('click', () => fileInput.click());
-    // Handle file selection via file input
-    fileInput.on('change', (e) => {
-        if (e.target.files.length > 0) uploadFile(e.target.files[0]);
-    });
-});
-
-async function uploadFile(file) {
-    try {
-        // Simulate file upload success
-        toast('File uploaded successfully!');
-        loadWorkspaceDashboard();
-        loadOverviewData();
-    } catch (error) {
-        console.error('Error in uploadFile:', error);
-        toast('File upload failed');
-    }
-}
-
-// Dashboard Navigation Controls
-// Status management
-window.changeStatusToEnded = () => {
-    const cssVars = {
-        '--status-green-bg': 'rgba(255, 99, 71, 0.2)',
-        '--status-green': '#ffcccc',
-        '--status-gradient-start': '#ffcccc'
-    };
-    Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));      
-    $('.status-badge').text('Ended');
-    $('.action-buttons').hide();
-    $('.chat-input').hide(); 
-    $('.return-button-wrapper').hide();    
-};
-
-window.changeStatusToActive= () => {
-    const cssVars = {
-        '--status-green-bg': 'rgba(47, 129, 57, 0.2)',
-        '--status-green': '#def7de',
-        '--status-gradient-start': '#c0da9e'
-    };  
-    Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));
-    $('.status-badge').text('Active');
-    $('.action-buttons').show();
-    $('.chat-input').show();
-    $('.return-button-wrapper').show(); 
-};
-
-// Tab navigation
-$('.nav-list li').on('click', function() {
-    const tabId = $(this).data('tab');
-    $(this).addClass('active').siblings().removeClass('active');
-    $('.content-section').removeClass('active').filter(`#${tabId}`).addClass('active');
-});
-
-// Chat button navigation
-$('#chat-btn').on('click', () => 
-$('.nav-list li[data-tab="chats"]').click()
-);
-
-function openChatBtn() {
-    $('.nav-list li[data-tab="chats"]').click()
-}
-
-// Button controls
-$('#back-button').on('click', () => showScreen("workspace-detailed-screen"));
-$('#openDialogButton').on('click', () => $('#dialog').show());
-$('#openUrlButton').on('click', () => {window.open(currentWorkspace.workspaceUrl, '_blank');});
-$('.return-button').on('click', () => {window.open(currentWorkspace.workspaceUrl, '_blank');});
-$("#shareUrlButton").click(function () {
-    $("#shareUrlModal").show();
-    $("#shareUrlInput").val(currentWorkspace.workspaceUrl);
-});
-
-$('#cancelButton, #endButton').on('click', () => $('#dialog').hide());
-$('#endButton').on('click', async () => {
-    $('#openDialogButton').hide();
-    changeStatusToEnded();
-    // refresh ui
-    loadOverviewData();
-    toast('Workspace ended successfully!');
-    $('#openDialogButton').show();
-});
-
-$('#copyUrlButton').on('click', () => { 
-    navigator.clipboard.writeText( currentWorkspace.workspaceUrl);
-    toast('Copied');
-});
-$(".close-share-modal").click(function () {
-    $("#shareUrlModal").hide();
-});
-
-$(".chat-input-button").click(async function () {
-    const message = $(".chat-input input").val().trim();
-    if (!message) return;
-    // Simulate sending message
-    toast('Message sent!');
-    $(".chat-input input").val("");
-});
-
-/* 
-   ==================== 
-   WORKSPACE CREATION FLOW 
-   ==================== 
-*/
-$('.co-create-workspace').on('click', () => {showScreen('create-detailed-screen');});
-$('.co-exit-btn').on('click', async () => {showScreen('workspace-overview-screen', 'flex');});
-$('.cd-exit-btn').on('click', async () => {showScreen('workspace-overview-screen', 'flex');});
-
-async function createWorkspace() {
-    try {
-        $('.cd-next-btn').hide();
-        // Simulate workspace creation success
-        toast('Workspace created successfully!');
-        showScreen('workspace-detailed-screen');
-        loadOverviewData();
-    } catch (error) {
-        console.error('Error in workspace creation:', error);
-        toast('Workspace creation failed');
-    }
-    finally{
-        $('.cd-next-btn').show();
-    }
-}
-
-// Step navigation
-let currentStep = 1;
-
-function updateStep() {
-    $('.cd-step').removeClass('active');
-    $(`[data-step="${currentStep}"]`).addClass('active');
-    $('.cd-current-step').text(currentStep);
-
-    $('.cd-progress-fill').each(function() {
-        let step = $(this).data('fill');
-        $(this).css('width', step < currentStep + 1 ? '100%' : '0%');
+    // File handling
+    $(document).ready(() => {
+        const uploadArea = $('.upload-area');
+        const fileInput = $('#fileInput');
+        // Drag & drop event handling
+        uploadArea.on('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.addClass('dragging');
+        });
+        uploadArea.on('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.removeClass('dragging');
+        });
+        uploadArea.on('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.removeClass('dragging');
+            const files = e.originalEvent.dataTransfer.files;
+            if (files.length > 0) uploadFile(files[0]);
+        });
+        // Click event to trigger file input
+        uploadArea.on('click', () => fileInput.click());
+        // Handle file selection via file input
+        fileInput.on('change', (e) => {
+            if (e.target.files.length > 0) uploadFile(e.target.files[0]);
+        });
     });
 
-    $('.cd-prev-btn').toggle(currentStep > 1);
-    $('.cd-next-btn').html(currentStep === 3 
-        ? 'Finish <i class="fas fa-box-open"></i>' 
-        : 'Next <i class="fa-solid fa-arrow-right"></i>');
-}
-
-$('.cd-next-btn').click(async function() {
-    if (currentStep < 3) {
-        currentStep++;
-        updateStep();
-    } 
-    else {
-        if (currentStep === 3) {
-            $('.cd-next-btn').hide();
-            await createWorkspace();
+    async function uploadFile(file) {
+        try {
+            // Simulate file upload success
+            toast('File uploaded successfully!');
+            loadWorkspaceDashboard();
+            loadOverviewData();
+        } catch (error) {
+            console.error('Error in uploadFile:', error);
+            toast('File upload failed');
         }
     }
-});
 
-$('.cd-prev-btn').click(function() {
-    if (currentStep > 1) {
-        currentStep--;
-        updateStep();
+    // Dashboard Navigation Controls
+    // Status management
+    window.changeStatusToEnded = () => {
+        const cssVars = {
+            '--status-green-bg': 'rgba(255, 99, 71, 0.2)',
+            '--status-green': '#ffcccc',
+            '--status-gradient-start': '#ffcccc'
+        };
+        Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));      
+        $('.status-badge').text('Ended');
+        $('.action-buttons').hide();
+        $('.chat-input').hide(); 
+        $('.return-button-wrapper').hide();    
+    };
+
+    window.changeStatusToActive= () => {
+        const cssVars = {
+            '--status-green-bg': 'rgba(47, 129, 57, 0.2)',
+            '--status-green': '#def7de',
+            '--status-gradient-start': '#c0da9e'
+        };  
+        Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));
+        $('.status-badge').text('Active');
+        $('.action-buttons').show();
+        $('.chat-input').show();
+        $('.return-button-wrapper').show(); 
+    };
+
+    // Tab navigation
+    $('.nav-list li').on('click', function() {
+        const tabId = $(this).data('tab');
+        $(this).addClass('active').siblings().removeClass('active');
+        $('.content-section').removeClass('active').filter(`#${tabId}`).addClass('active');
+    });
+
+    // Chat button navigation
+    $('#chat-btn').on('click', () => 
+    $('.nav-list li[data-tab="chats"]').click()
+    );
+
+    function openChatBtn() {
+        $('.nav-list li[data-tab="chats"]').click()
     }
-});
 
-updateStep();
+    // Button controls
+    $('#back-button').on('click', () => showScreen("workspace-detailed-screen"));
+    $('#openDialogButton').on('click', () => $('#dialog').show());
+    $('#openUrlButton').on('click', () => {window.open(currentWorkspace.workspaceUrl, '_blank');});
+    $('.return-button').on('click', () => {window.open(currentWorkspace.workspaceUrl, '_blank');});
+    $("#shareUrlButton").click(function () {
+        $("#shareUrlModal").show();
+        $("#shareUrlInput").val(currentWorkspace.workspaceUrl);
+    });
 
-// Dropdown functionality
-$('.cd-custom-dropdown').each(function() {
-    const $dropdown = $(this),
-        $button = $dropdown.find('.cd-dropdown-button'),
-        $options = $dropdown.find('.cd-dropdown-options');
+    $('#cancelButton, #endButton').on('click', () => $('#dialog').hide());
+    $('#endButton').on('click', async () => {
+        $('#openDialogButton').hide();
+        changeStatusToEnded();
+        // refresh ui
+        loadOverviewData();
+        toast('Workspace ended successfully!');
+        $('#openDialogButton').show();
+    });
 
-    $button.on('click', () => $dropdown.toggleClass('open'));
-    
-    $options.on('click', '[data-value]', function() {
-        const value = $(this).data('value');
-        $button.html(`${$(this).text()} <i class='fas fa-chevron-down'></i>`);
-        $dropdown.removeClass('open');
+    $('#copyUrlButton').on('click', () => { 
+        navigator.clipboard.writeText( currentWorkspace.workspaceUrl);
+        toast('Copied');
+    });
+    $(".close-share-modal").click(function () {
+        $("#shareUrlModal").hide();
+    });
+
+    $(".chat-input-button").click(async function () {
+        const message = $(".chat-input input").val().trim();
+        if (!message) return;
+        // Simulate sending message
+        toast('Message sent!');
+        $(".chat-input input").val("");
+    });
+
+    /* 
+    ==================== 
+    WORKSPACE CREATION FLOW 
+    ==================== 
+    */
+    $('.co-create-workspace').on('click', () => {showScreen('create-detailed-screen');});
+    $('.co-exit-btn').on('click', async () => {showScreen('workspace-overview-screen', 'flex');});
+    $('.cd-exit-btn').on('click', async () => {showScreen('workspace-overview-screen', 'flex');});
+
+    async function createWorkspace() {
+        try {
+            $('.cd-next-btn').hide();
+            // Simulate workspace creation success
+            toast('Workspace created successfully!');
+            showScreen('workspace-detailed-screen');
+            loadOverviewData();
+        } catch (error) {
+            console.error('Error in workspace creation:', error);
+            toast('Workspace creation failed');
+        }
+        finally{
+            $('.cd-next-btn').show();
+        }
+    }
+
+    // Step navigation
+    let currentStep = 1;
+
+    function updateStep() {
+        $('.cd-step').removeClass('active');
+        $(`[data-step="${currentStep}"]`).addClass('active');
+        $('.cd-current-step').text(currentStep);
+
+        $('.cd-progress-fill').each(function() {
+            let step = $(this).data('fill');
+            $(this).css('width', step < currentStep + 1 ? '100%' : '0%');
+        });
+
+        $('.cd-prev-btn').toggle(currentStep > 1);
+        $('.cd-next-btn').html(currentStep === 3 
+            ? 'Finish <i class="fas fa-box-open"></i>' 
+            : 'Next <i class="fa-solid fa-arrow-right"></i>');
+    }
+
+    $('.cd-next-btn').click(async function() {
+        if (currentStep < 3) {
+            currentStep++;
+            updateStep();
+        } 
+        else {
+            if (currentStep === 3) {
+                $('.cd-next-btn').hide();
+                await createWorkspace();
+            }
+        }
+    });
+
+    $('.cd-prev-btn').click(function() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateStep();
+        }
+    });
+
+    updateStep();
+
+    // Dropdown functionality
+    $('.cd-custom-dropdown').each(function() {
+        const $dropdown = $(this),
+            $button = $dropdown.find('.cd-dropdown-button'),
+            $options = $dropdown.find('.cd-dropdown-options');
+
+        $button.on('click', () => $dropdown.toggleClass('open'));
         
-        $('#cd-website-not-listed').toggle(value === "Blacklist");
-        $('.cd-user-site-link').toggle(value === "Blacklist");
-        $('#blacklist-container').hide(value === "Blacklist");
+        $options.on('click', '[data-value]', function() {
+            const value = $(this).data('value');
+            $button.html(`${$(this).text()} <i class='fas fa-chevron-down'></i>`);
+            $dropdown.removeClass('open');
+            
+            $('#cd-website-not-listed').toggle(value === "Blacklist");
+            $('.cd-user-site-link').toggle(value === "Blacklist");
+            $('#blacklist-container').hide(value === "Blacklist");
+        });
     });
-});
 
-// Blacklist management
-$('#cd-toggle-blacklist').on('click', () => 
-    $("#blacklist-container").toggle()
-);
+    // Blacklist management
+    $('#cd-toggle-blacklist').on('click', () => 
+        $("#blacklist-container").toggle()
+    );
 
-// Site link interactions
-async function loadSitesData() {
-    // Simulate loading sites
-    const cdSiteItems = ['example.com', 'test.com', 'another.com'];
-    const cdSiteItemsDiv = $('.cd-sites');
-    cdSiteItemsDiv.empty();
-    cdSiteItems.forEach((item) => {
-        cdSiteItemsDiv.append(`<div class="cd-site-link" draggable="true">${item}</div>`);
+    // Site link interactions
+    async function loadSitesData() {
+        // Simulate loading sites
+        const cdSiteItems = ['example.com', 'test.com', 'another.com'];
+        const cdSiteItemsDiv = $('.cd-sites');
+        cdSiteItemsDiv.empty();
+        cdSiteItems.forEach((item) => {
+            cdSiteItemsDiv.append(`<div class="cd-site-link" draggable="true">${item}</div>`);
+        });
+    }
+
+    // --- DRAG & DROP & SELECTION CODE ---
+    // Delegated click: toggle selection on click for all .cd-site-link elements.
+    $(document).on('click', '.cd-site-link', function() {
+        $(this).toggleClass('cd-site-link-selected');
     });
-}
 
-// --- DRAG & DROP & SELECTION CODE ---
-// Delegated click: toggle selection on click for all .cd-site-link elements.
-$(document).on('click', '.cd-site-link', function() {
-    $(this).toggleClass('cd-site-link-selected');
-});
+    // Delegated dragstart: set a unique id and add dragging class.
+    $(document).on('dragstart', '.cd-site-link', function(e) {
+        const dragId = Date.now().toString();
+        $(this).attr('data-drag-id', dragId);  // Use attr() instead of data()
+        e.originalEvent.dataTransfer.setData('text/plain', dragId);
+        $(this).addClass('dragging');
+    });
 
-// Delegated dragstart: set a unique id and add dragging class.
-$(document).on('dragstart', '.cd-site-link', function(e) {
-    const dragId = Date.now().toString();
-    $(this).attr('data-drag-id', dragId);  // Use attr() instead of data()
-    e.originalEvent.dataTransfer.setData('text/plain', dragId);
-    $(this).addClass('dragging');
-});
+    // Always remove the dragging (and to-delete) classes when the drag ends.
+    $(document).on('dragend', '.cd-site-link', function(e) {
+        $(this).removeClass('dragging to-delete');
+    });
 
-// Always remove the dragging (and to-delete) classes when the drag ends.
-$(document).on('dragend', '.cd-site-link', function(e) {
-    $(this).removeClass('dragging to-delete');
-});
+    // If an element is dropped anywhere outside of the .cd-sites container, remove it.
+    $(document).on('drop', function(e) {
+        // If the drop target is not within .cd-sites...
+        if (!$(e.target).closest('.cd-sites').length) {
+            e.preventDefault();
+            const dragId = e.originalEvent.dataTransfer.getData('text/plain');
+            // Remove the element (it will already have lost its dragging classes via dragend).
+            $(`.cd-site-link[data-drag-id="${dragId}"]`).remove();
+        }
+    });
 
-// If an element is dropped anywhere outside of the .cd-sites container, remove it.
-$(document).on('drop', function(e) {
-    // If the drop target is not within .cd-sites...
-    if (!$(e.target).closest('.cd-sites').length) {
+    // Global dragover: update visual cue based on whether the pointer is inside .cd-sites.
+    $(document).on('dragover', function(e) {
+        e.preventDefault();
+        // Check if the event target is inside a safe container.
+        if (!$(e.target).closest('.cd-sites').length) {
+            // Add a red highlight (via the "to-delete" class) to the currently dragged element.
+            $('.cd-site-link.dragging').addClass('to-delete');
+        } else {
+            // Remove the delete visual cue when back over the safe area.
+            $('.cd-site-link.dragging').removeClass('to-delete');
+        }
+    });
+
+    // Allow dragover on the container.
+    $('.cd-sites').on('dragover', function(e) {
+        e.preventDefault();
+        e.originalEvent.dataTransfer.dropEffect = 'move';
+    });
+
+    // Also allow dragover on each site link so that we can detect a drop target.
+    $('.cd-sites').on('dragover', '.cd-site-link', function(e) {
+        e.preventDefault();
+        e.originalEvent.dataTransfer.dropEffect = 'move';
+    });
+
+    // Handle drop on the container (.cd-sites)
+    $('.cd-sites').on('drop', function(e) {
         e.preventDefault();
         const dragId = e.originalEvent.dataTransfer.getData('text/plain');
-        // Remove the element (it will already have lost its dragging classes via dragend).
-        $(`.cd-site-link[data-drag-id="${dragId}"]`).remove();
-    }
-});
+        const $draggedElement = $(`.cd-site-link[data-drag-id="${dragId}"]`);
+        
+        // Remove the visual dragging cues.
+        $draggedElement.removeClass('dragging to-delete');
 
-// Global dragover: update visual cue based on whether the pointer is inside .cd-sites.
-$(document).on('dragover', function(e) {
-    e.preventDefault();
-    // Check if the event target is inside a safe container.
-    if (!$(e.target).closest('.cd-sites').length) {
-        // Add a red highlight (via the "to-delete" class) to the currently dragged element.
-        $('.cd-site-link.dragging').addClass('to-delete');
-    } else {
-        // Remove the delete visual cue when back over the safe area.
-        $('.cd-site-link.dragging').removeClass('to-delete');
-    }
-});
+        // Determine if the drop happened on another site link.
+        const $dropTarget = $(e.target).closest('.cd-site-link');
 
-// Allow dragover on the container.
-$('.cd-sites').on('dragover', function(e) {
-    e.preventDefault();
-    e.originalEvent.dataTransfer.dropEffect = 'move';
-});
+        if ($dropTarget.length && $dropTarget[0] !== $draggedElement[0]) {
+            // Get the target’s offset and height.
+            const targetOffset = $dropTarget.offset();
+            const targetHeight = $dropTarget.outerHeight();
 
-// Also allow dragover on each site link so that we can detect a drop target.
-$('.cd-sites').on('dragover', '.cd-site-link', function(e) {
-    e.preventDefault();
-    e.originalEvent.dataTransfer.dropEffect = 'move';
-});
-
-// Handle drop on the container (.cd-sites)
-$('.cd-sites').on('drop', function(e) {
-    e.preventDefault();
-    const dragId = e.originalEvent.dataTransfer.getData('text/plain');
-    const $draggedElement = $(`.cd-site-link[data-drag-id="${dragId}"]`);
-    
-    // Remove the visual dragging cues.
-    $draggedElement.removeClass('dragging to-delete');
-
-    // Determine if the drop happened on another site link.
-    const $dropTarget = $(e.target).closest('.cd-site-link');
-
-    if ($dropTarget.length && $dropTarget[0] !== $draggedElement[0]) {
-        // Get the target’s offset and height.
-        const targetOffset = $dropTarget.offset();
-        const targetHeight = $dropTarget.outerHeight();
-
-        // Compare the drop Y coordinate to the target’s midpoint.
-        if (e.originalEvent.pageY < targetOffset.top + targetHeight / 2) {
-            // Insert dragged element before the drop target.
-            $dropTarget.before($draggedElement);
+            // Compare the drop Y coordinate to the target’s midpoint.
+            if (e.originalEvent.pageY < targetOffset.top + targetHeight / 2) {
+                // Insert dragged element before the drop target.
+                $dropTarget.before($draggedElement);
+            } else {
+                // Insert dragged element after the drop target.
+                $dropTarget.after($draggedElement);
+            }
         } else {
-            // Insert dragged element after the drop target.
-            $dropTarget.after($draggedElement);
+            // If drop target is not a specific item, append to the container.
+            $(this).append($draggedElement);
         }
-    } else {
-        // If drop target is not a specific item, append to the container.
-        $(this).append($draggedElement);
-    }
-});
+    });
 
-// When adding a new element dynamically, it’s already created with draggable="true".
-// Since we use delegated events, it will automatically have the click and drag events.
-$('#cd-add-blacklist').on('click', function() {
-    const domain = $('#cd-add-blacklist-input').val().trim();
-    if (domain) {
-        // Create the element and append it.
-        $('<div>', {
-            class: 'cd-site-link cd-user-site-link cd-site-link-selected',
-            text: domain,
-            draggable: true  // set the attribute directly
-        }).appendTo('.cd-sites');
+    // When adding a new element dynamically, it’s already created with draggable="true".
+    // Since we use delegated events, it will automatically have the click and drag events.
+    $('#cd-add-blacklist').on('click', function() {
+        const domain = $('#cd-add-blacklist-input').val().trim();
+        if (domain) {
+            // Create the element and append it.
+            $('<div>', {
+                class: 'cd-site-link cd-user-site-link cd-site-link-selected',
+                text: domain,
+                draggable: true  // set the attribute directly
+            }).appendTo('.cd-sites');
 
-        // Clear the input.
-        $('#cd-add-blacklist-input').val('');
-    }
-});
+            // Clear the input.
+            $('#cd-add-blacklist-input').val('');
+        }
+    });
 
-/* 
-    ==================== 
-    Notification FUNCTIONS 
-    ==================== 
-*/
+    /* 
+        ==================== 
+        Notification FUNCTIONS 
+        ==================== 
+    */
 
-// Initialize
-$(document).ready(() => {
-    try {
-        showScreen("client-login-screen", "flex"); 
-        loadOverviewData();
-    } catch (error) {
-        console.error('Error in document ready:', error);
-    }
-});
+    // Initialize
+    $(document).ready(() => {
+        try {
+            showScreen("client-login-screen", "flex"); 
+            loadOverviewData();
+        } catch (error) {
+            console.error('Error in document ready:', error);
+        }
+    });
 
 
         /* 
@@ -3541,6 +3541,22 @@ $(document).ready(() => {
            Joyride LOGIC
            ==================== 
         */
+  
+        function showScreen(screenId, displayType = 'block') {
+            $('.screen').hide();
+            const $screen = $('#' + screenId);
+            if ($screen.length) $screen.css('display', displayType);
+
+            // Toggle header and create workspace button
+            const showHeader = screenId.startsWith('workspace-');
+            const showHeaderCreateButton = screenId.startsWith('workspace-dashboard-');
+            
+            $('.header').toggle(showHeader);
+            $('.create-workspace').toggle(showHeaderCreateButton);
+
+            // start interactive walk through popup
+            checkAndStartPopups();
+        }
 
         let currentScreen = null;
         let popupQueue = {};
@@ -3550,7 +3566,7 @@ $(document).ready(() => {
         function createPopup(screenId, popupData) {
             const popupElement = document.createElement('div');
             popupElement.classList.add('custom-popup');
-            popupElement.id = `popup-${popupData.id}`;
+            popupElement.id = `popup-${screenId}-${popupData.id}`;
             popupElement.style.position = 'absolute'; // Ensure positioning
 
             const contentElement = document.createElement('div');
@@ -3593,49 +3609,63 @@ $(document).ready(() => {
             }
 
             // Get the popup element, or create it if it doesn't exist
-            let popupElement = document.getElementById(`popup-${popupData.id}`);
+            let popupElement = document.getElementById(`popup-${screenId}-${popupData.id}`);
             if (!popupElement) {
                 popupElement = createPopup(screenId, popupData);
-                document.getElementById('popup-container').appendChild(popupElement); // Append to popup container
+                document.getElementById('popup-container').appendChild(popupElement);
             }
 
-            const rect = element.getBoundingClientRect();
-            popupElement.style.top = `${rect.top + window.scrollY + popupData.offsetY}px`;
-            popupElement.style.left = `${rect.left + window.scrollX + popupData.offsetX}px`;
-            popupElement.style.display = 'block';
-            popupElement.setAttribute('data-screen', screenId); // Track the screen the popup belongs to
-            popupElement.setAttribute('data-popup-id', popupData.id); // Track the popup ID
+            // Use requestAnimationFrame to ensure proper positioning
+            requestAnimationFrame(() => {
+                const rect = element.getBoundingClientRect();
+                popupElement.style.top = `${rect.top + window.scrollY + (popupData.offsetY || 0)}px`;
+                popupElement.style.left = `${rect.left + window.scrollX + (popupData.offsetX || 0)}px`;
+                popupElement.style.display = 'block';
+            });
+
+            popupElement.setAttribute('data-screen', screenId);
+            popupElement.setAttribute('data-popup-id', popupData.id);
 
             // Set a timeout to automatically show the next popup
             popupTimeout = setTimeout(() => {
-                clearTimeout(popupTimeout); // Clear existing timeout
+                clearTimeout(popupTimeout);
                 hidePopup(screenId, popupData.id);
                 showNextPopup(screenId);
-            }, 5000); // Show next popup after 5 seconds
+            }, 5000);
 
             currentPopup = { screenId: screenId, popupId: popupData.id };
-
         }
 
         function hidePopup(screenId, popupId) {
-            const popupElement = document.getElementById(`popup-${popupId}`);
+            const popupElement = document.getElementById(`popup-${screenId}-${popupId}`);
             if (popupElement && popupElement.dataset.screen === screenId && popupElement.dataset.popupId === popupId.toString()) {
                 popupElement.style.display = 'none';
             }
         }
 
         function hideAllPopups(screenId) {
+            // Hide the currently visible popup if it belongs to the given screen
+            if (currentPopup && currentPopup.screenId === screenId) {
+                hidePopup(currentPopup.screenId, currentPopup.popupId);
+            }
+            
+            // Hide any remaining popups in the popupQueue
             if (popupQueue[screenId]) {
                 popupQueue[screenId].forEach(popupData => {
-                    const popupElement = document.getElementById(`popup-${popupData.id}`);
+                    const popupElement = document.getElementById(`popup-${screenId}-${popupData.id}`);
                     if (popupElement) {
                         popupElement.style.display = 'none';
                     }
                 });
                 delete popupQueue[screenId];
             }
+            
             currentPopup = null;
+            clearTimeout(popupTimeout);
+            popupTimeout = null;
         }
+
+
 
         function showNextPopup(screenId) {
             if (!popupQueue[screenId] || popupQueue[screenId].length === 0) {
@@ -3676,42 +3706,34 @@ $(document).ready(() => {
                 let popups;
 
                 if (screenId === 'workspace-overview-screen') {
-                    popups = [
-                        { id: 1, element: '.wo-stats-section', text: 'Here you can see a summary of your workspace activity.', offsetX: 20, offsetY: 20 },
-                        { id: 2, element: '.wo-welcome-section', text: 'Click here to create your first workspace!', offsetX: 20, offsetY: 20 },
-                        { id: 3, element: '.header', text: 'Here are some helpful resources that will help you build trust in your workspaces!', offsetX: 20, offsetY: 20 }
+                    popups = [ 
+                        { id: 2, element: '.wo-create-workspace', text: 'Click here to create your first workspace!', offsetX: 250, offsetY: -20 },
                     ];
                 } else if (screenId === 'workspace-detailed-screen') {
                     popups = [
-                        { id: 1, element: '.wd-heading', text: 'Welcome to your workspace overview. Create and manage workspaces easily.', offsetX: 20, offsetY: 20 },
-                        { id: 2, element: '.wd-search-container', text: 'Quickly find workspaces by name or freelancer.', offsetX: 20, offsetY: 20 },
-                        { id: 3, element: '.wd-stats', text: 'Keep track of key workspace stats like total workspaces, files uploaded, and freelancers involved.', offsetX: 20, offsetY: 20 },
-                        { id: 4, element: '.wd-workspaces-section', text: 'View and manage your active and ended workspaces in this section.', offsetX: 20, offsetY: 20 }
+                        { id: 4, element: '.wd-heading', text: 'Welcome to your workspace overview. Create and manage workspaces easily.', offsetX: 500, offsetY: 20 }, 
+                        { id: 7, element: '.wd-workspaces-section', text: 'View and manage your active and ended workspaces in this section.', offsetX: 500, offsetY: 20 }
                     ];
                 } else if (screenId === 'workspace-dashboard-screen') {
                     popups = [
-                        { id: 1, element: '.heading', text: 'Here you can end, share a link to, or open your current workspace.', offsetX: 20, offsetY: 20 },
-                        { id: 2, element: '.sidebar', text: 'Navigate between workspace overview, files and chats.', offsetX: 20, offsetY: 20 },
-                        { id: 3, element: '#overview', text: 'See an overview of your workspace, freelancers, and blacklisted sites.', offsetX: 20, offsetY: 20 },
-                        { id: 4, element: '#files', text: 'Upload and manage your files in this workspace.', offsetX: 20, offsetY: 20 },
-                        { id: 5, element: '#chats', text: 'Communicate with team members in real time using our chat function.', offsetX: 20, offsetY: 20 }
+                        { id: 8, element: '#openUrlButton', text: 'Here you can open a running workspace, share a link to the workspace, or end the workspace.', offsetX: 50, offsetY: -50 },
+                        { id: 10, element: '.nav-list li[data-tab="overview"]', text: 'See an overview of your workspace, freelancers, and blacklisted sites.', offsetX: 50, offsetY: -10 },
+                        { id: 11, element: '.nav-list li[data-tab="files"]', text: 'Upload and manage your files in this workspace.', offsetX: 50, offsetY: -10 },
+                        { id: 12, element: '.nav-list li[data-tab="chats"]', text: 'Communicate with team members in real time using our chat function.', offsetX: 50, offsetY: -10 }
                     ];
                 } else if (screenId === 'client-login-screen') {
                     popups = [
-                        { id: 1, element: '.lg-modal-content', text: 'Enter your username to continue to your workspace.', offsetX: 20, offsetY: 20 }
+                        { id: 13, element: '.lg-input-field', text: 'Enter your username to continue to your workspace.', offsetX: 250, offsetY: 0 }
                     ];
                 } else if (screenId === 'create-overview-screen') {
                     popups = [
-                        { id: 1, element: '.co-content', text: 'Easily create and manage workspaces with Fortal IO. Follow these steps!', offsetX: 20, offsetY: 20 },
-                        { id: 2, element: '.co-steps-container', text: 'We guide you through each step of the workspace creation process.', offsetX: 20, offsetY: 20 },
-                        { id: 3, element: '.co-create-workspace', text: 'Click here to get started and create your first workspace!', offsetX: 20, offsetY: 20 }
+                    
+                        { id: 15, element: '.co-exit-btn', text: 'Click here to go back to dashboard', offsetX: -150, offsetY: 50 },
+                        { id: 16, element: '.co-create-workspace', text: 'Click here to get started and create your first workspace!', offsetX: 50, offsetY: 30 }
                     ];
                 } else if (screenId === 'create-detailed-screen') {
                     popups = [
-                        { id: 1, element: '.cd-step[data-step="1"]', text: 'Provide essential details about your workspace, such as the type and name.', offsetX: 20, offsetY: 20 },
-                        { id: 2, element: '.cd-step[data-step="2"]', text: 'Describe your project in detail to help freelancers understand the scope.', offsetX: 20, offsetY: 20 },
-                        { id: 3, element: '.cd-step[data-step="3"]', text: 'Specify security restrictions to protect your project and data.', offsetX: 20, offsetY: 20 },
-                        { id: 4, element: '.cd-footer', text: 'Use the progress bar and buttons to navigate through the workspace creation steps.', offsetX: 20, offsetY: 20 }
+                        { id: 20, element: '.cd-footer', text: 'Create a new workspace by providing the essential details for each step.', offsetX: 150, offsetY: 20 }
                     ];
                 } else {
                     popups = []; // No popups for this screen
