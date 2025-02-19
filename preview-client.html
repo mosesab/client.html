@@ -1,0 +1,3750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Client - Fortal.io</title>
+    <link rel="icon" href="https://www.fortal.io/wp-content/uploads/2024/11/web-app-manifest-512x512-1-150x150.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Removed axios script include -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        
+        :root {
+            --dark-bg: #1E1B13;
+            --gold: #baa25b;
+            --gold-bg: rgba(252, 176, 10, 0.2);
+            --gold-border: rgba(252, 176, 10, 0.1);
+            --nav-icon: #2c2a1b3d;;
+            --nav-bg: #e5e5e324;
+            --primary-bg: rgba(234, 226, 212, 0.1);
+            --primary-border: rgba(234, 226, 212, 0.1);
+            --input-bg: rgba(234, 226, 212, 0.1);
+            --text-light: #EAE2D4;
+            --text-secondary: rgba(234, 226, 212, 0.7);
+            --card-bg: #231F17;
+            --client-badge-gradient: linear-gradient(231deg, #3C2F00 0%, #2C3AA4 100%);
+            --logo-gradient: linear-gradient(325deg, #01C8FE 0%, #2D78FE 7%, #5138FE 13%, #601FFF 16%, #E28EE2 33%, #EB9996 40%, #F3A456 47%, #F9AB27 53%, #FCB00A 57%, #FEB200 60%, #FF99BE 100%);
+            --border-color: #484338;
+            --sidebar-bg: #231F17;
+            --btn-primary-bg: #50462a;
+            --btn-primary-text: #3C2F00;
+            --btn-secondary-text: #F1E1BB;
+            --accent-color: #9c8024;
+            --drop-zone-border: #EAE2D4;
+            --avatar-bg: #02210C;
+            --status-green-bg: rgba(47, 129, 57, 0.2);
+            --status-green: #def7de;
+            --status-gradient-start: #c0da9e;
+            --status-gradient-end: #a4a768;
+
+            --active-status-gradient-start: #83ad4d;
+            --active-status-gradient-end: #9f942e;
+
+            --ended-status-gradient-start: #834b12;
+            --ended-status-gradient-end: #836523;
+            
+            --card-gradient-start: #372d19;
+            --card-gradient-end: #2f2522;
+
+            --login-overlay: rgba(255, 255, 255, 0.05);
+            --login-black-overlay: rgba(0, 0, 0, 0.85);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            /* background: var(--logo-gradient); */
+        }
+
+        .client-badge {
+            display: inline-flex;
+            align-items: center;
+            background: var(--client-badge-gradient);
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            box-shadow: 0px 2px 4px var(--border-color);
+            gap: 8px;
+            margin-left: 1%;
+        }
+
+        .client-badge i {
+            font-size: 16px;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 2rem;
+            background-color: #2c2a1b3d;
+            padding: 0.75rem 1rem;
+            border-radius: 2rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e5e5e324;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .nav-item i {
+            font-size: 0.875rem;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+
+        .create-workspace {
+            border: none;
+            background-color: var(--text-light);
+            color: var(--btn-primary-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8%;
+            gap: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0px 4px 0px var(--btn-primary-bg); /* Solid shadow effect */
+        }
+
+        .create-workspace:active {
+            box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+            transform: translateY(2px);
+        }
+
+
+        .workspaces-remaining {
+            background-color: var(--gold-bg);
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            border: 0.5px solid var(--gold-border);
+            border-radius: 2rem;
+            font-size: 1rem;
+        }
+        .workspaces-remaining p {
+            margin-top: 1.3%;
+            margin-bottom: 1.3%;
+            font-size: 0.8rem;
+        }
+
+        .name-initial {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            border: 1px solid var(--status-gradient-end);
+            background-color: var(--avatar-bg);
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .name-initial p {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-left: 1.8rem;
+            cursor: pointer;
+
+            position: fixed;
+            top: 15%;
+            /* left: 250px; */
+            left: 1rem;
+        }
+
+        .back-button:hover {
+            background-color: var(--btn-primary-bg);
+        }
+
+        .back-button i {
+            font-size: 14px;
+        }
+
+        .heading{
+            display: flex;
+            /* justify-content: space-between; */
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .workspace-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            white-space: nowrap; /* Prevent line breaks */
+            display: inline-block; /* Ensures it stays as one unit */
+            font-weight: 600;
+            margin-left: 1.5%;
+            margin-right: 8%;
+            margin-bottom: 2.5%;
+        }
+
+        .workspace-title span {
+            color: var(--accent-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-left: 1.5%;
+            margin-right: 8%;
+            margin-bottom: 2.5%;
+        }
+
+
+        .btn-primary {
+            background-color: var(--btn-primary-bg);
+            border-radius: 2rem !important;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .main-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px; /* Adjust spacing between sidebar and content */
+        }
+
+        .sidebar-container{
+            min-height: 60vh;
+            margin-right: 0.2%;
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+        }
+
+        .sidebar {
+            background: var(--sidebar-bg);
+            border-radius: 1.9rem;
+            padding: 1rem;
+            border: 2px solid #484338; /* Added border */
+            min-height: 50vh; 
+            font-size: 0.9rem;  
+        }
+
+        .sidebar-heading {
+            display: inline-block;
+            position: relative;
+            font-weight: 400;
+            padding-bottom: 5%; /* Adjust this value for spacing above the line */  
+            margin-bottom: 5%;
+        }
+
+        .sidebar-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; /* Adjust this value to control space above the line */
+            left: 10%;
+            width: 200%;
+            border-bottom: 2px dotted var(--primary-border);
+        }
+
+        .content-section {
+            flex-grow: 1; /* Allow content to take remaining space */
+            border-radius: 1.9rem;
+            padding: 1rem;
+        }
+
+        .return-button-wrapper {
+            display: inline-block;
+            padding: 8px;
+            border-radius: 50px;
+            background-color: var(--sidebar-bg);
+            border: 2px solid #484338; /* Added border */
+            margin-top: 8%;
+        }
+
+        .return-button {
+            
+            background-color: var(--btn-primary-bg);
+
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        .return-button i {
+            transform: rotate(45deg);
+        }
+
+        /* Optional: Hover effect for the outer border */
+        .return-button-wrapper:hover {
+            background: var(--accent-color);
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-list li {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .nav-list li.active {
+            background-color: var(--gold-bg);
+            color: var(--gold);
+        }
+
+        .overview-section {
+            padding: 2rem;
+            margin-left: 1%;
+            border: 0.5px solid var(--gold-border);
+        }
+
+        .overview-heading {
+            display: inline-block; /* Ensure the h2 stays inline so the border can extend */
+            position: relative; /* Needed for positioning the pseudo-element */
+            padding-right: 2%; /* Space between text and line */
+            font-weight: 400;
+            margin-bottom: 3%;
+        }
+
+        .overview-heading::after {
+            content: ''; /* Empty content for the pseudo-element */
+            position: absolute; /* Position it absolutely relative to the h2 */
+            left: 100%; /* Align to the left side of the h2 */
+            top: 50%; /* Vertically center the line relative to the h2 */
+            transform: translateY(-50%); /* Adjust the position to perfectly center */
+            width: 60vw; /* Make the line extend to the full width of the viewport */
+            border-bottom: 2px dotted var(--primary-border); /* Color and transparency */
+        }
+
+        .info-card {
+            border-radius: 1.9rem;
+            background-color: var(--card-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .info-section {
+            display: flex;
+            gap: 2%;
+        }
+
+        .status-badge {
+            margin-bottom: 15%;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            border-radius: 18px;
+            background: var(--status-green-bg);
+            color: var(--status-green);
+            position: relative;
+            width: 60%;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: var(--status-green);
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-badge::after {
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border-radius: 22px;
+            padding: 4px;
+            background: linear-gradient(45deg, var(--status-gradient-start), var(--status-gradient-end));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stat-item-icon {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            margin-left: 5%;
+            gap: 10%;
+        }
+
+        .stat-item-text{
+            padding: 8px 16px;
+            background-color: var(--gold-bg);
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            color: #ccc;
+        }
+
+        .info-item i {
+            font-size: 24px;
+            color: #666;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        .content-wrapper{
+            min-height: 20vh;
+        }
+
+        .freelancer-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .freelancer-chat-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .freelancer-card {
+            border-radius: 15px;
+            padding: 20px;
+
+            background-color: var(--dark-bg);
+            border: 2px solid var(--primary-border);
+
+        }
+
+        .card-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5%;
+        }
+        .freelancer-name {
+            font-size: 18px;
+            font-weight:400;
+            margin: 20px 0 5px;
+        }
+
+        .avatar {
+            background-color: var(--avatar-bg);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .freelancer-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .freelancer-email {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .file-action-buttons {
+            display: flex;
+            gap: 10%;
+        }
+        .file-action-button {
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            background-color: var(--btn-primary-bg);
+            border-radius: 2rem;
+        }
+        .delete-file-action-button {
+            color: #b22929;
+            background-color: var(--text-light);
+        }
+
+        .chat-btn {
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-secondary-text);
+            padding: 4% 6%;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8%;
+        }
+
+        .blacklist-input{
+            display: flex;
+            margin-bottom: 5%;
+        }
+        .blacklist-input input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .blacklist-input button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 2%;
+        }
+
+        .blacklist-input button:active {
+            transform: translateY(2px);
+        }
+
+        .sites{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+
+        .site-link {
+            padding: 1% 4%;
+            border-radius: 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 1%;
+            margin-bottom: 1%;
+            background-color: var(--sidebar-bg);
+            border: 2px solid var(--border-color);
+        }
+
+
+        .files-section {
+            padding: 2rem;
+            border: 0.5px solid var(--gold-border);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--drop-zone-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: none;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 0.5rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .files-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .files-table th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .files-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chats-section {
+            padding: 2rem;
+            margin-bottom:5%;
+        }
+        .chats-wrapper{
+            display: flex; 
+        }
+
+        .chats-card{
+            cursor: pointer;
+            
+        }
+
+        .chats-card:active {
+            transform: translateY(2px);
+        }
+
+        .chat-messages{
+            border-radius: 1.9rem;
+            border: 0.5px solid var(--gold-border);
+            width: 100%;
+            min-height: 40vh;
+            padding: 1rem;
+            margin-left:5%;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chat-message.outgoing {
+            flex-direction: row-reverse;
+        }
+
+        .message-content {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 1rem;
+            max-width: 60%;
+        }
+
+        .outgoing .message-content {
+            background: var(--gold-bg);
+        }
+
+        .chat-message-name{
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .chat-input {
+            position: fixed;
+            bottom: 0;
+            /* left: 250px; */
+            right: 3rem;
+            padding: 1rem;
+            background: var(--dark-bg);
+            /* border-top: 1px solid var(--border-color); */
+            display: flex;
+            align-items: center;
+            width: 80%;
+        }
+
+        .chat-input input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .chat-input-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 2%;
+        }
+
+        .summary-sidebar{
+            display: flex;
+            flex-direction: column;
+            gap: 2%;
+            position: relative;
+            padding-left: 20px; /* Space for the line */
+        }
+
+        .summary-sidebar::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            border-left: 1.5px dotted var(--btn-primary-bg); /* Dotted line */
+        }
+
+        .summary-sidebar * { /* Apply margin-bottom: 2%; to all children */
+            margin-bottom: 1.5%;
+        }
+
+        .summary-sidebar span{
+            display: flex;
+            justify-content: left;
+        }
+
+        .summary-sidebar span div{
+            background-color: var(--gold-bg);
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            border: 0.5px solid var(--gold-border);
+            font-size: 1rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* End Workspace Dialog */
+        .dialog {
+        width: 312px;
+        height: 200px;
+        background: #EFE7DA;
+        border-radius: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-end;
+        overflow: hidden;
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        }
+
+        /* Content inside the Dialog */
+        .dialog-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 24px;
+        gap: 16px;
+        }
+
+        /* Title and description section */
+        .dialog-title-description {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        }
+
+        .dialog-headline {
+        color: #1E1B13;
+        font-size: 24px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 400;
+        line-height: 32px;
+        word-wrap: break-word;
+        }
+
+        .dialog-supporting-text {
+        color: #4C4639;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        line-height: 20px;
+        letter-spacing: 0.25px;
+        word-wrap: break-word;
+        }
+
+        /* Actions section */
+        .dialog-actions {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 24px;
+        }
+
+        .dialog-button {
+        height: 40px;
+        border-radius: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        letter-spacing: 0.10px;
+        text-align: center;
+        cursor: pointer;
+        background-color: transparent;
+        color: #725C0C;
+        border: 1px solid #725C0C;
+        font-weight: 700;
+        }
+
+        /* Button Hover */
+        .dialog-button:hover {
+        opacity: 0.8;
+        }
+
+
+
+        /* share-modal Styles */
+        .share-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .share-modal-content {
+            background-color: var(--dark-bg);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            max-width: 40%;
+            border-radius: 28px;
+            position: relative;
+        }
+
+        .close-share-modal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+        }
+
+        .close-share-modal:hover {
+            background-color: var(--btn-primary-bg);
+        }
+
+        .close-share-modal i {
+            font-size: 14px;
+        }
+
+        #shareUrlInput {
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            width: 90%;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+        }
+
+        .social-media-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-social {
+            background-color: var(--btn-social-bg);
+            color: var(--text-light);
+        }
+
+
+
+        .error-message {
+            display: none; 
+            position: fixed; 
+            bottom: 20px; /* Moves it to the bottom */
+            left: 50%; /* Centers it horizontally */
+            transform: translateX(-50%); /* Adjusts for centering */
+            padding: 15px; 
+            background: var(--primary-bg);
+            color: var(--text-light); 
+            border-radius: 4px;
+            text-align: center;
+            width: auto; /* Adjust width dynamically */
+            z-index: 10;
+        }
+
+        /* Ensure loader works */
+        .loader {
+            border: 4px solid #ffffff;
+            border-top: 5px solid #000000;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            animation: spin 1s linear infinite;
+            display: none; /* Ensure it appears when needed */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+
+
+
+
+        /* Modal with gradient background and overlay */
+        .lg-main-content { 
+            background: var(--logo-gradient);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lg-main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--login-black-overlay);
+        }
+        .lg-modal {
+            position: relative;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--login-overlay);
+        }
+
+        .lg-modal-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lg-login-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--text-light);
+            margin-bottom: 5%;
+            /* background: var(--logo-gradient); */
+        }
+
+        .lg-login-title {
+            color: var(--text-light);
+            font-size: 2rem;
+            margin-bottom: 10%;
+            font-weight: 500;
+        }
+
+        .lg-input-field {
+            width: 90%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--login-overlay);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .lg-login-button {
+            border: none;
+            background-color: var(--text-light);
+            color: var(--btn-primary-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0px 4px 0px var(--btn-primary-bg);
+            width: 40%;
+        }
+
+        .lg-login-button:active {
+            box-shadow: 0px 2px 0px var(--btn-primary-bg);
+            transform: translateY(2px);
+        } 
+
+
+                        .cd-main-content{
+                            width: 90%;
+                            margin: 0 auto;
+                            padding: 20px;
+                            position: relative;
+                        }
+
+                        .cd-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding-left: 2%;
+                            padding-right: 2%;
+                            margin-bottom: 2%;
+                            margin-top: 1%;
+                        }
+
+                        .cd-logo {
+                            width: 40px;
+                            height: 40px;
+                        }
+
+                        .cd-exit-btn {
+                            padding: 1% 4%;
+                            border-radius: 20px;
+                            color: var(--text-light);
+                            text-decoration: none;
+                            text-align: center;
+                            background-color: var(--sidebar-bg);
+                            border: 2px solid var(--border-color);
+                        }
+
+                        .cd-exit-btn:active {
+                            box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                            transform: translateY(2px);
+                        }
+
+                        .cd-content {
+                            display: flex;
+                            justify-content: space-between;
+                            gap: 40px;
+                            margin-bottom: 10%;
+                        }
+
+                        .cd-form-section {
+                            flex: 1;
+                            margin-bottom: 1%;
+                        }
+
+                        .cd-form-section h1 {
+                            font-size: 2.4rem;
+                            font-weight: normal;
+                            margin-bottom: 7%;
+                        }
+
+                        .cd-illustration {
+                            /* No need for position: fixed here */
+                            display: flex;
+                            justify-content: center;
+                            align-items: flex-start;
+                            max-width: 50%;        /* Constrain the image’s width */
+                            /* You can also set a max-width or width for this container as needed */
+                        }
+
+                        .cd-illustration img {
+                            width: 100%;           /* Let the image fill the available width (up to max-width) */
+                            height: auto;          /* Maintain aspect ratio */
+                            position: sticky;      /* Make the image stick to a position */
+                            top: 40%;                /* Stick it to the top of the viewport when scrolling */
+                        }
+
+                        .cd-form-group {
+                            margin-bottom: 20px;
+                        }
+
+                        .cd-input, .cd-textarea {
+                            width: 100%;
+                            padding: 12px;
+                            background: transparent;
+                            border: 1px solid var(--border-color);
+                            border-radius: 6px;
+                            color: var(--text-light);
+                            margin-top: 8px;
+                        }
+
+                        .cd-checkbox-group {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            justify-content: center;
+                        }
+
+                        .cd-checkbox-hint-text{
+                            color: var(--border-color);
+                            text-align: center;
+                            margin-top: 0.5%;
+                        }
+                        
+                        .cd-custom-checkbox {
+                            appearance: none;
+                            width: 20px;
+                            height: 20px;
+                            border: 2px solid var(--border-color);
+                            background-color: var(--card-bg);
+                            border-radius: 4px;
+                            position: relative;
+                            cursor: pointer;
+                        }
+
+                        .cd-custom-checkbox:checked {
+                            background-color: var(--gold);
+                        }
+
+                        .cd-custom-checkbox:checked::after {
+                            content: '\2713'; /* Checkmark */
+                            font-size: 16px;
+                            color: var(--dark-bg);
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+
+                        .cd-custom-dropdown {
+                            position: relative;
+                            width: 100%;
+                        }
+
+                        .cd-dropdown-button {
+                            background: var(--input-bg);
+                            color: var(--text-light);
+                            padding: 12px;
+                            width: 100%;
+                            border: 1px solid var(--border-color);
+                            border-radius: 6px;
+                            cursor: pointer;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+
+                        .cd-dropdown-options {
+                            display: none;
+                            position: absolute;
+                            width: 100%;
+                            background-color: var(--card-bg);
+                            border: 1px solid var(--border-color);
+                            border-top: none;
+                            z-index: 10;
+                            border-radius: 0 0 6px 6px;
+                            overflow: hidden;
+                        }
+
+                        .cd-dropdown-options div {
+                            padding: 12px;
+                            color: var(--text-light);
+                            cursor: pointer;
+                            transition: background 0.3s;
+                        }
+
+                        .cd-dropdown-options div:hover {
+                            background: var(--gold-bg);
+                            color: var(--gold);
+                        }
+
+                        .cd-dropdown-button i {
+                            transition: transform 0.3s;
+                        }
+
+                        .open .cd-dropdown-options {
+                            display: block;
+                        }
+
+                        .open .cd-dropdown-button i {
+                            transform: rotate(180deg);
+                        }
+
+                        .cd-blacklist-input{
+                            display: flex;
+                            margin-bottom: 2%;
+                        }
+                        .cd-blacklist-input input {
+                            width: 100%;
+                            padding: 1rem;
+                            background: var(--input-bg);
+                            border: none;
+                            border-radius: 0.5rem;
+                            color: var(--text-light);
+                        }
+
+                        .cd-blacklist-input button {
+                            padding: 0.5rem 1rem;
+                            border-radius: 0.5rem;
+                            background-color: var(--dark-bg);
+                            border: 1px solid var(--border-color);
+                            color: var(--text-light);
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            margin-left: 2%;
+                        }
+
+                        .cd-blacklist-input button:active {
+                            transform: translateY(2px);
+                        }
+
+                        .cd-sites {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: flex-start;
+                            gap: 1%;
+                            margin-bottom: 2%;
+                        }
+
+                        .cd-site-link {
+                            padding: 1% 4%;
+                            border-radius: 20px;
+                            color: var(--text-light);
+                            text-decoration: none;
+                            text-align: center;
+                            font-size: 14px;
+                            margin-top: 1%;
+                            margin-bottom: 1%;
+                            background-color: var(--sidebar-bg);
+                            border: 2px solid var(--border-color);
+
+                            position: relative;
+                            padding-right: 30px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            /* user-select: none; */
+                        }
+
+                        .cd-site-link.dragging {
+                            opacity: 0.5;
+                        }
+
+                        .cd-site-link.to-delete {
+                            border: 2px solid red;
+                            /* or, for example, a red background */
+                            background-color: rgba(255, 0, 0, 0.2);
+                        }
+
+                        .cd-site-link-selected {
+                            background-color: var(--gold);
+                            border-color: var(--gold);
+                        }
+                        
+                        .cd-website-not-listed {
+                            margin: 1% 0;
+                            color: var(--text-light);
+                        }
+                        .cd-toggle-blacklist{
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 2.2rem;
+                            height: 2.2rem;
+                            border-radius: 50%;
+                            border: 1px solid var(--border-color);
+                            background-color: var(--dark-bg);
+                            color: var(--text-light);
+                            text-decoration: none;
+                            transition: background-color 0.3s ease;
+                            margin-right: 15%;
+                            cursor: pointer;
+                        }
+
+                        .cd-toggle-blacklist i {
+                            font-size: 14px;
+                        }
+
+                        .cd-footer {
+                            position: absolute;
+                            bottom: 40px;
+                            left: 20px;
+                            right: 20px;
+                        }
+
+                        .cd-progress {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            gap: 10px; /* Space between steps */
+                            margin-bottom: 20px;
+                        }
+
+                        .cd-progress-bar-container {
+                            display: flex;
+                            gap: 10px; /* Controls gap between segments */
+                            flex: 1;
+                        }
+
+                        .cd-progress-bar {
+                            border-radius: 20px;
+                            height: 4px;
+                            background: var(--border-color);
+                            flex: 1;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .cd-progress-fill {
+                            position: absolute;
+                            height: 100%;
+                            background: var(--btn-secondary-text);
+                            transition: width 0.3s ease;
+                        }
+
+
+                        .cd-progress-buttons{
+                            display: flex;
+                            justify-content: space-between; /* Pushes buttons to opposite ends */
+                            align-items: center;
+                        }
+
+                        .cd-prev-btn {
+                            border: none;
+                            background-color: var(--text-light);
+                            color: var(--btn-primary-bg);
+                            padding: 0.5rem 1rem;
+                            border-radius: 2rem;
+                            cursor: pointer;
+                            /* display: flex; */
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 0.8%;
+                            gap: 0.5rem;
+                            font-weight: 600;
+                            box-shadow: 0px 4px 0px var(--btn-primary-bg); /* Solid shadow effect */
+                            width: 12%;
+                            display: none; 
+                            margin-right: 10px;
+                        }
+
+                        .cd-prev-btn:active {
+                            box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                            transform: translateY(2px);
+                        }
+
+                        .cd-next-btn {
+                            border: none;
+                            background-color: var(--text-light);
+                            color: var(--btn-primary-bg);
+                            padding: 0.5rem 1rem;
+                            border-radius: 2rem;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 0.8%;
+                            gap: 0.5rem;
+                            font-weight: 600;
+                            box-shadow: 0px 4px 0px var(--btn-primary-bg); /* Solid shadow effect */
+                            width: 12%;
+                        }
+
+                        .cd-next-btn:active {
+                            box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                            transform: translateY(2px);
+                        }
+                
+
+                        .cd-step {
+                            display: none;
+                        }
+
+                        .cd-step.active {
+                            display: block;
+                        }
+        
+        .co-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 2%;
+            padding-right: 2%;
+            margin-bottom: 2%;
+            margin-top: 2%;
+        }
+
+        .co-logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        .co-exit-btn {
+            padding: 1% 4%;
+            border-radius: 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            text-align: center;
+            background-color: var(--sidebar-bg);
+            border: 2px solid var(--border-color);
+        }
+
+        .co-exit-btn:active {
+            box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+            transform: translateY(2px);
+        }
+
+        .co-main-content {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .co-content {
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .co-content h1 {
+            font-size: 3rem;
+            font-weight: 400;
+            margin-bottom: 2%;
+        }
+
+        .co-steps-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 2%;
+        }
+
+        .co-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .co-step-number {
+            font-size: 32px;
+            margin-bottom: 1%;
+        }
+
+        .co-step-title {
+            color: #B8860B;
+            font-size: 24px;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .co-step-description {
+            color: var(--text-light);
+            display: none;
+        }
+
+        .co-step-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .co-create-workspace {
+            border: none;
+            background-color: var(--text-light);
+            color: var(--btn-primary-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.8%;
+            gap: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0px 4px 0px var(--btn-primary-bg);
+            width: 40%;
+            align-self: center;
+        }
+        
+        .co-create-workspace:active {
+            box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+            transform: translateY(2px);
+        }
+
+        .co-divider {
+            border-left: 2px dashed var(--text-light);
+            height: 90%;
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .co-step:last-child .divider {
+            display: none;
+        }
+
+
+                    .wo-main-content {
+                        display: flex;
+                        gap: 3%;
+                        margin: 0 auto;
+                        padding: 2%;
+                        justify-content: space-evenly;
+                    }
+                    
+                    .wo-stats-section {
+                        flex: 0.5;
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    .wo-stat-card {
+                        background: linear-gradient(45deg, var(--card-gradient-start), var(--card-gradient-end));
+                        border-radius: 24px;
+                        padding: 24px;
+                        position: relative;
+                        white-space: wrap;
+                        margin-bottom: 3%;
+                    }
+
+                    .wo-stat-number {
+                        font-size: 48px;
+                        padding-right: 2%;
+                        margin-bottom: 2%;
+                    }
+
+                    .wo-stat-content {
+                        flex: 1;
+                    }
+
+                    .wo-stat-title {
+                        font-size: 18px;
+                        /* margin: 0 0 4px 0; */
+                        margin-bottom: 2%;
+                    }
+
+                    .wo-stat-label {
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        margin-bottom: 2%;
+                    }
+
+                    .wo-stat-icon {
+                        font-size: 5rem;
+                        color: var(--text-secondary);
+                        opacity: 0.2;
+                        position: absolute;
+                        right: 8%;
+                        bottom: 30%;
+                    }
+
+                    .wo-welcome-container{
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        flex: 1.5;
+                    }
+
+                    .wo-welcome-section {
+                        flex: 1;
+                        background: var(--sidebar-bg);
+                        border: 0.5px solid var(--gold-border);
+                        border-radius: 24px;
+                        padding-top: 4%;
+                        padding-bottom: 4%;
+                        padding-left: 10%;
+                        padding-right: 10%;
+                        text-align: center;
+                        position: relative;
+                        margin-bottom: 2%;
+                        width: 40rem;
+                    }
+
+                    .wo-welcome-title {
+                        font-size: 3rem;
+                        margin: 0 0 16px 0;
+                        font-weight: normal;
+                    }
+
+                    .wo-welcome-subtitle {
+                        font-size: 1.6rem;
+                        margin-bottom: 5%;
+                        font-weight: normal;
+                        color: var(--text-secondary);
+                    }
+
+                    .wo-welcome-subtitle sup { 
+                        font-size: 0.6em;  /* Reduce font size */
+                        font-weight: 400;  /* Make it slimmer */
+                        vertical-align: 0.6em; /* Lower the superscript slightly */
+                    }
+
+                    .wo-create-workspace {
+                        border: none;
+                        background-color: var(--text-light);
+                        color: var(--btn-primary-bg);
+                        padding: 1.8% 10%;
+                        border-radius: 2rem;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        margin: 0 auto;
+                        gap: 0.5rem;
+                        font-weight: 600;
+                        box-shadow: 0px 6px 0px var(--btn-primary-bg);
+                        margin-bottom: 5%;
+                    }
+
+                    .wo-create-workspace:active {
+                        box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                        transform: translateY(2px);
+                    }
+
+                    .wo-view-workspace {
+                        border: none;
+                        background-color: var(--text-light);
+                        color: var(--btn-primary-bg);
+                        padding: 1.8% 10%;
+                        border-radius: 2rem;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        margin: 0 auto;
+                        gap: 0.5rem;
+                        font-weight: 600;
+                        box-shadow: 0px 6px 0px var(--btn-primary-bg); 
+                    }
+
+                    .wo-view-workspace:active {
+                        box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                        transform: translateY(2px);
+                    }
+
+                    .wo-illustration-image {
+                        max-width: 100%; 
+                        width: 30rem; 
+                        height: auto;
+                    }
+
+            
+
+            .wd-home-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 2.2rem;
+                height: 2.2rem;
+                border-radius: 50%;
+                border: 1px solid var(--border-color);
+                background-color: var(--dark-bg);
+                color: var(--text-light);
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+                margin-left: 1.8rem;
+                cursor: pointer;
+            }
+
+            .wd-home-button:hover {
+                background-color: var(--btn-primary-bg);
+            }
+
+            .wd-home-button i {
+                font-size: 14px;
+            }
+
+            .wd-create-workspace {
+                border: none;
+                background-color: var(--text-light);
+                color: var(--btn-primary-bg);
+                padding: 0.5rem 1rem;
+                border-radius: 2rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                margin-bottom: 0.8%;
+                gap: 0.5rem;
+                font-weight: 600;
+                box-shadow: 0px 4px 0px var(--btn-primary-bg); /* Solid shadow effect */
+            }
+
+            #ended-workspaces{
+                display: none;
+            }
+
+            #ended-workspaces.show {
+                display: flex;
+            }
+
+            .wd-create-workspace:active {
+                box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                transform: translateY(2px);
+            }
+
+
+            .wd-workspaces-remaining {
+                background-color: var(--gold-bg);
+                color: var(--text-light);
+                padding: 0.5rem 1rem;
+                border: 0.5px solid var(--gold-border);
+                border-radius: 2rem;
+                font-size: 1rem;
+            }
+            .wd-workspaces-remaining p {
+                margin-top: 1.3%;
+                margin-bottom: 1.3%;
+                font-size: 0.8rem;
+            }
+            .wd-main-content {
+                padding: 2rem;
+            }
+
+            .wd-heading{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 2rem;
+            }
+            .wd-heading-2{
+                display: flex;
+                align-items: center;
+                margin-left: 2%;
+                width:80%;
+                justify-content: space-between;
+            }
+
+            .wd-welcome-text {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+                white-space: nowrap; /* Prevent line breaks */
+                display: inline-block; /* Ensures it stays as one unit */
+                font-weight: 400;
+            }
+
+            .wd-btn-primary {
+                background-color: var(--btn-primary-bg);
+                border-radius: 2rem !important;
+            }
+
+            .wd-btn {
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                border: 1px solid var(--border-color);
+                color: var(--text-light);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .wd-main-container {
+                display: flex;
+                align-items: flex-start;
+                gap: 20px; /* Adjust spacing between sidebar and content */
+                flex-direction: column;
+            }
+
+            .wd-content-section {
+                display: none;
+            }
+
+            .wd-content-section.active {
+                display: block;
+            }
+
+            .wd-search-container {
+                position: relative;
+                width: 50%;
+                margin: 0 2%;
+                display: none;
+            }
+
+            .wd-search-icon {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--gold);
+                font-size: 16px;
+                pointer-events: none;
+            }
+
+            .wd-search-input {
+                width: 100%;
+                padding: 12px 16px 12px 48px;
+                background-color: var(--sidebar-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 25px;
+                color: var(--text-light);
+                transition: border-color 0.2s ease;
+            }
+
+            .wd-search-input::placeholder {
+                color: var(--text-light);
+            }
+
+            .wd-search-input:focus {
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            /* Stats */
+           .wd-stat-title{
+                margin-bottom: 1%;
+            }
+            .wd-stats {
+                display: flex;
+                gap: 2%;
+                margin: 32px 0;
+                width: 100%;
+                justify-content: space-evenly;
+            }
+
+            .wd-stat-card {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6%;
+                padding-top: 0.5%;
+                padding-bottom: 0.5%;
+                padding-left: 1.5%;
+                padding-right: 1.5%;
+                border-radius: 50px;
+                background: linear-gradient(45deg, var(--card-gradient-start), var(--card-gradient-end));
+            }
+
+            .wd-stat-content{
+                margin-left: 4%;
+                margin-right: 6%;
+            }
+
+            .wd-stat-number {
+                font-size: 36px;
+                font-weight: 400;
+                margin-bottom: 8px;
+                position: relative;
+            }
+
+            .wd-stat-number::before {
+                content: "";
+                position: absolute;
+                right: -1rem;
+                top: 0;
+                height: 100%;
+                width: 2px;
+                border-left: 1.5px dotted var(--btn-primary-bg);
+            }
+
+            .wd-stat-label {
+                font-size: 14px;
+            }
+
+            .wd-stat-icon{
+                font-size: 1.4rem;
+            }
+
+            /* Workspaces Section */
+            .wd-workspaces-section {
+                flex-grow: 1;
+                background: var(--sidebar-bg);
+                border-radius: 1.9rem;
+                padding: 1rem;
+                width: 100%;
+            }
+
+            .wd-workspaces-header {
+                padding: 8px 16px;
+                border-radius: 20px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 24px;
+            }
+
+            
+
+            .wd-active-status-badge {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+                display: flex;
+                align-items: center;
+                border-radius: 18px;
+                color: var(--text-light);
+                width: 60%;
+                background: linear-gradient(45deg, var(--active-status-gradient-start), var(--active-status-gradient-end));
+                border: 3px solid var(--border-color);
+            }
+
+            .wd-ended-status-badge {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+                display: flex;
+                align-items: center;
+                border-radius: 18px;
+                color: var(--text-light);
+                /* width: 60%; */
+                background: linear-gradient(45deg, var(--ended-status-gradient-start), var(--ended-status-gradient-end));
+                border: 3px solid var(--border-color);
+            }
+
+
+            .wd-info-item{
+                display: flex;
+                align-items: center;
+                flex-wrap: nowrap;
+                flex-direction: row;
+                white-space: nowrap; /* Prevent line breaks */ 
+                gap: 5%;
+                margin-right: 7%;
+            }
+
+            .wd-info-label{
+                margin-left: 15%;
+            }
+
+            .wd-ended-workspaces-header{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            .wd-dropdown-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 2.2rem;
+                height: 2.2rem;
+                border-radius: 50%;
+                border: 1px solid var(--border-color);
+                background-color: var(--dark-bg);
+                color: var(--text-light);
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+                cursor: pointer;
+                padding: 5%;
+            }
+
+            .wd-dropdown-toggle:hover {
+                transform: translateY(1px);
+            }
+
+            .wd-dropdown-toggle:active{
+                box-shadow: 0px 2px 0px var(--btn-primary-bg);
+                transform: translateY(2px);
+            }
+
+
+            .wd-dropdown-toggle i {
+                font-size: 14px;
+            }
+
+            .wd-section-title {
+                padding: 8px 16px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                white-space: nowrap;
+                flex: 0.1;
+            }
+
+            .wd-workspaces {
+                display: flex;
+                gap: 2%;
+                width: 100%;
+                justify-content: flex-start; /* Align items to start */
+                overflow-x: auto; /* Enable horizontal scrolling */
+                white-space: nowrap; /* Prevent wrapping */
+                padding-bottom: 10px; /* Extra space to avoid scrollbar overlap */
+            }
+
+            /* scrollbar - For WebKit browsers (Chrome, Safari) */
+            .wd-workspaces::-webkit-scrollbar {
+                height: 8px; /* Adjust height for horizontal scrollbar */
+            }
+
+            .wd-workspaces::-webkit-scrollbar-track {
+                background: var(--sidebar-bg); /* Background of scrollbar */
+                border-radius: 4px;
+            }
+
+            .wd-workspaces::-webkit-scrollbar-thumb {
+                background: var(--text-light); /* Scrollbar thumb color */
+                border-radius: 4px;
+            }
+
+            /* For Firefox */
+            .wd-workspaces {
+                scrollbar-color: var(--text-light) var(--sidebar-bg);
+            }
+
+
+            .wd-workspace-card {
+                width: 320px;
+                padding: 20px;
+                border-radius: 20px;
+                background-color: var(--dark-bg);
+                border: 1px solid var(--border-color);
+                cursor: pointer;
+            }
+
+            .wd-workspace-card:hover {
+                box-shadow: 0px 2px 0px var(--btn-primary-bg); /* Pressed effect */
+                transform: translateY(2px);
+            }
+
+            .wd-workspace-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+
+            .wd-workspace-tag {
+                border: 1px solid var(--border-color);
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-size: 14px;
+            }
+
+            /* .wd-workspace-action-btn {
+                background-color: var(--btn-primary-bg);
+                color: var(--btn-secondary-text);
+                display: flex;
+                align-items: center;
+                gap: 15%;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 15px;
+                cursor: pointer;
+            } */
+
+            /* .wd-workspace-action-btn:hover {
+                box-shadow: 0px 2px 0px var(--btn-primary-bg);
+                transform: translateY(4px);
+            } */
+
+            .wd-workspace-title {
+                font-size: 24px;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .wd-workspace-description {
+                color: var(--text-light);
+                font-size: 14px;
+                margin-bottom: 20px;
+                /* line-height: 1.5; */
+                white-space: wrap; /* Allow line breaks */
+            }
+
+            .wd-workspace-divider {
+                border: none; /* Remove default border */
+                height: 0.2px; /* Thickness of the line */
+                background-color: var(--border-color); /* Light gray color */
+                margin-bottom: 5%; /* Spacing above and below */
+                width: 100%; /* Full width */
+            }
+
+            .wd-workspace-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .wd-avatars {
+                display: flex;
+                align-items: center;
+            }
+
+            .wd-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin-right: -10px;
+                border: 2px solid var(--avatar-bg);
+            }
+
+            .wd-more-avatars {
+                background: var(--avatar-bg);
+                color: var(--btn-secondary-text);
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+            }
+
+            .wd-timestamp {
+                background: var(--gold-bg);
+                padding: 5px 15px;
+                border-radius: 15px;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+
+
+
+        .custom-popup {
+            position: absolute;
+            background-color: #12111159; 
+            padding: 10px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: none; /* Hidden by default */
+        }
+        .custom-popup-content {
+            margin-bottom: 5px;
+        }
+        .custom-popup-buttons {
+            text-align: right;
+        }
+        .custom-popup-buttons button {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo">
+                <img src="https://imgur.com/Fr5hOyG.png" alt="Fortal Logo" height="35">
+                fortal
+            </div>
+            <span class="client-badge">
+                <i class="fas fa-feather"></i>
+                Client
+            </span>       
+        </div>
+        
+        <nav class="nav-icons">
+            <div href="#" class="nav-item">
+                <i class="fas fa-shield-alt"></i>
+                Trust
+            </div>
+            <div href="#" class="nav-item">
+                <i class="fas fa-users"></i>
+                Collaboration
+            </div>
+            <div href="#" class="nav-item">
+                <i class="fas fa-lock"></i>
+                Security
+            </div>
+            <div href="#" class="nav-item">
+                <i class="fas fa-th"></i>
+                Transparency
+            </div>
+        </nav>
+        
+
+        <div class="actions">
+            <button class="create-workspace" id="createWorkspaceBtn">
+                <i class="fas fa-plus"></i>
+                Create new workspace
+            </button>          
+            <span class="workspaces-remaining">
+                <p>10 out of 20 workspaces remaining</p>
+            </span>
+            <div class="name-initial">
+                <p>S</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Add loader container -->
+    <div id="loader" class="loader"></div>
+
+    <!-- Add error message container -->
+    <div id="error-message" class="error-message"></div>
+
+
+
+    <main id="workspace-overview-screen" class="screen wo-main-content">
+        <div class="wo-stats-section">
+            <div class="wo-stat-card">
+                <p class="wo-stat-number">0</p>
+                <div class="wo-stat-content">
+                    <p class="wo-stat-title">Total Workspaces</p>
+                    <p class="wo-stat-label">Number of workspaces created</p>
+                </div>
+                <div class="wo-stat-icon">
+                    <i class="fa-regular fa-window-restore"></i>
+                </div>
+            </div>
+
+            <div class="wo-stat-card">
+                <p class="wo-stat-number">0</p>
+                <div class="wo-stat-content">
+                    <p class="wo-stat-title">Total Files Uploaded</p>
+                    <p class="wo-stat-label">Number of files uploaded across all workspaces</p>
+                </div>
+                <div class="wo-stat-icon">
+                    <i class="fas fa-file"></i>
+                </div>
+            </div>
+
+            <div class="wo-stat-card">
+                <p class="wo-stat-number">0</p>
+                <div class="wo-stat-content">
+                    <p class="wo-stat-title">Freelancers Involved</p>
+                    <p class="wo-stat-label">Total freelancers actively assigned to workspaces</p>
+                </div>
+                <div class="wo-stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+       
+        <div class="wo-welcome-container"> 
+            <div class="wo-welcome-section">
+                <h1 class="wo-welcome-title">Welcome, Sonia</h1>
+                <h2 class="wo-welcome-subtitle">Create your 1<sup>st</sup> Workspace</h2>
+                <button class="wo-create-workspace" id="woCreateWorkspaceBtn">
+                    <i class="fas fa-plus"></i>
+                    Create new workspace
+                </button>
+                <button class="wo-view-workspace" id="viewWorkspacesBtn">
+                    <i class="fas fa-list"></i>
+                    View my workspaces
+                </button>
+            </div>
+            <img class="wo-illustration-image" src="https://imgur.com/piwb6bS.png" alt="Collaborates with teammates using a fortal workspace"> 
+        </div>
+    </main> 
+
+
+
+    <main id="workspace-detailed-screen" class="screen wd-main-content">
+        <div>
+            <div id="wd-home-button" class="wd-home-button">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="wd-heading">
+                <h3 class="wd-welcome-text">
+                    Welcome back, <span>Sonia</span>
+                </h3>
+                <div class="wd-heading-2">
+                    <button class="wd-create-workspace">
+                        <i class="fas fa-plus"></i>
+                        Create new workspace
+                    </button>  
+    
+                    <div class="wd-search-container">
+                        <i class="fas fa-search wd-search-icon"></i>
+                        <input 
+                            type="text" 
+                            class="wd-search-input" 
+                            placeholder="Search by workspace name or freelancer"
+                        >
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+      
+        
+        <div class="wd-main-container">
+            <div class="wd-stats">
+                <div class="wd-stat-card">
+                    <p class="wd-stat-number">50</p>
+                    <div class="wd-stat-content">
+                        <p class="wd-stat-title">Total Workspaces</p>
+                        <p class="wd-stat-label">Number of workspaces created</p>
+                    </div>
+                    <div class="wd-stat-icon">
+                        <i class="fa-regular fa-window-restore"></i>
+                    </div>
+                </div>
+
+                <div class="wd-stat-card">
+                    <p class="wd-stat-number">50</p>
+                    <div class="wd-stat-content">
+                        <p class="wd-stat-title">Total Files Uploaded</p>
+                        <p class="wd-stat-label">Number of files uploaded across all workspaces</p>
+                    </div>
+                    <div class="wd-stat-icon">
+                        <i class="fas fa-file"></i>
+                    </div>
+                </div>
+
+                <div class="wd-stat-card">
+                    <p class="wd-stat-number">50</p>
+                    <div class="wd-stat-content">
+                        <p class="wd-stat-title">Freelancers Involved</p>
+                        <p class="wd-stat-label">Total freelancers actively assigned to workspaces</p>
+                    </div>
+                    <div class="wd-stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wd-workspaces-section">
+                <div class="wd-workspaces-header">
+                    <div class="wd-section-title wd-active-status-badge">Active Workspaces</div>
+                    
+                    <div class="wd-info-item">
+                        <i class="far fa-calendar"></i>
+                        <div class="wd-info-content">
+                            <div class="wd-info-label">23 projects</div>
+                        </div>
+                    </div>
+                    <div class="wd-info-item">
+                        <i class="far fa-clock"></i>
+                        <div class="wd-info-content">
+                            <div class="wd-info-type">2 months</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="active-workspaces" class="wd-workspaces">
+                    <!-- Workspace Card 1 -->
+                    <!-- Additional workspace cards would go here -->
+                </div>
+            </div>
+
+            
+            <div class="wd-workspaces-section">
+                <div class = "ended-workspaces-header">
+                    <div class="wd-workspaces-header">
+                        <div class="wd-section-title wd-ended-status-badge">Ended Workspaces</div>
+
+                        <div class="wd-info-item">
+                            <i class="far fa-calendar-times"></i>
+                            <div class="wd-info-content">
+                                <div class="wd-info-label">2 projects</div>
+                            </div>
+                        </div>
+                        <button class="wd-dropdown-toggle">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ended-workspaces" class="wd-workspaces">
+                    <!-- Workspace Card 1 -->
+                    <!-- Additional workspace cards would go here -->
+                </div>
+            </div>
+
+    </main>
+
+    
+
+    <main id="workspace-dashboard-screen" class="screen main-content">
+        <div>
+            <div id="back-button" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="heading">
+                <h3 class="workspace-title">
+                    Sonia 1 <span>Workspace</span>
+                </h3>
+                <div class="action-buttons">
+                    <button id="openUrlButton" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Open
+                    </button>
+                    <button id="shareUrlButton" class="btn btn-primary">
+                        <i class="fas fa-clone"></i>
+                        Share Link
+                    </button>
+                    <button id="openDialogButton" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i>
+                        End
+                    </button>
+                </div>
+                <aside class="summary-sidebar">
+                    <span>
+                        <div>Summary</div>
+                    </span>
+                    <h4>Design for a Web App UI</h4>
+                    <p>A sleek and modern user interface designed for optimal user experience, featuring intuitive navigation and vibrant visuals.</p>
+                </aside>
+            </div>
+            
+        </div>
+
+        <div class="main-container">
+            <div class="sidebar-container">    
+                <nav class="sidebar">
+                    <h3 class="sidebar-heading">Navigate</h3>
+                    <ul class="nav-list">
+                        <li data-tab="overview"><i class="fas fa-home"></i> Overview</li>
+                        <li data-tab="files"><i class="fas fa-file"></i> Files</li>
+                        <li data-tab="chats"><i class="fas fa-comments"></i> Chats</li>
+                    </ul>
+                </nav>      
+
+                <div class="return-button-wrapper">
+                    <button class="btn return-button">
+                        Return to Workspace
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </div>
+            </div>
+
+            <section id="overview" class="content-section overview-section active">
+                <h2 class="overview-heading">Overview</h2>
+                <div class="info-section">
+                    <!-- Card 1: Status Badge + Project Info -->
+                    <div class="info-card">
+                        <div class="status-badge">Active</div>
+                        <div class="project-info">
+                            <div class="info-item">
+                                <i class="far fa-calendar"></i>
+                                <div class="info-content">
+                                    <div class="info-label">Created Date</div>
+                                    <div class="info-text">07 / 12 / 2025</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <div class="info-content">
+                                    <div class="info-label">Ended Date</div>
+                                    <div class="info-text">07 / 12 / 2025</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-font"></i>
+                                <div class="info-content">
+                                    <div class="info-label">Type</div>
+                                    <div class="info-text">2 months</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Card 2: Freelancers -->
+                    <div class="info-card">
+                        <div class="stat-item">
+                            <div class="stat-item-text">Freelancers</div>
+                            <div id="stat-item-freelancers" class="stat-item-icon">
+                                <i class="fas fa-users"></i>
+                                <span>12</span>
+                            </div>
+                        </div>
+                        <div class="content-wrapper">
+                            <div class="freelancer-cards">
+                                <!-- Additional freelancer cards -->
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Card 3: Black Sites -->
+                    <div class="info-card">
+                        <div class="stat-item">
+                            <div class="stat-item-text">Blacklisted Sites</div>
+                            <div id="stat-item-sites"class="stat-item-icon">
+                                <i class="fas fa-globe"></i>
+                                <span>20</span>
+                            </div>
+                        </div>
+
+                        <div class="sites">
+                            <!-- Additional site links -->
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+            <section id="files" class="content-section files-section">
+                <div class="upload-area">
+                    <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                    <p>Click to upload or drag and drop</p>
+                    <small>Maximum allowed size is 20MB</small>
+                </div>
+                <input type="file" id="fileInput" style="display: none;" />
+
+                <div class="search-wrapper">
+                    <input type="text" class="search-bar" placeholder="Find document...">
+                </div>
+
+                <table class="files-table">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Uploaded by</th>
+                            <th>Date Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Project Brief.pdf</td>
+                            <td>Faruq So</td>
+                            <td>07/12/2025</td>
+                            <td class="file-action-buttons">
+                                <button class="btn file-action-button"><i class="fas fa-download"></i></button>
+                                <button class="btn file-action-button delete-file-action-button"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="chats" class="content-section chats-section">
+                
+                <div class="chats-wrapper">
+
+                    <div class="chat-messages">
+                        <div class="chat-message">
+                        </div>
+                        <div class="chat-message outgoing">
+                        </div>
+                        <!-- Add more messages as needed -->
+                    </div>
+
+                    <div class="chat-input">
+                        <input type="text" placeholder="Type your message...">
+                        <button class="chat-input-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <div id="dialog" class="dialog">
+            <div class="dialog-content">
+              <div class="dialog-title-description">
+                <div class="dialog-headline">End Workspace?</div>
+                <div class="dialog-supporting-text">Are you sure you want to end this workspace?</div>
+              </div>
+              <div class="dialog-actions">
+                <button class="dialog-button" id="cancelButton">No, Cancel</button>
+                <button class="dialog-button" id="endButton">Yes, End</button>
+              </div>
+            </div>
+        </div>
+
+
+        <div id="shareUrlModal" class="share-modal">
+            <div class="share-modal-content">
+                <div class="close-share-modal">
+                    <i class="fas fa-times"></i>
+                </div>
+                <input type="text" id="shareUrlInput" readonly>
+                <button id="copyUrlButton" class="btn btn-primary"><i class="fas fa-clone"></i>Copy Link</button>
+                <div class="social-media-buttons">
+                    <button class="btn btn-social" onclick="window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(currentWorkspace.workspaceUrl), '_blank')"><i class="fab fa-twitter"></i> Twitter</button>
+                    <button class="btn btn-social" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(currentWorkspace.workspaceUrl), '_blank')"><i class="fab fa-facebook-f"></i> Facebook</button>
+                    <button class="btn btn-social" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(currentWorkspace.workspaceUrl), '_blank')"><i class="fab fa-linkedin-in"></i> LinkedIn</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+
+    <main id="client-login-screen" class="screen lg-main-content">
+        <div id="lg-modal" class="lg-modal">
+            <div class="lg-modal-content">
+                <div class="lg-login-logo">
+                    <img src="https://imgur.com/Fr5hOyG.png" alt="Fortal Logo" height="40">
+                    fortal
+                </div>
+                <h1 class="lg-login-title">Enter your username</h1>
+                <input type="email" placeholder="Username" class="lg-input-field">
+                <button id="lg-login-button" class="lg-login-button">Login</button>
+            </div>
+        </div>
+
+    </main> 
+
+
+
+    <main id="create-overview-screen" class="screen co-main-content">
+        <header class="co-header">
+            <img src="https://imgur.com/Fr5hOyG.png" alt="Fortal Io Logo" class="co-logo">
+            <button class="co-exit-btn">Exit</button>
+        </header>
+    
+        <div class="co-content">
+            <h1>It's easy to create a<br>workspace on Fortal IO</h1>
+            
+            <div class="co-steps-container">
+                <div class="co-step">
+                    <div class="co-step-number">1</div>
+                    <h2 class="co-step-title">Provide details about the workspace</h2>
+                    <p class="co-step-description">Description xyz</p>
+                    <img src="https://imgur.com/Tq7GiDY.png" alt="Workspace Details" class="co-step-image">
+                    <div class="co-divider"></div>
+                </div>
+    
+                <div class="co-step">
+                    <div class="co-step-number">2</div>
+                    <h2 class="co-step-title">Describe your project in details</h2>
+                    <p class="co-step-description">Description xyz</p>
+                    <img src="https://imgur.com/piwb6bS.png" alt="Project Details" class="co-step-image">
+                    <div class="co-divider"></div>
+                </div>
+    
+                <div class="co-step">
+                    <div class="co-step-number">3</div>
+                    <h2 class="co-step-title">Specify the security restrictions on the workspace</h2>
+                    <p class="co-step-description">Description xyz</p>
+                    <img src="https://imgur.com/PuK3KHD.png" alt="Security Settings" class="co-step-image">
+                </div>
+            </div>
+    
+            <button class="co-create-workspace">Get Started</button>
+        </div>
+    </main>
+
+
+
+    <main id="create-detailed-screen" class="screen cd-main-content">
+        <header class="cd-header">
+            <img src="https://imgur.com/Fr5hOyG.png" alt="Logo" class="cd-logo">
+            <button class="cd-exit-btn">Exit</button>
+        </header>
+
+        <div class="cd-step active" data-step="1">
+            <div class="cd-content">
+                <div class="cd-form-section">
+                    <h1>Provide details about the workspace</h1>
+                    <div class="cd-form-group">
+                        <label>Is this workspace for</label>
+                        <div class="cd-custom-dropdown">
+                            <div class="cd-dropdown-button">Human Freelancer/VA<i class="fas fa-chevron-down"></i></div>
+                            <div class="cd-dropdown-options">
+                                <div data-value="Human Freelancer/VA">Human Freelancer/VA</div>
+                                <div data-value="AI Browser Agent">AI Browser Agent</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cd-form-group">
+                        <label>Workspace name</label>
+                        <input type="text" class="cd-input">
+                    </div>
+                    <div class="cd-form-group">
+                        <label>Password (for the freelancer to log in)</label>
+                        <input type="password" class="cd-input">
+                    </div>
+                </div>
+                <div class="cd-illustration">
+                    <img src="https://imgur.com/Tq7GiDY.png" alt="Step 1 Illustration">
+                </div>
+            </div>
+        </div>
+
+        <div class="cd-step" data-step="2">
+            <div class="cd-content">
+                <div class="cd-form-section">
+                    <h1>Describe your project in details</h1>
+                    <div class="cd-form-group">
+                        <label>Project Name</label>
+                        <input type="text" class="cd-input">
+                    </div>
+                    <div class="cd-form-group">
+                        <label>Project Description</label>
+                        <textarea rows="6" class="cd-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="cd-illustration">
+                    <img src="https://imgur.com/R4AlbPR.png" alt="Step 2 Illustration">
+                </div>
+            </div>
+        </div>
+
+        <div class="cd-step" data-step="3">
+            <div class="cd-content">
+                <div class="cd-form-section">
+                    <h1>Specify the security restrictions on the workspace</h1>
+                    <div class="cd-form-group">
+                        <label>Restriction Mode</label>
+                        <div class="cd-custom-dropdown">
+                            <div class="cd-dropdown-button">Blacklist<i class="fas fa-chevron-down"></i></div>
+                            <div class="cd-dropdown-options">
+                                <div data-value="Blacklist">Blacklist</div>
+                                <div data-value="Whitelist">Whitelist</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cd-sites">
+                        <!-- Additional site links -->
+                    </div>
+
+                    <div id="cd-website-not-listed" class="cd-website-not-listed">
+                        <span>Website not shown above?</span>
+                        <button id="cd-toggle-blacklist" class="cd-toggle-blacklist">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                                        
+                    <div id="blacklist-container" style="display: none;">
+                        <!-- <label for="blacklist-items">Select Blacklist (blocked) websites:</label> -->
+                        <div id="blacklist-items">
+                            <div class="cd-blacklist-input">
+                                <input id="cd-add-blacklist-input" class="cd-form-control blacklist-domain" placeholder="Enter your blacklist domain">
+                                <button id="cd-add-blacklist" class="cd-add-blacklist">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cd-checkbox-group">
+                        <label for="fortal-extensions">Use Fortal Extensions</label>
+                        <input type="checkbox" id="fortal-extensions" class="cd-custom-checkbox">
+                    </div>
+                    <p class="cd-checkbox-hint-text"> Fortal Extensions restrict remote workers' access by disabling the "Share" and "Send to Email" options in tools like Word, PowerPoint, Docs, and Sheets. </p>
+                
+                </div>
+                <div class="cd-illustration">
+                    <img src="https://imgur.com/mwTou2N.png" alt="Step 3 Illustration">
+                </div>
+            </div>
+        </div>
+
+        <footer class="cd-footer">
+            <div class="cd-progress">
+                <span>Step <span class="cd-current-step">1</span> of 3</span>
+                <div class="cd-progress-bar-container">
+                    <div class="cd-progress-bar"><div class="cd-progress-fill" data-fill="1"></div></div>
+                    <div class="cd-progress-bar"><div class="cd-progress-fill" data-fill="2"></div></div>
+                    <div class="cd-progress-bar"><div class="cd-progress-fill" data-fill="3"></div></div>
+                </div>
+            </div>
+
+            <div class="cd-progress-buttons">
+                <button class="cd-prev-btn">Previous</button>
+                <div></div>
+                <button class="cd-next-btn">Next <i class="cd-fa-solid fa-arrow-right"></i> </button>
+            </div>
+        </footer>
+    </main>
+
+    <div id="popup-container"></div>
+
+    
+<script>
+    /* 
+       ==================== 
+       SHARED FUNCTIONALITY 
+       ==================== 
+    */
+    let currentUser = {
+        username: 'Sonia', // Default username for testing
+        workspaces: [],
+        totalFiles: 0,
+        totalFreelancers: 0
+    };
+
+    let currentWorkspace = {
+        workspaceId: 1,
+        workspaceName: 'Test Workspace',
+        workspaceUrl: 'http://example.com'
+    };
+
+    // Loader control
+    const showLoader = (show) => {
+        try {
+            $('#loader').toggle(show);
+        } catch (error) {
+            console.error('Error in showLoader:', error);
+        }
+    };
+
+    // Error handling
+    const toast = (message) => {
+        try {
+            const errorDiv = $('#error-message');
+            errorDiv.text(message).show();
+            setTimeout(() => errorDiv.hide(), 5000);
+        } catch (error) {
+            console.error('Error in toast:', error);
+        }
+    };
+
+    function showScreen(screenId, displayType = 'block') {
+        $('.screen').hide();
+        const $screen = $('#' + screenId);
+        if ($screen.length) $screen.css('display', displayType);
+
+        // Toggle header and create workspace button
+        const showHeader = screenId.startsWith('workspace-');
+        const showHeaderCreateButton = screenId.startsWith('workspace-dashboard-');
+        
+        $('.header').toggle(showHeader);
+        $('.create-workspace').toggle(showHeaderCreateButton);
+        
+        // start interactive walk through popup
+        checkAndStartPopups();
+    }
+
+    /* 
+       ==================== 
+       LOGIN SCREEN 
+       ==================== 
+    */
+    $('#lg-login-button').on('click', async () => { 
+    try {
+        const username = $('.lg-input-field').val().trim();
+        if (!username) return toast('Please enter a username');
+        showLoader(true);
+
+        // Simulate successful login
+        currentUser.username = username;
+        showScreen('workspace-overview-screen', 'flex');
+        loadOverviewData();
+    } catch (error) {
+        toast('Failed to login.');
+        console.error('Error in login:', error);
+    } finally {
+        showLoader(false);
+    }
+});
+
+    /* 
+       ==================== 
+       WORKSPACE OVERVIEW SCREEN 
+       ==================== 
+    */
+    async function loadOverviewData() {
+        try {
+            showLoader(true);
+            // Display username text
+            $('.wo-welcome-title').text(`Welcome, ${currentUser.username}`);
+            $('.wd-welcome-text').text(`${currentUser.username}' Office`);
+            $('.name-initial p').text(currentUser.username.charAt(0).toUpperCase());
+
+            // Mock data for local testing
+            currentUser.workspaces = [
+                { id: 1, workspace_name: 'Workspace 1', project_name: 'Project A', project_description: 'Description A', status: 'active', created_at: '2024-01-01', freelancers: [{ name: 'Freelancer 1' }, { name: 'Freelancer 2' }], url: 'http://example.com/workspace1' },
+                { id: 2, workspace_name: 'Workspace 2', project_name: 'Project B', project_description: 'Description B', status: 'active', created_at: '2024-01-05', freelancers: [{ name: 'Freelancer 3' }], url: 'http://example.com/workspace2' },
+                { id: 3, workspace_name: 'Workspace 3', project_name: 'Project C', project_description: 'Description C', status: 'ended', created_at: '2024-01-10', freelancers: [], url: 'http://example.com/workspace3' }
+            ];
+            currentUser.totalFiles = 15;
+            currentUser.totalFreelancers = 3;
+            const maxWorkspaces = 20;
+
+            // Update statistics UI
+            $('.wo-stat-number').each(function (idx) {
+                $(this).text(
+                    idx === 0 ? currentUser.workspaces.length : 
+                    idx === 1 ? currentUser.totalFiles : 
+                    idx === 2 ?  currentUser.totalFreelancers : 0
+                );
+            });
+
+            // Count only active workspaces
+            const activeWorkspaces = currentUser.workspaces.filter(ws => ws.status === 'active');
+
+            // Update workspace remaining info
+            $('.workspaces-remaining p').text(`${activeWorkspaces.length} out of ${maxWorkspaces} workspaces remaining`);
+
+            // Toggle "View Workspaces" button visibility
+            $('#viewWorkspacesBtn').toggle(activeWorkspaces.length > 0);
+
+            // refresh detailed workspaces screen
+            renderDetailedWorkspaces();
+
+            // load sites
+            loadSitesData();
+        } catch (error) {
+            toast('Failed to load home page.');
+            console.error('Unexpected error in loadOverviewData:', error);
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    // Navigation
+    $('#woCreateWorkspaceBtn').on('click', () => showScreen('create-overview-screen'));
+    $('#createWorkspaceBtn').on('click', () => showScreen('create-overview-screen'));
+    $('#viewWorkspacesBtn').on('click', () => {showScreen('workspace-detailed-screen');});
+
+    /* 
+       ==================== 
+       WORKSPACE DETAILED SCREEN 
+       ==================== 
+    */
+    async function renderDetailedWorkspaces() {
+        try {
+            showLoader(true);
+
+            const activeContainer = $('#active-workspaces');
+            const endedContainer = $('#ended-workspaces');
+
+            activeContainer.empty();
+            endedContainer.empty();
+
+            // Click event for ended-workspaces drop down
+            $('.wd-dropdown-toggle').on('click', function () {$("#ended-workspaces").toggleClass("show");});
+
+            // Update statistics UI
+            $('.wd-stat-number').each(function (idx) {
+                $(this).text(
+                    idx === 0 ? currentUser.workspaces.length : 
+                    idx === 1 ? currentUser.totalFiles : 
+                    idx === 2 ?  currentUser.totalFreelancers : 0
+                );
+            });
+
+            // Update info items UI
+            const activeWorkspaces = currentUser.workspaces.filter(ws => ws.status === 'active');
+            const inactiveWorkspaces = currentUser.workspaces.filter(ws => ws.status !== 'active');
+            const oldestActiveWorkspace = activeWorkspaces.length ? activeWorkspaces.reduce((oldest, ws) => new Date(ws.created_at) < new Date(oldest.created_at) ? ws : oldest).created_at : 'N/A';
+
+        $('.wd-info-label').each(function (idx) {
+                    $(this).text(
+                        idx === 0 ? activeWorkspaces.length :
+                        idx === 1 ? inactiveWorkspaces.length :
+                        ''
+                    );
+        });
+
+        $('.wd-info-type').text(`${oldestActiveWorkspace}`);
+
+        currentUser.workspaces.forEach(ws => {
+            const card = `
+                <div class="wd-workspace-card" data-id="${ws.id}" data-name="${ws.workspace_name}" data-url="${ws.url}" data-status="${ws.status}">
+                    <div class="wd-workspace-header">
+                        <div class="wd-workspace-tag">${ws.workspace_name}</div>
+                    </div>
+                    
+                    <div class="wd-workspace-title">${ws.project_name}</div>
+                    <div class="wd-workspace-description">${ws.project_description}</div>
+                    
+                    <hr class="wd-workspace-divider">  
+                                        <div class="wd-workspace-footer">
+                        <div class="wd-avatars">
+                        <img src="https://i.pravatar.cc/100?img=1" class="wd-avatar">
+                        <img src="https://i.pravatar.cc/100?img=2" class="wd-avatar">
+                        <div class="wd-more-avatars">${ws.freelancers.length}</div>
+                        </div>
+                        <div class="wd-timestamp"> <i class="fas fa-clock"></i> ${ws.created_at} </div>
+                    </div>
+                </div>
+            `;
+            ws.status === 'active' ? activeContainer.append(card) : endedContainer.append(card);
+        });
+
+        // Click event for workspace cards
+        $('.wd-workspace-card').on('click', function () {
+            try {
+                currentWorkspace.workspaceId = Number($(this).data('id'));
+                currentWorkspace.workspaceName = String($(this).data('name'));
+                currentWorkspace.workspaceUrl = String($(this).data('url'));
+                status = String($(this).data('status'));
+                if (status =='active'){
+                    changeStatusToActive();
+                }
+                else{
+                    changeStatusToEnded();
+                }
+                // Find the corresponding workspace object
+                const selectedWorkspace = currentUser.workspaces.find(ws => ws.id === currentWorkspace.workspaceId);
+                if (!selectedWorkspace) {
+                    throw new Error('Workspace not found');
+                }
+                
+                showScreen('workspace-dashboard-screen');
+                loadWorkspaceDashboard();
+
+                $('.workspace-title').text(`${selectedWorkspace.workspace_name}`);
+                $('.summary-sidebar h4').text(`${selectedWorkspace.project_name}`);
+                $('.summary-sidebar p').text(`${selectedWorkspace.project_description}`);
+                $('#stat-item-freelancers span').text(`${selectedWorkspace.freelancers.length} `);
+                $('#stat-item-chat span').text(`${selectedWorkspace.freelancers.length} `);
+                $('.info-text').each(function (idx) {
+                    $(this).text(
+                        idx === 0 ? selectedWorkspace.created_at :
+                        idx === 1 ? (selectedWorkspace.ended_at || 'Ongoing') :
+                        idx === 2 ? selectedWorkspace.project_type :
+                        ''
+                    );
+                });
+            } catch (error) {     
+                toast('Failed to load workspace page.');
+                console.error('Error in workspace card click:', error);
+            }
+        });
+    } catch (error) {
+        toast('Please, Refresh the page.');
+        console.error('Error in renderDetailedWorkspaces:', error);
+    } finally {
+        showLoader(false);
+    }
+}
+
+$('#wd-home-button').on('click', () => showScreen("workspace-overview-screen", "flex"));
+$('.wd-create-workspace').on('click', () => showScreen('create-detailed-screen'));
+
+/* 
+   ==================== 
+   WORKSPACE DASHBOARD SCREEN 
+   ==================== 
+*/
+async function downloadFileBtn(file) {
+    // Create the download URL
+    const downloadUrl = `/api/files/download_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`;
+    // Trigger the download action
+    window.location.href = downloadUrl;  // This will trigger the download
+}
+
+async function deleteFileBtn(file) {
+    try {
+        toast('File deleted successfully.');
+        // Refresh UI after deletion
+        loadWorkspaceDashboard();
+        loadOverviewData();
+    } catch (error) {
+        console.error('Error:', error);
+        toast('Failed to delete file.');
+    }
+}
+
+async function loadWorkspaceDashboard() {
+try {
+    showLoader(true);
+
+    // Mock data for local testing
+    const localSites = ['example.com', 'test.com'];
+    const freelancers = [
+        { name: 'Freelancer 1', email: 'freelancer1@example.com', avatar_url: 'https://i.pravatar.cc/150' },
+        { name: 'Freelancer 2', email: 'freelancer2@example.com', avatar_url: 'https://i.pravatar.cc/150' }
+    ];
+    const files = ['file1.pdf', 'file2.docx'];
+    const chats = [
+        { message: 'Hello', email: 'freelancer1@example.com', timestamp: new Date() },
+        { message: 'Hi there!', email: null, timestamp: new Date() }
+    ];
+
+    // update local sites list
+    const siteItemsDiv = $('.sites');
+    siteItemsDiv.empty(); 
+    localSites.forEach((item) => {
+        siteItemsDiv.append(`<div class="site-link">${item}</div>`);
+    });
+    $('#stat-item-sites span').text(`${localSites.length} `);
+
+    // Update Freelancers List 
+    $('.freelancer-cards').html(freelancers.map(f => {
+        return `
+            <div class="freelancer-card">
+                <div class="card-header">
+                    <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
+                    <button onClick="openChatBtn()" class="chat-btn"><i class="fas fa-comments"></i> Chat</button>
+                </div>
+                <div class="freelancer-name">${f.name}</div>
+                <div class="freelancer-email">${f.email}</div>
+            </div>
+        `;
+    }).join(''));
+    $('.freelancer-chat-cards').html(freelancers.map(f => {
+        return `
+            <div class="freelancer-card 'chats-card'">
+                <div class="card-header">
+                    <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
+                </div>
+                <div class="freelancer-name">${f.name}</div>
+                <div class="freelancer-email">${f.email}</div>
+            </div>
+        `;
+    }).join(''));
+
+    // Update Files Table
+    $('.files-table tbody').html(files.map(file => `
+        <tr>
+            <td>${file}</td>
+            <td>${currentUser.username}</td>
+            <td>${new Date().toLocaleDateString()}</td>
+            <td class="file-action-buttons">
+                <button onClick="downloadFileBtn('${file}')" class="btn file-action-button"><i class="fas fa-download"></i></button>
+                <button onClick="deleteFileBtn('${file}')" class="btn file-action-button delete-file-action-button"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join(''));
+
+    // Update Chats List
+    $('.chat-messages').html(chats.map(chat => `
+        <div class="chat-message ${chat.email != null ? 'outgoing' : ''}">
+            <img src="${'https://i.pravatar.cc/40'}" class="avatar" alt="User avatar">
+            <div class="message-content">
+                <p class="chat-message-name">${chat.email !== null ? chat.email : currentUser.username}</p>
+                <p>${chat.message}</p>
+                <div class="timestamp">${new Date(chat.timestamp).toLocaleTimeString()}</div>
+            </div>
+        </div>
+    `).join(''));
+
+} catch (error) {
+    console.error('Error in loadWorkspaceDashboard:', error);
+    toast('Failed to load workspace data');
+} finally {
+    showLoader(false);
+}
+}
+
+// File handling
+$(document).ready(() => {
+    const uploadArea = $('.upload-area');
+    const fileInput = $('#fileInput');
+    // Drag & drop event handling
+    uploadArea.on('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadArea.addClass('dragging');
+    });
+    uploadArea.on('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadArea.removeClass('dragging');
+    });
+    uploadArea.on('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadArea.removeClass('dragging');
+        const files = e.originalEvent.dataTransfer.files;
+        if (files.length > 0) uploadFile(files[0]);
+    });
+    // Click event to trigger file input
+    uploadArea.on('click', () => fileInput.click());
+    // Handle file selection via file input
+    fileInput.on('change', (e) => {
+        if (e.target.files.length > 0) uploadFile(e.target.files[0]);
+    });
+});
+
+async function uploadFile(file) {
+    try {
+        // Simulate file upload success
+        toast('File uploaded successfully!');
+        loadWorkspaceDashboard();
+        loadOverviewData();
+    } catch (error) {
+        console.error('Error in uploadFile:', error);
+        toast('File upload failed');
+    }
+}
+
+// Dashboard Navigation Controls
+// Status management
+window.changeStatusToEnded = () => {
+    const cssVars = {
+        '--status-green-bg': 'rgba(255, 99, 71, 0.2)',
+        '--status-green': '#ffcccc',
+        '--status-gradient-start': '#ffcccc'
+    };
+    Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));      
+    $('.status-badge').text('Ended');
+    $('.action-buttons').hide();
+    $('.chat-input').hide(); 
+    $('.return-button-wrapper').hide();    
+};
+
+window.changeStatusToActive= () => {
+    const cssVars = {
+        '--status-green-bg': 'rgba(47, 129, 57, 0.2)',
+        '--status-green': '#def7de',
+        '--status-gradient-start': '#c0da9e'
+    };  
+    Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));
+    $('.status-badge').text('Active');
+    $('.action-buttons').show();
+    $('.chat-input').show();
+    $('.return-button-wrapper').show(); 
+};
+
+// Tab navigation
+$('.nav-list li').on('click', function() {
+    const tabId = $(this).data('tab');
+    $(this).addClass('active').siblings().removeClass('active');
+    $('.content-section').removeClass('active').filter(`#${tabId}`).addClass('active');
+});
+
+// Chat button navigation
+$('#chat-btn').on('click', () => 
+$('.nav-list li[data-tab="chats"]').click()
+);
+
+function openChatBtn() {
+    $('.nav-list li[data-tab="chats"]').click()
+}
+
+// Button controls
+$('#back-button').on('click', () => showScreen("workspace-detailed-screen"));
+$('#openDialogButton').on('click', () => $('#dialog').show());
+$('#openUrlButton').on('click', () => {window.open(currentWorkspace.workspaceUrl, '_blank');});
+$('.return-button').on('click', () => {window.open(currentWorkspace.workspaceUrl, '_blank');});
+$("#shareUrlButton").click(function () {
+    $("#shareUrlModal").show();
+    $("#shareUrlInput").val(currentWorkspace.workspaceUrl);
+});
+
+$('#cancelButton, #endButton').on('click', () => $('#dialog').hide());
+$('#endButton').on('click', async () => {
+    $('#openDialogButton').hide();
+    changeStatusToEnded();
+    // refresh ui
+    loadOverviewData();
+    toast('Workspace ended successfully!');
+    $('#openDialogButton').show();
+});
+
+$('#copyUrlButton').on('click', () => { 
+    navigator.clipboard.writeText( currentWorkspace.workspaceUrl);
+    toast('Copied');
+});
+$(".close-share-modal").click(function () {
+    $("#shareUrlModal").hide();
+});
+
+$(".chat-input-button").click(async function () {
+    const message = $(".chat-input input").val().trim();
+    if (!message) return;
+    // Simulate sending message
+    toast('Message sent!');
+    $(".chat-input input").val("");
+});
+
+/* 
+   ==================== 
+   WORKSPACE CREATION FLOW 
+   ==================== 
+*/
+$('.co-create-workspace').on('click', () => {showScreen('create-detailed-screen');});
+$('.co-exit-btn').on('click', async () => {showScreen('workspace-overview-screen', 'flex');});
+$('.cd-exit-btn').on('click', async () => {showScreen('workspace-overview-screen', 'flex');});
+
+async function createWorkspace() {
+    try {
+        $('.cd-next-btn').hide();
+        // Simulate workspace creation success
+        toast('Workspace created successfully!');
+        showScreen('workspace-detailed-screen');
+        loadOverviewData();
+    } catch (error) {
+        console.error('Error in workspace creation:', error);
+        toast('Workspace creation failed');
+    }
+    finally{
+        $('.cd-next-btn').show();
+    }
+}
+
+// Step navigation
+let currentStep = 1;
+
+function updateStep() {
+    $('.cd-step').removeClass('active');
+    $(`[data-step="${currentStep}"]`).addClass('active');
+    $('.cd-current-step').text(currentStep);
+
+    $('.cd-progress-fill').each(function() {
+        let step = $(this).data('fill');
+        $(this).css('width', step < currentStep + 1 ? '100%' : '0%');
+    });
+
+    $('.cd-prev-btn').toggle(currentStep > 1);
+    $('.cd-next-btn').html(currentStep === 3 
+        ? 'Finish <i class="fas fa-box-open"></i>' 
+        : 'Next <i class="fa-solid fa-arrow-right"></i>');
+}
+
+$('.cd-next-btn').click(async function() {
+    if (currentStep < 3) {
+        currentStep++;
+        updateStep();
+    } 
+    else {
+        if (currentStep === 3) {
+            $('.cd-next-btn').hide();
+            await createWorkspace();
+        }
+    }
+});
+
+$('.cd-prev-btn').click(function() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStep();
+    }
+});
+
+updateStep();
+
+// Dropdown functionality
+$('.cd-custom-dropdown').each(function() {
+    const $dropdown = $(this),
+        $button = $dropdown.find('.cd-dropdown-button'),
+        $options = $dropdown.find('.cd-dropdown-options');
+
+    $button.on('click', () => $dropdown.toggleClass('open'));
+    
+    $options.on('click', '[data-value]', function() {
+        const value = $(this).data('value');
+        $button.html(`${$(this).text()} <i class='fas fa-chevron-down'></i>`);
+        $dropdown.removeClass('open');
+        
+        $('#cd-website-not-listed').toggle(value === "Blacklist");
+        $('.cd-user-site-link').toggle(value === "Blacklist");
+        $('#blacklist-container').hide(value === "Blacklist");
+    });
+});
+
+// Blacklist management
+$('#cd-toggle-blacklist').on('click', () => 
+    $("#blacklist-container").toggle()
+);
+
+// Site link interactions
+async function loadSitesData() {
+    // Simulate loading sites
+    const cdSiteItems = ['example.com', 'test.com', 'another.com'];
+    const cdSiteItemsDiv = $('.cd-sites');
+    cdSiteItemsDiv.empty();
+    cdSiteItems.forEach((item) => {
+        cdSiteItemsDiv.append(`<div class="cd-site-link" draggable="true">${item}</div>`);
+    });
+}
+
+// --- DRAG & DROP & SELECTION CODE ---
+// Delegated click: toggle selection on click for all .cd-site-link elements.
+$(document).on('click', '.cd-site-link', function() {
+    $(this).toggleClass('cd-site-link-selected');
+});
+
+// Delegated dragstart: set a unique id and add dragging class.
+$(document).on('dragstart', '.cd-site-link', function(e) {
+    const dragId = Date.now().toString();
+    $(this).attr('data-drag-id', dragId);  // Use attr() instead of data()
+    e.originalEvent.dataTransfer.setData('text/plain', dragId);
+    $(this).addClass('dragging');
+});
+
+// Always remove the dragging (and to-delete) classes when the drag ends.
+$(document).on('dragend', '.cd-site-link', function(e) {
+    $(this).removeClass('dragging to-delete');
+});
+
+// If an element is dropped anywhere outside of the .cd-sites container, remove it.
+$(document).on('drop', function(e) {
+    // If the drop target is not within .cd-sites...
+    if (!$(e.target).closest('.cd-sites').length) {
+        e.preventDefault();
+        const dragId = e.originalEvent.dataTransfer.getData('text/plain');
+        // Remove the element (it will already have lost its dragging classes via dragend).
+        $(`.cd-site-link[data-drag-id="${dragId}"]`).remove();
+    }
+});
+
+// Global dragover: update visual cue based on whether the pointer is inside .cd-sites.
+$(document).on('dragover', function(e) {
+    e.preventDefault();
+    // Check if the event target is inside a safe container.
+    if (!$(e.target).closest('.cd-sites').length) {
+        // Add a red highlight (via the "to-delete" class) to the currently dragged element.
+        $('.cd-site-link.dragging').addClass('to-delete');
+    } else {
+        // Remove the delete visual cue when back over the safe area.
+        $('.cd-site-link.dragging').removeClass('to-delete');
+    }
+});
+
+// Allow dragover on the container.
+$('.cd-sites').on('dragover', function(e) {
+    e.preventDefault();
+    e.originalEvent.dataTransfer.dropEffect = 'move';
+});
+
+// Also allow dragover on each site link so that we can detect a drop target.
+$('.cd-sites').on('dragover', '.cd-site-link', function(e) {
+    e.preventDefault();
+    e.originalEvent.dataTransfer.dropEffect = 'move';
+});
+
+// Handle drop on the container (.cd-sites)
+$('.cd-sites').on('drop', function(e) {
+    e.preventDefault();
+    const dragId = e.originalEvent.dataTransfer.getData('text/plain');
+    const $draggedElement = $(`.cd-site-link[data-drag-id="${dragId}"]`);
+    
+    // Remove the visual dragging cues.
+    $draggedElement.removeClass('dragging to-delete');
+
+    // Determine if the drop happened on another site link.
+    const $dropTarget = $(e.target).closest('.cd-site-link');
+
+    if ($dropTarget.length && $dropTarget[0] !== $draggedElement[0]) {
+        // Get the target’s offset and height.
+        const targetOffset = $dropTarget.offset();
+        const targetHeight = $dropTarget.outerHeight();
+
+        // Compare the drop Y coordinate to the target’s midpoint.
+        if (e.originalEvent.pageY < targetOffset.top + targetHeight / 2) {
+            // Insert dragged element before the drop target.
+            $dropTarget.before($draggedElement);
+        } else {
+            // Insert dragged element after the drop target.
+            $dropTarget.after($draggedElement);
+        }
+    } else {
+        // If drop target is not a specific item, append to the container.
+        $(this).append($draggedElement);
+    }
+});
+
+// When adding a new element dynamically, it’s already created with draggable="true".
+// Since we use delegated events, it will automatically have the click and drag events.
+$('#cd-add-blacklist').on('click', function() {
+    const domain = $('#cd-add-blacklist-input').val().trim();
+    if (domain) {
+        // Create the element and append it.
+        $('<div>', {
+            class: 'cd-site-link cd-user-site-link cd-site-link-selected',
+            text: domain,
+            draggable: true  // set the attribute directly
+        }).appendTo('.cd-sites');
+
+        // Clear the input.
+        $('#cd-add-blacklist-input').val('');
+    }
+});
+
+/* 
+    ==================== 
+    Notification FUNCTIONS 
+    ==================== 
+*/
+
+// Initialize
+$(document).ready(() => {
+    try {
+        showScreen("client-login-screen", "flex"); 
+        loadOverviewData();
+    } catch (error) {
+        console.error('Error in document ready:', error);
+    }
+});
+
+
+        /* 
+           ==================== 
+           Joyride LOGIC
+           ==================== 
+        */
+
+        let currentScreen = null;
+        let popupQueue = {};
+        let currentPopup = null;
+        let popupTimeout = null;
+
+        function createPopup(screenId, popupData) {
+            const popupElement = document.createElement('div');
+            popupElement.classList.add('custom-popup');
+            popupElement.id = `popup-${popupData.id}`;
+            popupElement.style.position = 'absolute'; // Ensure positioning
+
+            const contentElement = document.createElement('div');
+            contentElement.classList.add('custom-popup-content');
+            contentElement.textContent = popupData.text;
+            popupElement.appendChild(contentElement);
+
+            const buttonsElement = document.createElement('div');
+            buttonsElement.classList.add('custom-popup-buttons');
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.addEventListener('click', () => {
+                clearTimeout(popupTimeout); // Clear any existing timeout
+                hidePopup(screenId, popupData.id);
+                showNextPopup(screenId);
+            });
+            buttonsElement.appendChild(nextButton);
+
+            const exitButton = document.createElement('button');
+            exitButton.textContent = 'Exit';
+            exitButton.addEventListener('click', () => {
+                clearTimeout(popupTimeout); // Clear any existing timeout
+                hideAllPopups(screenId);
+            });
+            buttonsElement.appendChild(exitButton);
+
+            popupElement.appendChild(buttonsElement);
+
+            return popupElement;
+        }
+
+        function showPopup(screenId, popupData) {
+            const element = document.querySelector(popupData.element);
+
+            if (!element) {
+                console.warn(`Element "${popupData.element}" not found on screen "${screenId}".`);
+                showNextPopup(screenId);
+                return;
+            }
+
+            // Get the popup element, or create it if it doesn't exist
+            let popupElement = document.getElementById(`popup-${popupData.id}`);
+            if (!popupElement) {
+                popupElement = createPopup(screenId, popupData);
+                document.getElementById('popup-container').appendChild(popupElement); // Append to popup container
+            }
+
+            const rect = element.getBoundingClientRect();
+            popupElement.style.top = `${rect.top + window.scrollY + popupData.offsetY}px`;
+            popupElement.style.left = `${rect.left + window.scrollX + popupData.offsetX}px`;
+            popupElement.style.display = 'block';
+            popupElement.setAttribute('data-screen', screenId); // Track the screen the popup belongs to
+            popupElement.setAttribute('data-popup-id', popupData.id); // Track the popup ID
+
+            // Set a timeout to automatically show the next popup
+            popupTimeout = setTimeout(() => {
+                clearTimeout(popupTimeout); // Clear existing timeout
+                hidePopup(screenId, popupData.id);
+                showNextPopup(screenId);
+            }, 5000); // Show next popup after 5 seconds
+
+            currentPopup = { screenId: screenId, popupId: popupData.id };
+
+        }
+
+        function hidePopup(screenId, popupId) {
+            const popupElement = document.getElementById(`popup-${popupId}`);
+            if (popupElement && popupElement.dataset.screen === screenId && popupElement.dataset.popupId === popupId.toString()) {
+                popupElement.style.display = 'none';
+            }
+        }
+
+        function hideAllPopups(screenId) {
+            if (popupQueue[screenId]) {
+                popupQueue[screenId].forEach(popupData => {
+                    const popupElement = document.getElementById(`popup-${popupData.id}`);
+                    if (popupElement) {
+                        popupElement.style.display = 'none';
+                    }
+                });
+                delete popupQueue[screenId];
+            }
+            currentPopup = null;
+        }
+
+        function showNextPopup(screenId) {
+            if (!popupQueue[screenId] || popupQueue[screenId].length === 0) {
+                return;
+            }
+
+            const nextPopupData = popupQueue[screenId].shift();
+            showPopup(screenId, nextPopupData);
+
+            // If this was the last popup in the queue, remove the queue
+            if (popupQueue[screenId].length === 0) {
+                delete popupQueue[screenId];
+            }
+        }
+
+
+        function setupPopupsForScreen(screenId, popups) {
+            popupQueue[screenId] = [...popups]; // Clone the popups array
+        }
+
+
+        function checkAndStartPopups() {
+            const visibleScreen = document.querySelector('.screen:not([style*="display: none"])');
+            if (!visibleScreen) return;
+
+            const screenId = visibleScreen.id;
+
+            if (currentScreen !== screenId) {
+                // Screen has changed
+                if (currentScreen) {
+                    // Hide all popups from the previous screen
+                    hideAllPopups(currentScreen);
+                }
+
+                currentScreen = screenId;
+
+                // Define popups based on the current screen
+                let popups;
+
+                if (screenId === 'workspace-overview-screen') {
+                    popups = [
+                        { id: 1, element: '.wo-stats-section', text: 'Here you can see a summary of your workspace activity.', offsetX: 20, offsetY: 20 },
+                        { id: 2, element: '.wo-welcome-section', text: 'Click here to create your first workspace!', offsetX: 20, offsetY: 20 },
+                        { id: 3, element: '.header', text: 'Here are some helpful resources that will help you build trust in your workspaces!', offsetX: 20, offsetY: 20 }
+                    ];
+                } else if (screenId === 'workspace-detailed-screen') {
+                    popups = [
+                        { id: 1, element: '.wd-heading', text: 'Welcome to your workspace overview. Create and manage workspaces easily.', offsetX: 20, offsetY: 20 },
+                        { id: 2, element: '.wd-search-container', text: 'Quickly find workspaces by name or freelancer.', offsetX: 20, offsetY: 20 },
+                        { id: 3, element: '.wd-stats', text: 'Keep track of key workspace stats like total workspaces, files uploaded, and freelancers involved.', offsetX: 20, offsetY: 20 },
+                        { id: 4, element: '.wd-workspaces-section', text: 'View and manage your active and ended workspaces in this section.', offsetX: 20, offsetY: 20 }
+                    ];
+                } else if (screenId === 'workspace-dashboard-screen') {
+                    popups = [
+                        { id: 1, element: '.heading', text: 'Here you can end, share a link to, or open your current workspace.', offsetX: 20, offsetY: 20 },
+                        { id: 2, element: '.sidebar', text: 'Navigate between workspace overview, files and chats.', offsetX: 20, offsetY: 20 },
+                        { id: 3, element: '#overview', text: 'See an overview of your workspace, freelancers, and blacklisted sites.', offsetX: 20, offsetY: 20 },
+                        { id: 4, element: '#files', text: 'Upload and manage your files in this workspace.', offsetX: 20, offsetY: 20 },
+                        { id: 5, element: '#chats', text: 'Communicate with team members in real time using our chat function.', offsetX: 20, offsetY: 20 }
+                    ];
+                } else if (screenId === 'client-login-screen') {
+                    popups = [
+                        { id: 1, element: '.lg-modal-content', text: 'Enter your username to continue to your workspace.', offsetX: 20, offsetY: 20 }
+                    ];
+                } else if (screenId === 'create-overview-screen') {
+                    popups = [
+                        { id: 1, element: '.co-content', text: 'Easily create and manage workspaces with Fortal IO. Follow these steps!', offsetX: 20, offsetY: 20 },
+                        { id: 2, element: '.co-steps-container', text: 'We guide you through each step of the workspace creation process.', offsetX: 20, offsetY: 20 },
+                        { id: 3, element: '.co-create-workspace', text: 'Click here to get started and create your first workspace!', offsetX: 20, offsetY: 20 }
+                    ];
+                } else if (screenId === 'create-detailed-screen') {
+                    popups = [
+                        { id: 1, element: '.cd-step[data-step="1"]', text: 'Provide essential details about your workspace, such as the type and name.', offsetX: 20, offsetY: 20 },
+                        { id: 2, element: '.cd-step[data-step="2"]', text: 'Describe your project in detail to help freelancers understand the scope.', offsetX: 20, offsetY: 20 },
+                        { id: 3, element: '.cd-step[data-step="3"]', text: 'Specify security restrictions to protect your project and data.', offsetX: 20, offsetY: 20 },
+                        { id: 4, element: '.cd-footer', text: 'Use the progress bar and buttons to navigate through the workspace creation steps.', offsetX: 20, offsetY: 20 }
+                    ];
+                } else {
+                    popups = []; // No popups for this screen
+                }
+
+                setupPopupsForScreen(screenId, popups);
+                showNextPopup(screenId); // Start showing popups for the new screen
+            }
+        }
+
+        // Call this function whenever the screen changes
+        $(document).ready(function () {
+            // Initial check when the document is ready
+            checkAndStartPopups();
+
+            // Set up a MutationObserver to watch for changes to the display property of .screen elements
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        checkAndStartPopups();
+                    }
+                });
+            });
+
+            // Start observing the document for changes
+            observer.observe(document.body, {
+                attributes: true,
+                subtree: true,
+                attributeFilter: ['style']
+            });
+        });
+
+
+</script>
+</body>
+</html>
