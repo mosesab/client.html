@@ -2871,7 +2871,7 @@
         $('.create-workspace').toggle(showHeaderCreateButton);
         
         // Delay Joyride start to ensure DOM is ready
-        setTimeout(checkAndStartJoyride, 1500);
+        setTimeout(checkAndStartJoyride, 100);
     }
 
 
@@ -3691,7 +3691,6 @@
     
 
     
-    
     /* 
        ==================== 
        Joyride LOGIC
@@ -3700,35 +3699,35 @@
 
     // Joyride setup
     
-    function initializeJoyrideForScreen(screenSelector, joyrideSteps) {
-    const $screen = $(screenSelector);
-    if ($screen.length && $screen.is(':visible')) {
+function initializeJoyrideForScreen(screenSelector, joyrideSteps) {
+    if ($(screenSelector).length && $(screenSelector).is(':visible')) {
         console.log(`Initializing Joyride for ${screenSelector}`); // Debugging
+        $(document).ready(function () {  // Ensure DOM is ready *again* within the screen's context
+            $('body').joyride({
+                autoStart: true,
+                modal: true,
+                expose: true,
+                postStepCallback: function(index, tip) {
+                    // Check if target element exists before proceeding
+                    const currentStep = joyrideSteps[index];
+                    if (!$(currentStep.element).length) {
+                        $(document).joyride('end');
+                        return;
+                    }
 
-        $screen.joyride({  // Initialize joyride on the screen itself
-            autoStart: false, // Prevent auto-start here
-            modal: true,
-            expose: true,
-            postStepCallback: function(index, tip) {
-                // Check if target element exists before proceeding
-                const currentStep = joyrideSteps[index];
-                if (!$(currentStep.element).length) {
-                    $screen.joyride('end'); // End joyride on this screen
-                    return;
-                }
-
-                if (index + 1 === joyrideSteps.length) {
-                    setTimeout(() => $screen.joyride('end'), 500); // end of joyride
-                }
-            },
-            stepCallback: function(index, tip) {
-                if (!$(joyrideSteps[index].element).length) {
-                    $screen.joyride('end');
-                    return false;
-                }
-                return true;
-            },
-            steps: joyrideSteps
+                    if (index + 1 === joyrideSteps.length) {
+                        setTimeout(() => $(document).joyride('end'), 500);
+                    }
+                },
+                stepCallback: function(index, tip) {
+                    if (!$(joyrideSteps[index].element).length) {
+                        $(document).joyride('end');
+                        return false;
+                    }
+                    return true;
+                },
+                steps: joyrideSteps
+            });
         });
         return true; // Indicate Joyride was initialized
     }
@@ -3762,9 +3761,6 @@ function checkAndStartJoyride() {
                 }
             ];
             initialized = initializeJoyrideForScreen('#workspace-overview-screen', joyrideSteps);
-            if (initialized) {
-                $('#workspace-overview-screen').joyride('start'); // Start Joyride manually
-            }
         } else if ($('#workspace-detailed-screen').is(':visible')) {
             const joyrideSteps = [
                 {
@@ -3793,9 +3789,6 @@ function checkAndStartJoyride() {
                 }
             ];
             initialized = initializeJoyrideForScreen('#workspace-detailed-screen', joyrideSteps);
-            if (initialized) {
-                $('#workspace-detailed-screen').joyride('start'); // Start Joyride manually
-            }
         } else if ($('#workspace-dashboard-screen').is(':visible')) {
             const joyrideSteps = [
                 {
@@ -3830,9 +3823,6 @@ function checkAndStartJoyride() {
                 }
             ];
             initialized = initializeJoyrideForScreen('#workspace-dashboard-screen', joyrideSteps);
-            if (initialized) {
-                $('#workspace-dashboard-screen').joyride('start'); // Start Joyride manually
-            }
         } else if ($('#client-login-screen').is(':visible')) {
             const joyrideSteps = [
                 {
@@ -3843,9 +3833,6 @@ function checkAndStartJoyride() {
                 }
             ];
             initialized = initializeJoyrideForScreen('#client-login-screen', joyrideSteps);
-            if (initialized) {
-                $('#client-login-screen').joyride('start'); // Start Joyride manually
-            }
         } else if ($('#create-overview-screen').is(':visible')) {
             const joyrideSteps = [
                 {
@@ -3868,9 +3855,6 @@ function checkAndStartJoyride() {
                 }
             ];
             initialized = initializeJoyrideForScreen('#create-overview-screen', joyrideSteps);
-            if (initialized) {
-                $('#create-overview-screen').joyride('start'); // Start Joyride manually
-            }
         } else if ($('#create-detailed-screen').is(':visible')) {
             const joyrideSteps = [
                 {
@@ -3899,9 +3883,6 @@ function checkAndStartJoyride() {
                 }
             ];
             initialized = initializeJoyrideForScreen('#create-detailed-screen', joyrideSteps);
-            if (initialized) {
-                $('#create-detailed-screen').joyride('start'); // Start Joyride manually
-            }
         }
 
         if (initialized) {
@@ -3909,6 +3890,7 @@ function checkAndStartJoyride() {
         }
     }
 }
+
 
 $(document).ready(function() {
     // Initial check on document ready
@@ -3929,11 +3911,7 @@ $(document).ready(function() {
         subtree: true,
         attributeFilter: ['style']
     });
-
-     // Show initial screen
-     showScreen('workspace-overview-screen');
 });
-    
     
 </script>
 
