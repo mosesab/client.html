@@ -1009,18 +1009,20 @@
 
 
 
-
-        /* Modal with gradient background and overlay */
+ 
+        /* Modified CSS for better iframe integration */
         .lg-main-content { 
             background: var(--logo-gradient);
-            margin: 0;
             height: 100vh;
             display: flex;
-            justify-content: space-evenly;
             align-items: center;
-            margin-left: 5%;
-            margin-right: 5%;
+            justify-content: center;
+            gap: 2rem;
+            padding: 0 5%;
+            position: relative;
         }
+        
+        /* Position overlay behind content */
         .lg-main-content::before {
             content: '';
             position: absolute;
@@ -1029,15 +1031,32 @@
             right: 0;
             bottom: 0;
             background: var(--login-black-overlay);
+            z-index: 0;
         }
-        .lg-modal {
+        
+        /* Iframe container styling */
+        .lg-main-content > div:first-child {
+            flex: 1;
+            max-width: 60%;
             position: relative;
-            padding: 2rem;
+            z-index: 1;
             border-radius: 12px;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--login-overlay);
+            overflow: hidden;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Iframe styling */
+        .lg-main-content iframe {
+            border: none;
+            outline: none;
+        }
+        
+        /* Modal adjustments */
+        .lg-modal {
+            flex: 0 0 400px;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(8px);
         }
 
         .lg-modal-content {
