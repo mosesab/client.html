@@ -3805,17 +3805,7 @@
         }
 
         function showPopup(screenId, popupData) {
-            let element = document.querySelector(popupData.element);
-        
-            // Added this if block as a patch for the iframe
-            if (popupData.element == ".font-semibold"){
-                const iframe = document.querySelector('iframe');
-                if(iframe){
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document; // Get the iframe's document
-                    element = iframeDoc.querySelector('.font-semibold'); // Select the button inside the iframe
-                }
-            }
-            
+            const element = document.querySelector(popupData.element);
             if (!element) {
                 console.warn(`Element "${popupData.element}" not found on screen "${screenId}".`);
                 showNextPopup(screenId);
@@ -3923,7 +3913,7 @@
                 if (screenId === 'client-login-screen') {
                     popups = [
                         { id: 1, element: '.lg-input-field', text: 'Enter your username to continue to your workspace.', offsetX: 250, offsetY: 0 },
-                        { id: 2, element: '.font-semibold', text: 'Click here for the interactive tutorial.', offsetX: 250, offsetY: 0 }
+                        { id: 2, element: 'iframe', text: 'Use this interactive walkthrough to discover key features step by step', offsetX: 350, offsetY: 200 }
                     ];
                 } 
                 setupPopupsForScreen(screenId, popups);
