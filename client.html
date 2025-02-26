@@ -3805,21 +3805,30 @@
         }
 
         function showPopup(screenId, popupData) {
-            const element = document.querySelector(popupData.element);
-
+            let element = document.querySelector(popupData.element);
+        
+            // Added this if block as a patch for the iframe
+            if (popupData.element == ".font-semibold"){
+                const iframe = document.querySelector('iframe');
+                if(iframe){
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document; // Get the iframe's document
+                    element = iframeDoc.querySelector('.font-semibold'); // Select the button inside the iframe
+                }
+            }
+            
             if (!element) {
                 console.warn(`Element "${popupData.element}" not found on screen "${screenId}".`);
                 showNextPopup(screenId);
                 return;
             }
-
+        
             // Get the popup element, or create it if it doesn't exist
             let popupElement = document.getElementById(`popup-${screenId}-${popupData.id}`);
             if (!popupElement) {
                 popupElement = createPopup(screenId, popupData);
                 document.getElementById('popup-container').appendChild(popupElement);
             }
-
+        
             // Use requestAnimationFrame to ensure proper positioning
             requestAnimationFrame(() => {
                 const rect = element.getBoundingClientRect();
@@ -3827,19 +3836,20 @@
                 popupElement.style.left = `${rect.left + window.scrollX + (popupData.offsetX || 0)}px`;
                 popupElement.style.display = 'block';
             });
-
+        
             popupElement.setAttribute('data-screen', screenId);
             popupElement.setAttribute('data-popup-id', popupData.id);
-
+        
             // Set a timeout to automatically show the next popup
             popupTimeout = setTimeout(() => {
                 clearTimeout(popupTimeout);
                 hidePopup(screenId, popupData.id);
                 showNextPopup(screenId);
             }, 5000);
-
+        
             currentPopup = { screenId: screenId, popupId: popupData.id };
         }
+    
 
         function hidePopup(screenId, popupId) {
             const popupElement = document.getElementById(`popup-${screenId}-${popupId}`);
