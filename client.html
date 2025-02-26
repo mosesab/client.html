@@ -9,9 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.1.0/jquery.joyride.min.js" integrity="sha512-Ofdfs33jNz7IexaosZ4aZQ3oTOiqz6JXPhQaUCh8QncmY890e20xzrYkh2RvFL9w8PGpMDw/E2z0Q9cRJYlEYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/joyride/2.1.0/joyride.min.css" integrity="sha512-cuE+enEaIE7RXEDyH0nbi8s2QdIq3DgIQyptGBjtcC69QbUyVIMqeZDI71CBc3ifSlkiRT5+Zva2lGTqKfFIKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
     <style>
         :root {
             --dark-bg: #1E1B13;
@@ -2897,8 +2894,8 @@
         $('.header').toggle(showHeader);
         $('.create-workspace').toggle(showHeaderCreateButton);
         
-        // Delay Joyride start to ensure DOM is ready
-        setTimeout(checkAndStartJoyride, 1500);
+        // start interactive walk through popup
+        checkAndStartPopups();
     }
 
 
@@ -3718,227 +3715,196 @@
     
 
     
-    /* 
-       ==================== 
-       Joyride LOGIC
-       ==================== 
-    */
-
-    // Joyride setup
     
-function initializeJoyrideForScreen(screenSelector, joyrideSteps) {
-    if ($(screenSelector).length && $(screenSelector).is(':visible')) {
-        console.log(`Initializing Joyride for ${screenSelector}`); // Debugging
-        $(document).ready(function () {  // Ensure DOM is ready *again* within the screen's context
-            $('body').joyride({
-                autoStart: true,
-                modal: true,
-                expose: true,
-                postStepCallback: function(index, tip) {
-                    // Check if target element exists before proceeding
-                    const currentStep = joyrideSteps[index];
-                    if (!$(currentStep.element).length) {
-                        $(document).joyride('end');
-                        return;
-                    }
+        
+        /* 
+           ==================== 
+           Joyride LOGIC
+           ==================== 
+        */
+ 
 
-                    if (index + 1 === joyrideSteps.length) {
-                        setTimeout(() => $(document).joyride('end'), 500);
+        let currentScreen = null;
+        let popupQueue = {};
+        let currentPopup = null;
+        let popupTimeout = null;
+
+        function createPopup(screenId, popupData) {
+            const popupElement = document.createElement('div');
+            popupElement.classList.add('custom-popup');
+            popupElement.id = `popup-${screenId}-${popupData.id}`;
+            popupElement.style.position = 'absolute'; // Ensure positioning
+
+            const contentElement = document.createElement('div');
+            contentElement.classList.add('custom-popup-content');
+            contentElement.textContent = popupData.text;
+            popupElement.appendChild(contentElement);
+
+            const buttonsElement = document.createElement('div');
+            buttonsElement.classList.add('custom-popup-buttons');
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.addEventListener('click', () => {
+                clearTimeout(popupTimeout); // Clear any existing timeout
+                hidePopup(screenId, popupData.id);
+                showNextPopup(screenId);
+            });
+            buttonsElement.appendChild(nextButton);
+
+            const exitButton = document.createElement('button');
+            exitButton.textContent = 'Exit';
+            exitButton.addEventListener('click', () => {
+                clearTimeout(popupTimeout); // Clear any existing timeout
+                hideAllPopups(screenId);
+            });
+            buttonsElement.appendChild(exitButton);
+
+            popupElement.appendChild(buttonsElement);
+
+            return popupElement;
+        }
+
+        function showPopup(screenId, popupData) {
+            const element = document.querySelector(popupData.element);
+
+            if (!element) {
+                console.warn(`Element "${popupData.element}" not found on screen "${screenId}".`);
+                showNextPopup(screenId);
+                return;
+            }
+
+            // Get the popup element, or create it if it doesn't exist
+            let popupElement = document.getElementById(`popup-${screenId}-${popupData.id}`);
+            if (!popupElement) {
+                popupElement = createPopup(screenId, popupData);
+                document.getElementById('popup-container').appendChild(popupElement);
+            }
+
+            // Use requestAnimationFrame to ensure proper positioning
+            requestAnimationFrame(() => {
+                const rect = element.getBoundingClientRect();
+                popupElement.style.top = `${rect.top + window.scrollY + (popupData.offsetY || 0)}px`;
+                popupElement.style.left = `${rect.left + window.scrollX + (popupData.offsetX || 0)}px`;
+                popupElement.style.display = 'block';
+            });
+
+            popupElement.setAttribute('data-screen', screenId);
+            popupElement.setAttribute('data-popup-id', popupData.id);
+
+            // Set a timeout to automatically show the next popup
+            popupTimeout = setTimeout(() => {
+                clearTimeout(popupTimeout);
+                hidePopup(screenId, popupData.id);
+                showNextPopup(screenId);
+            }, 5000);
+
+            currentPopup = { screenId: screenId, popupId: popupData.id };
+        }
+
+        function hidePopup(screenId, popupId) {
+            const popupElement = document.getElementById(`popup-${screenId}-${popupId}`);
+            if (popupElement && popupElement.dataset.screen === screenId && popupElement.dataset.popupId === popupId.toString()) {
+                popupElement.style.display = 'none';
+            }
+        }
+
+        function hideAllPopups(screenId) {
+            // Hide the currently visible popup if it belongs to the given screen
+            if (currentPopup && currentPopup.screenId === screenId) {
+                hidePopup(currentPopup.screenId, currentPopup.popupId);
+            }
+            
+            // Hide any remaining popups in the popupQueue
+            if (popupQueue[screenId]) {
+                popupQueue[screenId].forEach(popupData => {
+                    const popupElement = document.getElementById(`popup-${screenId}-${popupData.id}`);
+                    if (popupElement) {
+                        popupElement.style.display = 'none';
                     }
-                },
-                stepCallback: function(index, tip) {
-                    if (!$(joyrideSteps[index].element).length) {
-                        $(document).joyride('end');
-                        return false;
+                });
+                delete popupQueue[screenId];
+            }
+            
+            currentPopup = null;
+            clearTimeout(popupTimeout);
+            popupTimeout = null;
+        }
+
+
+
+        function showNextPopup(screenId) {
+            if (!popupQueue[screenId] || popupQueue[screenId].length === 0) {
+                return;
+            }
+
+            const nextPopupData = popupQueue[screenId].shift();
+            showPopup(screenId, nextPopupData);
+
+            // If this was the last popup in the queue, remove the queue
+            if (popupQueue[screenId].length === 0) {
+                delete popupQueue[screenId];
+            }
+        }
+
+
+        function setupPopupsForScreen(screenId, popups) {
+            popupQueue[screenId] = [...popups]; // Clone the popups array
+        }
+
+
+        function checkAndStartPopups() {
+            const visibleScreen = document.querySelector('.screen:not([style*="display: none"])');
+            if (!visibleScreen) return;
+
+            const screenId = visibleScreen.id;
+
+            if (currentScreen !== screenId) {
+                // Screen has changed
+                if (currentScreen) {
+                    // Hide all popups from the previous screen
+                    hideAllPopups(currentScreen);
+                }
+
+                currentScreen = screenId;
+
+                // Define popups based on the current screen
+                let popups;
+
+                if (screenId === 'client-login-screen') {
+                    popups = [
+                        { id: 1, element: 'button.font-semibold', text: 'Click here for the interactive tutorial.', offsetX: 250, offsetY: 0 },
+                        { id: 2, element: '.lg-input-field', text: 'Enter your username to continue to your workspace.', offsetX: 250, offsetY: 0 }
+                    ];
+                } 
+                setupPopupsForScreen(screenId, popups);
+                showNextPopup(screenId); // Start showing popups for the new screen
+            }
+        }
+
+        // Call this function whenever the screen changes
+        $(document).ready(function () {
+            // Initial check when the document is ready
+            checkAndStartPopups();
+
+            // Set up a MutationObserver to watch for changes to the display property of .screen elements
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        checkAndStartPopups();
                     }
-                    return true;
-                },
-                steps: joyrideSteps
+                });
+            });
+
+            // Start observing the document for changes
+            observer.observe(document.body, {
+                attributes: true,
+                subtree: true,
+                attributeFilter: ['style']
             });
         });
-        return true; // Indicate Joyride was initialized
-    }
-    return false; // Indicate Joyride was NOT initialized
-}
 
 
-function checkAndStartJoyride() {
-    if (currentUser.workspaces.length < 3 && !localStorage.getItem('joyrideShown')) {
-        let initialized = false;
-
-        if ($('#workspace-overview-screen').is(':visible')) {
-            const joyrideSteps = [
-                {
-                    'element': '.wo-stats-section',
-                    'content': 'Here you can see a summary of your workspace activity.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.wo-welcome-section',
-                    'content': 'Click here to create your first workspace!',
-                    'position': 'bottom',
-                    'expose': true
-                },
-                {
-                    'element': '.header',
-                    'content': 'Here are some helpful resources that will help you build trust in your workspaces!',
-                    'position': 'bottom',
-                    'expose': true
-                }
-            ];
-            initialized = initializeJoyrideForScreen('#workspace-overview-screen', joyrideSteps);
-        } else if ($('#workspace-detailed-screen').is(':visible')) {
-            const joyrideSteps = [
-                {
-                    'element': '.wd-heading',
-                    'content': 'Welcome to your workspace overview. Create and manage workspaces easily.',
-                    'position': 'bottom',
-                    'expose': true
-                },
-                {
-                    'element': '.wd-search-container',
-                    'content': 'Quickly find workspaces by name or freelancer.',
-                    'position': 'bottom',
-                    'expose': true
-                },
-                {
-                    'element': '.wd-stats',
-                    'content': 'Keep track of key workspace stats like total workspaces, files uploaded, and freelancers involved.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.wd-workspaces-section',
-                    'content': 'View and manage your active and ended workspaces in this section.',
-                    'position': 'top',
-                    'expose': true
-                }
-            ];
-            initialized = initializeJoyrideForScreen('#workspace-detailed-screen', joyrideSteps);
-        } else if ($('#workspace-dashboard-screen').is(':visible')) {
-            const joyrideSteps = [
-                {
-                    'element': '.heading',
-                    'content': 'Here you can end, share a link to, or open your current workspace.',
-                    'position': 'bottom',
-                    'expose': true
-                },
-                {
-                    'element': '.sidebar',
-                    'content': 'Navigate between workspace overview, files and chats.',
-                    'position': 'right',
-                    'expose': true
-                },
-                {
-                    'element': '#overview',
-                    'content': 'See an overview of your workspace, freelancers, and blacklisted sites.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '#files',
-                    'content': 'Upload and manage your files in this workspace.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '#chats',
-                    'content': 'Communicate with team members in real time using our chat function.',
-                    'position': 'top',
-                    'expose': true
-                }
-            ];
-            initialized = initializeJoyrideForScreen('#workspace-dashboard-screen', joyrideSteps);
-        } else if ($('#client-login-screen').is(':visible')) {
-            const joyrideSteps = [
-                {
-                    'element': '.lg-modal-content',
-                    'content': 'Enter your username to continue to your workspace.',
-                    'position': 'top',
-                    'expose': true
-                }
-            ];
-            initialized = initializeJoyrideForScreen('#client-login-screen', joyrideSteps);
-        } else if ($('#create-overview-screen').is(':visible')) {
-            const joyrideSteps = [
-                {
-                    'element': '.co-content',
-                    'content': 'Easily create and manage workspaces with Fortal IO. Follow these steps!',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.co-steps-container',
-                    'content': 'We guide you through each step of the workspace creation process.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.co-create-workspace',
-                    'content': 'Click here to get started and create your first workspace!',
-                    'position': 'bottom',
-                    'expose': true
-                }
-            ];
-            initialized = initializeJoyrideForScreen('#create-overview-screen', joyrideSteps);
-        } else if ($('#create-detailed-screen').is(':visible')) {
-            const joyrideSteps = [
-                {
-                    'element': '.cd-step[data-step="1"]',
-                    'content': 'Provide essential details about your workspace, such as the type and name.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.cd-step[data-step="2"]',
-                    'content': 'Describe your project in detail to help freelancers understand the scope.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.cd-step[data-step="3"]',
-                    'content': 'Specify security restrictions to protect your project and data.',
-                    'position': 'top',
-                    'expose': true
-                },
-                {
-                    'element': '.cd-footer',
-                    'content': 'Use the progress bar and buttons to navigate through the workspace creation steps.',
-                    'position': 'top',
-                    'expose': true
-                }
-            ];
-            initialized = initializeJoyrideForScreen('#create-detailed-screen', joyrideSteps);
-        }
-
-        if (initialized) {
-            localStorage.setItem('joyrideShown', 'true');
-        }
-    }
-}
-
-
-$(document).ready(function() {
-    // Initial check on document ready
-    checkAndStartJoyride();
-
-    // Mutation Observer to detect screen changes dynamically
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                checkAndStartJoyride();
-            }
-        });
-    });
-
-    // Observe the body for style changes (screen visibility changes)
-    observer.observe(document.body, {
-        attributes: true,
-        subtree: true,
-        attributeFilter: ['style']
-    });
-});
     
 </script>
 
