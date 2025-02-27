@@ -3917,6 +3917,8 @@
                         { id: 2, element: 'iframe', text: 'Use this interactive walkthrough to discover key features step by step', offsetX: 350, offsetY: 200 }
                     ];
                 } 
+                if (!popups) return;
+                
                 setupPopupsForScreen(screenId, popups);
                 showNextPopup(screenId); // Start showing popups for the new screen
             }
