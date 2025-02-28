@@ -527,7 +527,6 @@
     </footer>
 
     <script>
-        const baseUrl = '';
         let username = '';        
         let lastAdminUsername = null;
         let lastWorkspacePort = null;
@@ -583,7 +582,7 @@
         const loadFiles = async () => {
             updateStatus('Loading files...');
             try {
-                const response = await axios.get(baseUrl + `/api/files/list_files?user_name=${lastAdminUsername}&workspace_name=${lastWorkspaceName}`);
+                const response = await axios.get(`/api/files/list_files?user_name=${lastAdminUsername}&workspace_name=${lastWorkspaceName}`);
                 updateStatus('Files loaded successfully.');
 
                 const files = response.data.files; // Access the "files" array in the response
@@ -594,9 +593,9 @@
                         <tr>
                             <td>${file}</td> <!-- Assuming each file is just a string (filename) -->
                             <td>
-                                <a class="btn btn-primary btn-sm" href="${baseUrl}/api/files/download_file?user_name=${lastAdminUsername}&filename=${file}&workspace_name=${lastWorkspaceName}">Download</a>
+                                <a class="btn btn-primary btn-sm" href="/api/files/download_file?user_name=${lastAdminUsername}&filename=${file}&workspace_name=${lastWorkspaceName}">Download</a>
                                 <span class="mx-3"></span> <!-- Spacer -->
-                                <a class="btn btn-danger btn-sm" href="${baseUrl}/api/files/delete_file?user_name=${lastAdminUsername}&filename=${file}&workspace_name=${lastWorkspaceName}">Delete</a>
+                                <a class="btn btn-danger btn-sm" href="/api/files/delete_file?user_name=${lastAdminUsername}&filename=${file}&workspace_name=${lastWorkspaceName}">Delete</a>
                             </td>
                         </tr>
                     `);
@@ -617,7 +616,7 @@
             try {
                 updateStatus('Loading chat...');
                 const response = await axios.get(
-                    `${baseUrl}/api/chats/list_my_chats?user_name=${lastAdminUsername}&workspace_id=${lastWorkspaceID}&workspace_name=${lastWorkspaceName}`
+                    `/api/chats/list_my_chats?user_name=${lastAdminUsername}&workspace_id=${lastWorkspaceID}&workspace_name=${lastWorkspaceName}`
                 );
                 updateStatus('Chat loaded successfully.');
 
@@ -651,7 +650,7 @@
 
                 updateStatus('Uploading file...');
 
-                const response = await axios.post(baseUrl + `/api/files/upload_file`, formData, {
+                const response = await axios.post(`/api/files/upload_file`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
 
@@ -672,7 +671,7 @@
                 const message = $('#chat-input').val();
                 console.log(message);
                 updateStatus('Sending message...');
-                await axios.post(baseUrl + '/api/chats/send_chat_to_workspace', {user_name:lastAdminUsername, message: message, workspace_port: lastWorkspacePort});
+                await axios.post('/api/chats/send_chat_to_workspace', {user_name:lastAdminUsername, message: message, workspace_port: lastWorkspacePort});
                 updateStatus('Message sent successfully.');
                 $('#chat-input').val('');
                 loadChat();
@@ -691,7 +690,7 @@
     // Admin Management
     const loadAdmins = async () => { 
         try {
-            const response = await axios.get(`${baseUrl}/api/superadmin/users/list_admins?super_admin_username=${username}`);
+            const response = await axios.get(`/api/superadmin/users/list_admins?super_admin_username=${username}`);
             const admins = response.data.admins;
 
             const adminList = document.getElementById('admin-list');
@@ -733,7 +732,7 @@
         if (!newAdminMaxWorkspace) return updateStatus('Please enter a limit for the maximum allowed workspaces.');
 
         try {
-            await axios.get(`${baseUrl}/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}`);
+            await axios.get(`/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}`);
             updateStatus('Admin created successfully.');
             loadAdmins();
         } catch (error) {
@@ -746,7 +745,7 @@
         if (!confirm(`Are you sure you want to delete admin '${adminUsername}'?`)) return;
 
         try {
-            await axios.get(`${baseUrl}/api/superadmin/users/delete_admin?super_admin_username=${username}&user_name=${adminUsername}`);
+            await axios.get(`/api/superadmin/users/delete_admin?super_admin_username=${username}&user_name=${adminUsername}`);
             updateStatus('Admin deleted successfully.');
             loadAdmins();
         } catch (error) {
@@ -758,7 +757,7 @@
     // Global Whitelist Management
     const loadWhitelist = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/api/superadmin/global_whitelist/list?super_admin_username=${username}`);
+            const response = await axios.get(`/api/superadmin/global_whitelist/list?super_admin_username=${username}`);
             const whitelist = response.data.whitelist;
 
             const whitelistList = document.getElementById('whitelist-list');
@@ -788,7 +787,7 @@
         if (!newDomain) return updateStatus('Please enter a domain.');
 
         try {
-            await axios.get(`${baseUrl}/api/superadmin/global_whitelist/add?super_admin_username=${username}&domain=${newDomain}`);
+            await axios.get(`/api/superadmin/global_whitelist/add?super_admin_username=${username}&domain=${newDomain}`);
             updateStatus('Domain added to whitelist.');
             loadWhitelist();
         } catch (error) {
@@ -799,7 +798,7 @@
 
     const deleteWhitelistDomain = async (domain) => {
         try {
-            await axios.get(`${baseUrl}/api/superadmin/global_whitelist/delete?super_admin_username=${username}&domain=${domain}`);
+            await axios.get(`/api/superadmin/global_whitelist/delete?super_admin_username=${username}&domain=${domain}`);
             updateStatus('Domain removed from whitelist.');
             loadWhitelist();
         } catch (error) {
@@ -811,7 +810,7 @@
     // Fetch and populate Docker stats
     async function loadDockerStats() {
         try {
-            const response = await axios.get(`${baseUrl}/api/superadmin/workspaces/list_docker_stats?super_admin_username=${username}`);
+            const response = await axios.get(`/api/superadmin/workspaces/list_docker_stats?super_admin_username=${username}`);
             const dockerStats = response.data.docker_info;
             const statsTableBody = document.querySelector('#dockerStats tbody');
             statsTableBody.innerHTML = '';
@@ -863,7 +862,7 @@
             $('#all-workspaces-table').html('');
             
             // Fetch all workspaces using the API
-            const response = await axios.get(`${baseUrl}/api/superadmin/workspaces/list_all_workspaces?super_admin_username=${username}`);
+            const response = await axios.get(`/api/superadmin/workspaces/list_all_workspaces?super_admin_username=${username}`);
             const workspaces = response.data.workspaces;
 
             // Generate table rows for each workspace
@@ -930,7 +929,7 @@
                 if (confirm(`Are you sure you want to delete the "${workspace_user_name}" workspace: "${workspace_name}"?`)) {
                     try {
                         updateStatus(`Ending workspace: ${workspace_name}...`);
-                        await axios.get(`${baseUrl}/api/superadmin/workspaces/stop_workspace?super_admin_username=${username}&user_name=${workspace_user_name}&workspace_port=${workspace_port}&workspace_id=${workspace_id}`);
+                        await axios.get(`/api/superadmin/workspaces/stop_workspace?super_admin_username=${username}&user_name=${workspace_user_name}&workspace_port=${workspace_port}&workspace_id=${workspace_id}`);
                         updateStatus(`Workspace "${workspace_name}" ended successfully.`);
                         loadAllWorkspaces(); // Refresh the workspace list
                     } catch (error) {
