@@ -3466,6 +3466,14 @@
             if (response.status === 200) {
                 toast('Workspace created successfully!');
 
+                // Clear form inputs
+                $('.cd-form-group input[type="text"]').eq(0).val(''); // Workspace Name
+                $('.cd-form-group input[type="password"]').val('');   // Password
+                $('.cd-form-group input[type="text"]').eq(1).val(''); // Project Name
+                $('.cd-form-group textarea').val('');                // Project Description
+                // Reset step to first step
+                resetStep();
+                
                 // Open workspace in a new tab
                 const workspaceUrl = response.data.workspace_url;
                 if (workspaceUrl) {
@@ -3502,6 +3510,11 @@
         $('.cd-next-btn').html(currentStep === 3 
             ? 'Finish <i class="fas fa-box-open"></i>' 
             : 'Next <i class="fa-solid fa-arrow-right"></i>');
+    }
+
+    function resetStep(){
+        currentStep = 1;
+        updateStep();
     }
 
     $('.cd-next-btn').click(async function() {
