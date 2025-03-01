@@ -5,7 +5,7 @@
       "destination": "http://194.233.72.104:5000/api/:path*"
     },
     {
-      "source": "hetznerServer/api/:path*",
+      "source": "/hetznerServer/api/:path*",
       "destination": "http://162.55.66.56:5000/api/:path*"
     }
   ]
