@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client - Fortal.io</title>
+    <link rel="icon" href="https://www.fortal.io/wp-content/uploads/2024/11/web-app-manifest-512x512-1-150x150.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --gradient-background: linear-gradient(135deg, #FFE5E5 0%, #FFF3E5 50%, #FFE5F9 100%);
+            --primary: #4B0082;
+            --primary-hover: #5c1e91;
+            --fortal-gradient-start: #ff9966;
+            --fortal-gradient-end: #6666ff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --accent: #ffc685;
+            --accent-hover: #FFAB85;
+            --white: #fff7f7;
+            --fortal-border: rgba(75, 0, 130, 0.2);
+        }
+
+        body {
+            background: var(--gradient-background);
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h3, h4 {
+            color: var(--primary);
+            font-weight: 600;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 10%;
+            height: 10%;
+        }
+
+        .logo {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .status {
+            position: sticky;
+            top: 0;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            background: var(--white);
+            color: var(--text-secondary);
+            box-shadow: 0 4px 6px var(--fortal-border);
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            border-bottom: 1px solid var(--fortal-border);
+            justify-content: center;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-secondary);
+            border: none;
+            padding: 1rem 1.5rem;
+            text-align: center;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .tag-primary {
+            background-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--fortal-gradient-start), var(--fortal-gradient-end));
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--fortal-border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent-hover);
+        }
+
+        #whitelist-items {
+            border: 1px solid var(--fortal-border);
+            border-radius: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            gap: 1rem;
+            margin: 1rem 0;
+            background: var(--white);
+            align-items: flex-start;
+        }
+
+        .form-check {
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 2px 4px var(--fortal-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            transition: transform 0.2s ease;
+        }
+
+        .form-check:hover {
+            transform: translateY(-2px);
+        }
+
+        .table {
+            width: 100%;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px var(--fortal-border);
+            margin: 1.5rem 0;
+        }
+
+        .table th {
+            background: var(--primary);
+            color: var(--white);
+            font-weight: 500;
+            border: none;
+            text-align: left;
+            padding: 1rem;
+        }
+
+        .table td {
+            border-color: var(--fortal-border);
+            padding: 1rem;
+            vertical-align: middle;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            background: var(--white);
+            border: 1px solid var(--fortal-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem var(--fortal-border);
+        }
+
+        label {
+            color: var(--text-secondary);
+            /* margin-bottom: 0.5rem;
+            display: block; */
+            text-align: left;
+        }
+
+        #create-workspace-form {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--fortal-border);
+            margin-bottom: 2rem;
+        }
+
+        #chat-messages {
+            background: var(--white);
+            border: 1px solid var(--fortal-border);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .list-group-item{
+            background: var(--white);
+        }
+
+        footer {
+            padding: 2rem;
+            text-align: center;
+            background: var(--white);
+            color: var(--primary);
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            font-weight: 500;
+            margin-top: 4rem;
+            box-shadow: 0 -4px 6px var(--fortal-border);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        footer .heart {
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        footer .heart:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Username Dialog */
+        .dialog {
+            width: 50%;
+            height: 50%;
+            border-radius: 28px;
+            display: block;
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        /* Content inside the Dialog */
+        .dialog-content {
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 16px;
+            background-color:  var(--white);
+        }
+
+        /* Title and description section */
+        .dialog-title-description {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dialog-headline { 
+            color: var(--primary);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        #usernameInput {
+            background: var(--white);
+            border: 1px solid var(--fortal-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            width: 90%;
+            margin-bottom: 1rem;
+
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        #usernameInput:focus {
+            color: var(--primary) ;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 4px var(--primary);
+        }
+
+        .dialog-supporting-text { 
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            line-height: 20px;
+            letter-spacing: 0.25px;
+            word-wrap: break-word;
+        }
+
+        /* Actions section */
+        .dialog-actions {
+            display: flex;
+            justify-content: center;
+            padding-top: 24px;
+        }
+
+        .dialog-button {
+            height: 40px;
+            border-radius: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.10px;
+            text-align: center;
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary-hover);
+            font-weight: 700;
+        }
+
+        /* Button Hover */
+        .dialog-button:hover {
+        opacity: 0.8;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="logo-container">
+            <img src="https://www.fortal.io/wp-content/uploads/2024/10/logo.png" alt="Fortal Logo" class="logo">
+        </div>
+        <h1 class="text-center">SuperClient Dashboard</h1>
+        <ul class="nav nav-tabs" id="tabs">
+
+            <li class="nav-item">
+                <a class="nav-link active" id="admin-management-tab" href="#admin-management">Admin Management</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="global-whitelist-management-tab" href="#global-whitelist-management">Global Whitelist</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="all-workspaces-tab" href="#all-workspaces">All Workspaces</a>
+            </li>
+            <li class="nav-item d-none" id="files-tab-link">
+                <a class="nav-link" id="files-tab" href="#files">Files</a>
+            </li>
+            <li class="nav-item d-none position-relative" id="chat-tab-link">
+                <a class="nav-link" id="chat-tab" href="#chat">Chat</a>
+            </li>
+        </ul>
+
+        <div class="mt-3 status" id="status-text">Loading Workspaces ...</div>
+
+        <div class="tab-content mt-3">
+
+            <!-- Admin Management -->
+            <div class="tab-pane fade show active" id="admin-management">
+                <h3>Admin Management</h3>
+                <form id="create-admin-form" class="mb-3">
+                    <label for="new-admin-username">New Admin Username:</label>
+                    <input type="text" class="form-control mb-2" id="new-admin-username" placeholder="Enter admin username">
+                    <div class="mb-3">
+                        <label for="new-admin-max-workspace">Maximum Workspaces:</label>
+                        <input type="number" min="1" max="10" class="form-control" id="new-admin-max-workspace" placeholder="Enter workspace limit">    
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Admin</button>
+                </form>
+
+                <h4>Admin List</h4>
+                <button class="btn btn-secondary mb-2" id="refresh-admins">Refresh Admin List</button>
+                <ul id="admin-list" class="list-group"></ul>
+            </div>
+
+            <!-- Global Whitelist Management -->
+            <div class="tab-pane fade" id="global-whitelist-management">
+                <h3>Global Whitelist Management</h3>
+                <form id="add-whitelist-domain-form" class="mb-3">
+                    <label for="new-whitelist-domain">New Whitelist Domain:</label>
+                    <input type="text" class="form-control mb-2" id="new-whitelist-domain" placeholder="Enter domain">
+                    <button type="submit" class="btn btn-primary">Add Domain</button>
+                </form>
+
+                <h4>Global Whitelist</h4>
+                <button class="btn btn-secondary mb-2" id="refresh-whitelist">Refresh Whitelist</button>
+                <ul id="whitelist-list" class="list-group"></ul>
+            </div>
+
+            <!-- All Workspaces Tab -->
+            <div class="tab-pane fade" id="all-workspaces">
+                <h3>All Workspaces</h3>
+
+                <button class="btn btn-secondary mb-2" id="refresh-stats-display">Refresh Stats</button>
+                <table class="table table-bordered" id="dockerStats">
+                    <thead>
+                        <tr>
+                            <th>Workspace</th>
+                            <th>Block IO</th>
+                            <th>CPU Usage (1 core)</th>
+                            <th>Memory Usage </th>
+                            <th>Network IO</th>
+                            <th>PIDs</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            
+                <h4 class="mt-4">All Active Workspaces</h4>
+                <button class="btn btn-secondary mb-2" id="refresh-all-workspaces">Refresh All Workspaces</button>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            
+                            <th>Workspace Name</th>
+                            <th>Owner</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-workspaces-table"></tbody>
+                </table>
+            </div>
+
+            <!-- Files Tab -->
+            <div class="tab-pane fade" id="files">
+                <h3>Files for Workspace: <span id="files-workspace-name"></span></h3>
+                <button class="btn btn-secondary mb-2" id="refresh-files">Refresh Files</button>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="files-table"></tbody>
+                </table>
+                <form id="upload-file-form" class="mt-3">
+                    <div class="mb-3">
+                        <label for="file-upload">Upload File:</label>
+                        <input type="file" class="form-control" id="file-upload">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+
+            <!-- Chat Tab -->
+            <div class="tab-pane fade" id="chat">
+                <h3>Chats for the Workspace: <span id="chat-workspace-name"></span></h3>
+                <div class="mb-3">
+                    <textarea class="form-control" id="chat-messages" rows="10" readonly></textarea>
+                </div>
+                <form id="send-message-form">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chat-input" placeholder="Enter message">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+                <button class="btn btn-secondary mt-3" id="refresh-chat">Refresh Chat</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dialog" class="dialog">
+        <div class="dialog-content">
+          <div class="dialog-title-description">
+            <h3 class="dialog-headline">Admin Workspace</h3>
+            <div class="dialog-supporting-text">Enter the ADMIN username</div>
+          </div>
+          <input type="text" id="usernameInput">
+          <div class="dialog-actions">
+            <button class="dialog-button" id="submitButton">Submit</button>
+          </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>
+          Product of 
+          <a href="https://www.fortal.io" target="_blank" rel="noopener">
+            <em>Fortal.io</em> 
+          </a> 
+          <span class="heart">&hearts;</span>
+        </div>
+    </footer>
+
+    <script>
+        let username = '';        
+        let lastAdminUsername = null;
+        let lastWorkspacePort = null;
+        let lastWorkspaceID = null;
+        let lastWorkspaceName = "";
+
+        // Toggle password visibility
+        $('#toggle-password').click(() => {
+            const passwordField = $('#password');
+            const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+            passwordField.attr('type', type);
+        });
+
+        // Handle tab switching
+        $('.nav-link').click(function (e) {
+            e.preventDefault();
+            $('.nav-link').removeClass('active');
+            $(this).addClass('active');
+            $('.tab-pane').removeClass('show active');
+            $($(this).attr('href')).addClass('show active');
+        });
+
+        // Handle Restriction Mode changes
+        $('#restriction-mode').change(function () {
+            const mode = $(this).val();
+            if (mode === '0') { // Whitelist
+                $('#whitelist-container').removeClass('d-none');
+                $('#blacklist-container').addClass('d-none');
+            } else if (mode === '1') { // Blacklist
+                $('#blacklist-container').removeClass('d-none');
+                $('#whitelist-container').addClass('d-none');
+            }
+        });
+
+        // Add new blacklist input
+        $('.add-blacklist').click(function () {
+            const inputHtml = `
+                <div class="input-group mb-2 blacklist-entry">
+                    <input type="text" class="form-control blacklist-domain" placeholder="Enter blacklisted domain">
+                    <button type="button" class="btn btn-danger remove-blacklist">X</button>
+                </div>`;
+            $('#blacklist-items').append(inputHtml);
+        });
+
+        // Remove blacklist input
+        $(document).on('click', '.remove-blacklist', function () {
+            $(this).closest('.blacklist-entry').remove();
+        });
+
+        // Load workspaces, files, and chat data dynamically
+        const updateStatus = (message) => $('#status-text').text(`${message}`);
+ 
+        const loadFiles = async () => {
+            updateStatus('Loading files...');
+            try {
+                const response = await axios.get(`hetznerServer/api/files/list_files?user_name=${lastAdminUsername}&workspace_name=${lastWorkspaceName}`);
+                updateStatus('Files loaded successfully.');
+
+                const files = response.data.files; // Access the "files" array in the response
+                // console.log(files);
+
+                if (Array.isArray(files)) {
+                    const rows = files.map(file => `
+                        <tr>
+                            <td>${file}</td> <!-- Assuming each file is just a string (filename) -->
+                            <td>
+                                <a class="btn btn-primary btn-sm" href="hetznerServer/api/files/download_file?user_name=${lastAdminUsername}&filename=${file}&workspace_name=${lastWorkspaceName}">Download</a>
+                                <span class="mx-3"></span> <!-- Spacer -->
+                                <a class="btn btn-danger btn-sm" href="hetznerServer/api/files/delete_file?user_name=${lastAdminUsername}&filename=${file}&workspace_name=${lastWorkspaceName}">Delete</a>
+                            </td>
+                        </tr>
+                    `);
+                    $('#files-table').html(rows.join(''));
+                } else {
+                    updateStatus('No files found.');
+                }
+
+                $('#files-workspace-name').text(lastWorkspaceName);
+            } catch (error) {
+                console.error(error);
+                updateStatus(`Error loading files: ${error.response?.data?.detail || error.message}`);
+            }
+
+        };
+
+        const loadChat = async () => {
+            try {
+                updateStatus('Loading chat...');
+                const response = await axios.get(
+                    `hetznerServer/api/chats/list_my_chats?user_name=${lastAdminUsername}&workspace_id=${lastWorkspaceID}&workspace_name=${lastWorkspaceName}`
+                );
+                updateStatus('Chat loaded successfully.');
+
+                $('#chat-messages').val(response.data.chats.map(chat => {
+                    const { message, email } = chat;
+                    const sender = email === null ? lastAdminUsername : email;
+                    return `${sender}: ${message}`;
+                }).join('\n'));
+
+                $('#chat-workspace-name').text(lastWorkspaceName);
+            } catch (error) {
+                updateStatus(`Error loading chat: ${error.response?.data?.detail || error.message}`);
+                console.log('Error', error);
+            }
+        };
+
+        $('#refresh-files').click(loadFiles);
+        $('#refresh-chat').click(loadChat);
+
+        $('#upload-file-form').submit(async function (e) {
+            e.preventDefault();
+            try {
+                const file = $('#file-upload')[0].files[0];
+                if (!file) throw new Error('No file selected');
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('user_name', lastAdminUsername);
+                formData.append('workspace_id', lastWorkspaceID);
+                formData.append('workspace_name', lastWorkspaceName);
+
+                updateStatus('Uploading file...');
+
+                const response = await axios.post(`hetznerServer/api/files/upload_file`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+                updateStatus('File uploaded successfully.');
+                // console.log('Response:', response.data);
+                loadFiles(); // Refresh the file list if applicable
+            } catch (error) {
+                let errorMsg = 'Error uploading file: ' + (error.response?.data?.detail || error.message);
+                updateStatus(errorMsg);
+                console.error('Error:', error);
+            }
+        });
+
+
+        $('#send-message-form').submit(async function (e) {
+            e.preventDefault();
+            try {
+                const message = $('#chat-input').val();
+                console.log(message);
+                updateStatus('Sending message...');
+                await axios.post('hetznerServer/api/chats/send_chat_to_workspace', {user_name:lastAdminUsername, message: message, workspace_port: lastWorkspacePort});
+                updateStatus('Message sent successfully.');
+                $('#chat-input').val('');
+                loadChat();
+            } catch (error) {
+                updateStatus(`Error sending message: ${error.response?.data?.detail || error.message}`);
+                console.log('Error', error);
+            }
+        });
+
+    /* 
+    =================================================================
+        REGION - SuperClient JS Functions
+    =================================================================
+    */
+
+    // Admin Management
+    const loadAdmins = async () => { 
+        try {
+            const response = await axios.get(`hetznerServer/api/superadmin/users/list_admins?super_admin_username=${username}`);
+            const admins = response.data.admins;
+
+            const adminList = document.getElementById('admin-list');
+            adminList.innerHTML = '';
+            admins.forEach(admin => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                // Create the tag for admin[1]
+                const adminTag = document.createElement('span');
+                adminTag.className = 'badge tag-primary text-white ms-2'; // Bootstrap style or custom
+                adminTag.textContent = admin[1];
+
+                // Add admin[0] text and the tag to the <li>
+                li.textContent = admin[0];
+                li.appendChild(adminTag);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn btn-danger btn-sm ms-auto';
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteAdmin(admin[0]);
+
+                li.appendChild(deleteButton);
+                adminList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error loading admins:', error);
+            updateStatus('Failed to load admins.');
+        }
+    };
+
+
+    const createAdmin = async (event) => {
+        event.preventDefault();
+        const newAdminUsername = document.getElementById('new-admin-username').value;
+        if (!newAdminUsername) return updateStatus('Please enter a username.');
+
+        const newAdminMaxWorkspace = document.getElementById('new-admin-max-workspace').value;
+        if (!newAdminMaxWorkspace) return updateStatus('Please enter a limit for the maximum allowed workspaces.');
+
+        try {
+            await axios.get(`hetznerServer/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}`);
+            updateStatus('Admin created successfully.');
+            loadAdmins();
+        } catch (error) {
+            console.error('Error creating admin:', error);
+            updateStatus(`Error creating admin: ${error.response?.data?.detail || error.message}`);
+        }
+    };
+
+    const deleteAdmin = async (adminUsername) => {
+        if (!confirm(`Are you sure you want to delete admin '${adminUsername}'?`)) return;
+
+        try {
+            await axios.get(`hetznerServer/api/superadmin/users/delete_admin?super_admin_username=${username}&user_name=${adminUsername}`);
+            updateStatus('Admin deleted successfully.');
+            loadAdmins();
+        } catch (error) {
+            console.error('Error deleting admin:', error);
+            updateStatus(`Error  deleting admin: ${error.response?.data?.detail || error.message}`);
+        }
+    };
+
+    // Global Whitelist Management
+    const loadWhitelist = async () => {
+        try {
+            const response = await axios.get(`hetznerServer/api/superadmin/global_whitelist/list?super_admin_username=${username}`);
+            const whitelist = response.data.whitelist;
+
+            const whitelistList = document.getElementById('whitelist-list');
+            whitelistList.innerHTML = '';
+            whitelist.forEach(domain => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.textContent = domain;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn btn-danger btn-sm';
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteWhitelistDomain(domain);
+
+                li.appendChild(deleteButton);
+                whitelistList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error loading whitelist:', error);
+            updateStatus('Failed to load whitelist.');
+        }
+    };
+
+    const addWhitelistDomain = async (event) => {
+        event.preventDefault();
+        const newDomain = document.getElementById('new-whitelist-domain').value;
+        if (!newDomain) return updateStatus('Please enter a domain.');
+
+        try {
+            await axios.get(`hetznerServer/api/superadmin/global_whitelist/add?super_admin_username=${username}&domain=${newDomain}`);
+            updateStatus('Domain added to whitelist.');
+            loadWhitelist();
+        } catch (error) {
+            console.error('Error adding domain to whitelist:', error);
+            updateStatus(`Error adding domain to whitelist: ${error.response?.data?.detail || error.message}`);
+        }
+    };
+
+    const deleteWhitelistDomain = async (domain) => {
+        try {
+            await axios.get(`hetznerServer/api/superadmin/global_whitelist/delete?super_admin_username=${username}&domain=${domain}`);
+            updateStatus('Domain removed from whitelist.');
+            loadWhitelist();
+        } catch (error) {
+            console.error('Error deleting domain from whitelist:', error);
+            updateStatus(`Error deleting domain from whitelist: ${error.response?.data?.detail || error.message}`);
+        }
+    };
+
+    // Fetch and populate Docker stats
+    async function loadDockerStats() {
+        try {
+            const response = await axios.get(`hetznerServer/api/superadmin/workspaces/list_docker_stats?super_admin_username=${username}`);
+            const dockerStats = response.data.docker_info;
+            const statsTableBody = document.querySelector('#dockerStats tbody');
+            statsTableBody.innerHTML = '';
+
+            dockerStats.forEach(stat => {
+                const row = document.createElement('tr');
+
+                // Workspace Column
+                const workspaceCell = document.createElement('td');
+                workspaceCell.textContent = stat.Name;
+                row.appendChild(workspaceCell);
+
+                // Block IO Column
+                const blockIOCell = document.createElement('td');
+                blockIOCell.textContent = stat.BlockIO;
+                row.appendChild(blockIOCell);
+
+                // CPU Usage Column
+                const cpuUsageCell = document.createElement('td');
+                cpuUsageCell.textContent = stat.CPUPerc;
+                row.appendChild(cpuUsageCell);
+
+                // Memory Usage Column
+                const memoryUsageCell = document.createElement('td');
+                memoryUsageCell.textContent = stat.MemUsage;
+                row.appendChild(memoryUsageCell);
+
+                // Network IO Column
+                const networkIOCell = document.createElement('td');
+                networkIOCell.textContent = stat.NetIO;
+                row.appendChild(networkIOCell);
+
+                // PIDs Column
+                const pidsCell = document.createElement('td');
+                pidsCell.textContent = stat.PIDs;
+                row.appendChild(pidsCell);
+
+                statsTableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading Docker stats:', error);
+            updateStatus('Failed to load Docker stats.');
+        }
+    };
+
+    const loadAllWorkspaces = async () => {
+        try {
+            // Clear the current table contents
+            $('#all-workspaces-table').html('');
+            
+            // Fetch all workspaces using the API
+            const response = await axios.get(`hetznerServer/api/superadmin/workspaces/list_all_workspaces?super_admin_username=${username}`);
+            const workspaces = response.data.workspaces;
+
+            // Generate table rows for each workspace
+            const rows = workspaces.map(workspace => `
+                <tr>
+                    <td>${workspace.workspace_name}</td>
+                    <td>${workspace.username}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm open-action" data-url="${workspace.url}">Open</button>
+                        <button class="btn btn-info btn-sm copy-action" data-url="${workspace.url}">Copy</button>
+                        <span class="mx-3"></span> <!-- Spacer -->
+                            <button class="btn btn-success btn-sm files-action" data-id="${workspace.id}" data-user_name="${workspace.username}" data-port="${workspace.workspace_port}" data-name="${workspace.workspace_name}">Files</button>
+                            <button class="btn btn-warning btn-sm chat-action" data-id="${workspace.id}" data-user_name="${workspace.username}" data-port="${workspace.workspace_port}" data-name="${workspace.workspace_name}">Chat</button>
+                        <span class="mx-3"></span> <!-- Spacer -->
+                        <button class="btn btn-danger btn-sm delete-action" data-id="${workspace.id}" data-user_name="${workspace.username}" data-port="${workspace.workspace_port}" data-name="${workspace.workspace_name}">End</button>
+                    </td>
+                </tr>
+            `);
+
+            // Update the table with new rows
+            $('#all-workspaces-table').html(rows.join(''));
+
+            // Add event listeners for each action
+            $('.open-action').click(function () {
+                const url = $(this).data('url');
+                window.open(url, '_blank');
+            });
+
+            $('.copy-action').click(function () {
+                const url = $(this).data('url');
+                navigator.clipboard.writeText(url);
+                updateStatus('URL copied to clipboard!');
+            });
+
+            
+            $('.files-action').click(function () {
+                lastAdminUsername = $(this).data('user_name');
+                lastWorkspacePort = $(this).data('port');
+                lastWorkspaceID = $(this).data('id');
+                lastWorkspaceName = $(this).data('name');
+                // console.log(`lastAdminUsername: ${lastAdminUsername} , lastWorkspacePort: ${lastWorkspacePort} , lastWorkspaceName: ${lastWorkspaceName}`)
+                $('#files-tab-link').removeClass('d-none');
+                $('#files-tab-link a').click();
+                loadFiles();
+            });
+
+            $('.chat-action').click(function () {
+                lastAdminUsername = $(this).data('user_name');
+                lastWorkspacePort = $(this).data('port');
+                lastWorkspaceID = $(this).data('id');
+                lastWorkspaceName = $(this).data('name');
+                // console.log(`lastAdminUsername: ${lastAdminUsername} , lastWorkspaceID: ${lastWorkspaceID} , lastWorkspacePort: ${lastWorkspacePort} , lastWorkspaceName: ${lastWorkspaceName}`)
+                $('#chat-tab-link').removeClass('d-none');
+                $('#chat-tab-link a').click();
+                loadChat();
+            });
+
+            $('.delete-action').click(async function () {
+                const workspace_user_name = $(this).data('user_name');
+                const workspace_port = $(this).data('port');
+                const workspace_name = $(this).data('name');
+                const workspace_id = $(this).data('id');
+                // console.log(workspace_user_name , workspace_port, workspace_name, workspace_id)
+                if (confirm(`Are you sure you want to delete the "${workspace_user_name}" workspace: "${workspace_name}"?`)) {
+                    try {
+                        updateStatus(`Ending workspace: ${workspace_name}...`);
+                        await axios.get(`hetznerServer/api/superadmin/workspaces/stop_workspace?super_admin_username=${username}&user_name=${workspace_user_name}&workspace_port=${workspace_port}&workspace_id=${workspace_id}`);
+                        updateStatus(`Workspace "${workspace_name}" ended successfully.`);
+                        loadAllWorkspaces(); // Refresh the workspace list
+                    } catch (error) {
+                        updateStatus(`Error ending workspace: ${error.response?.data?.detail || error.message}`);
+                        console.error('Error', error);
+                    }
+                }
+            });
+
+            updateStatus('All workspaces loaded successfully.');
+        } catch (error) {
+            updateStatus('Error loading all workspaces: ' + (error.response?.data?.detail || error.message));
+            console.error('Error', error);
+        }
+    };
+
+    // Attach event listener to forms
+    $('#create-admin-form').submit(createAdmin);
+    $('#add-whitelist-domain-form').submit(addWhitelistDomain);
+
+    // Bind buttons
+    $('#refresh-admins').click(loadAdmins);
+    $('#refresh-whitelist').click(loadWhitelist);
+    $('#refresh-stats-display').click(loadDockerStats);
+    $('#refresh-all-workspaces').click(loadAllWorkspaces);
+
+    // On start Load
+    $('#submitButton').click(async function () {
+        $('#dialog').hide();
+        username = $("#usernameInput").val().trim();
+        // Initial Load
+        loadAdmins();
+        loadWhitelist();
+        loadDockerStats();
+        loadAllWorkspaces();
+    });
+
+    $('#dialog').show();
+    
+    </script>
+</body>
+</html>
