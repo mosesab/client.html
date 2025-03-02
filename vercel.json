@@ -10,7 +10,7 @@
     },
     {
       "source": "/workspaces/:port",
-      "destination": "http://162.55.66.56/:port"
+      "destination": "http://162.55.66.56/workspaces/:port"
     }
   ]
 }
