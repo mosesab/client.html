@@ -7,6 +7,10 @@
     {
       "source": "/hetznerServer/api/:path*",
       "destination": "http://162.55.66.56:5000/api/:path*"
+    },
+    {
+      "source": "/workspaces/:port",
+      "destination": "http://162.55.66.56/:port"
     }
   ]
 }
