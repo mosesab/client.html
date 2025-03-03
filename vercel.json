@@ -12,14 +12,5 @@
       "source": "/workspaces/:port*",
       "destination": "http://162.55.66.56/workspaces/:port*"
     }
-  ],
-  "headers": [
-    {
-      "source": "/workspaces/:port/websockify",
-      "headers": [
-        { "key": "Connection", "value": "Upgrade" },
-        { "key": "Upgrade", "value": "websocket" }
-      ]
-    }
   ]
 }
