@@ -8,11 +8,6 @@
       "source": "/hetznerServer/api/:path*",
       "destination": "http://162.55.66.56:5000/api/:path*"
     },
-     
-    {
-      "source": "/workspaces/:port/websockify",
-      "destination": "http://162.55.66.56/workspaces/:port/websockify"
-    },
     {
       "source": "/workspaces/:port*",
       "destination": "http://162.55.66.56/workspaces/:port*"
