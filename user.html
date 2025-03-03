@@ -2948,7 +2948,7 @@
         const username = $('.lg-input-field').val().trim();
         if (!username) return toast('Please enter a username');
         showLoader(true);
-        const response = await axios.get(`hetznerServer/api/workspaces/check_admin`, {params: { user_name: username }})
+        const response = await axios.get(`https://workspaces.fortal.io/api/workspaces/check_admin`, {params: { user_name: username }})
         currentUser.username = username;
         showScreen('workspace-overview-screen', 'flex');
         loadOverviewData();
@@ -2977,9 +2977,9 @@
 
             // Perform all API calls in parallel, allowing failures without stopping execution
             const [workspacesRes, filesRes, maxWorkspacesRes] = await Promise.allSettled([
-                axios.get(`hetznerServer/api/workspaces/list_my_workspaces`, { params: { user_name: currentUser.username } }),
-                axios.get(`hetznerServer/api/files/list_my_files`, {params: {user_name: currentUser.username}}),
-                axios.get(`hetznerServer/api/workspaces/get_max_workspace`, { params: { user_name: currentUser.username } })
+                axios.get(`https://workspaces.fortal.io/api/workspaces/list_my_workspaces`, { params: { user_name: currentUser.username } }),
+                axios.get(`https://workspaces.fortal.io/api/files/list_my_files`, {params: {user_name: currentUser.username}}),
+                axios.get(`https://workspaces.fortal.io/api/workspaces/get_max_workspace`, { params: { user_name: currentUser.username } })
             ]);
 
             // Extract data safely
@@ -3168,14 +3168,14 @@
     */
     async function downloadFileBtn(file) {
         // Create the download URL
-        const downloadUrl = `hetznerServer/api/files/download_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`;
+        const downloadUrl = `https://workspaces.fortal.io/api/files/download_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`;
         // Trigger the download action
         window.location.href = downloadUrl;  // This will trigger the download
     }
     
     async function deleteFileBtn(file) {
         try {
-            const response = await axios.get(`hetznerServer/api/files/delete_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`);
+            const response = await axios.get(`https://workspaces.fortal.io/api/files/delete_file?user_name=${currentUser.username}&filename=${file}&workspace_name=${currentWorkspace.workspaceName}`);
             toast('File deleted successfully.');
             // Refresh UI after deletion
             loadWorkspaceDashboard();
@@ -3191,10 +3191,10 @@
         showLoader(true);
 
         const [localSitesRes, freelancersRes, filesRes, chatsRes] = await Promise.all([
-            axios.get(`hetznerServer/api/workspaces/view_local_whitelist?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`),
-            axios.get(`hetznerServer/api/workspaces/get_freelancers`, {params: {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId}}),
-            axios.get(`hetznerServer/api/files/list_files`, {params: {user_name: currentUser.username, workspace_name: currentWorkspace.workspaceName}}),
-            axios.get(`hetznerServer/api/chats/list_my_chats`, {params: {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId}})            
+            axios.get(`https://workspaces.fortal.io/api/workspaces/view_local_whitelist?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`),
+            axios.get(`https://workspaces.fortal.io/api/workspaces/get_freelancers`, {params: {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId}}),
+            axios.get(`https://workspaces.fortal.io/api/files/list_files`, {params: {user_name: currentUser.username, workspace_name: currentWorkspace.workspaceName}}),
+            axios.get(`https://workspaces.fortal.io/api/chats/list_my_chats`, {params: {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId}})            
         ]);
 
         // update local sites list
@@ -3302,7 +3302,7 @@
             formData.append('user_name', currentUser.username);
             formData.append('workspace_id', currentWorkspace.workspaceId);
             formData.append('workspace_name', currentWorkspace.workspaceName);
-            await axios.post(`hetznerServer/api/files/upload_file`, formData);
+            await axios.post(`https://workspaces.fortal.io/api/files/upload_file`, formData);
             loadWorkspaceDashboard();
             loadOverviewData();
         } catch (error) {
@@ -3369,7 +3369,7 @@
     $('#cancelButton, #endButton').on('click', () => $('#dialog').hide());
     $('#endButton').on('click', async () => {
         $('#openDialogButton').hide();
-        await axios.post('hetznerServer/api/workspaces/stop_workspace', {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId});
+        await axios.post('https://workspaces.fortal.io/api/workspaces/stop_workspace', {user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId});
         changeStatusToEnded();
         // refresh ui
         loadOverviewData();
@@ -3398,7 +3398,7 @@
         
         if (!message) return; // Prevent sending empty messages
         try {
-            await axios.post('hetznerServer/api/chats/send_chat_to_workspace', {
+            await axios.post('https://workspaces.fortal.io/api/chats/send_chat_to_workspace', {
                 user_name: currentUser.username,
                 workspace_id: currentWorkspace.workspaceId,
                 message: message
@@ -3467,7 +3467,7 @@
             // console.log(requestData);
 
             // Send request to API
-            const response = await axios.post(`hetznerServer/api/workspaces/start_workspace`, requestData);
+            const response = await axios.post(`https://workspaces.fortal.io/api/workspaces/start_workspace`, requestData);
             
             // Handle success response
             if (response.status === 200) {
@@ -3572,7 +3572,7 @@
     // Site link interactions
     async function loadSitesData() {
         try {
-            const responseGlobalWhitelist = await axios.get(`hetznerServer/api/workspaces/view_global_whitelist?user_name=${currentUser.username}`);
+            const responseGlobalWhitelist = await axios.get(`https://workspaces.fortal.io/api/workspaces/view_global_whitelist?user_name=${currentUser.username}`);
             // Get the whitelist array or default to an empty array
             const cdSiteItems = responseGlobalWhitelist.data.whitelist || [];
             // console.log("cdSiteItems:", cdSiteItems);
@@ -3707,7 +3707,7 @@
     let freelancerCount = 0;
     // Check new files
     function checkForNewFiles() {
-        axios.get(`hetznerServer/api/check/new_files?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`)
+        axios.get(`https://workspaces.fortal.io/api/check/new_files?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`)
             .then(response => {
                 if (fileCount !== response.data.file_count) { 
                     fileCount = response.data.file_count;  
@@ -3720,7 +3720,7 @@
     }
     // Check new chats
     function checkForNewChats() {
-        axios.get(`hetznerServer/api/check/new_chats?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`)
+        axios.get(`https://workspaces.fortal.io/api/check/new_chats?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`)
             .then(response => {
                 if (chatCount !== response.data.chat_count) { 
                     chatCount = response.data.chat_count; 
@@ -3733,7 +3733,7 @@
     }
     // Check new freelancers
     function checkForNewFreelancers() {
-        axios.get(`hetznerServer/api/check/new_freelancers?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`)
+        axios.get(`https://workspaces.fortal.io/api/check/new_freelancers?user_name=${currentUser.username}&workspace_id=${currentWorkspace.workspaceId}`)
             .then(response => {
                 if (freelancerCount !== response.data.freelancer_count) { 
                     freelancerCount = response.data.freelancer_count;
