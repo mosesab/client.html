@@ -6,11 +6,11 @@
     },
     {
       "source": "/hetznerServer/api/:path*",
-      "destination": "http://162.55.66.56:5000/api/:path*"
+      "destination": "https://workspaces.fortal.io/api/:path*"
     },
     {
       "source": "/workspaces/:port*",
-      "destination": "http://162.55.66.56/workspaces/:port*"
+      "destination": "https://workspaces.fortal.io/workspaces/:port*"
     }
   ]
 }
