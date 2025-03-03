@@ -9,24 +9,25 @@
       "destination": "http://162.55.66.56:5000/api/:path*"
     },
      
-    { 
+    {
       "source": "/workspaces/:port/websockify",
-      "destination": "/proxy/websockify-proxy/:port"
+      "destination": "/api/websockify-proxy?port=:port"
     },
     {
       "source": "/workspaces/:port*",
       "destination": "http://162.55.66.56/workspaces/:port*"
     }
   ],
-  
   "proxy": {
-    "/proxy/websockify-proxy/:port": {
-      "origin": "ws://162.55.66.56:port",
+    "/api/websockify-proxy": {
+      "origin": "ws://162.55.66.56",
       "headers": {
         "X-Forwarded-Proto": "https"
       },
-      "upgrade": true
+      "upgrade": true,
+      "rewrite": [
+        { "regexp": "^/api/websockify-proxy$", "replace": "/:port/websockify" }
+      ]
     }
   }
-  
 }
