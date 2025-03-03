@@ -3481,10 +3481,14 @@
                 // Reset step to first step
                 resetStep();
                 
-                // Open workspace in a new tab
+                // Delay by 10 seconds before opening the workspace URL in a new tab
+                showLoader(true);
                 const workspaceUrl = response.data.workspace_url;
                 if (workspaceUrl) {
-                    window.open(workspaceUrl, '_blank');
+                    setTimeout(function() {
+                        showLoader(false);
+                        window.open(workspaceUrl, '_blank');
+                    }, 10000); // 10000 milliseconds = 10 seconds
                 }
 
                 showScreen('workspace-detailed-screen');
