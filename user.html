@@ -3481,18 +3481,12 @@
                 // Reset step to first step
                 resetStep();
                 
-                // Delay by 10 seconds before opening the workspace URL in a new tab
-                showLoader(true);
-                const workspaceUrl = response.data.workspace_url;
-                if (workspaceUrl) {
-                    setTimeout(function() {
-                        showLoader(false);
-                        window.open(workspaceUrl, '_blank');
-                    }, 10000); // 10000 milliseconds = 10 seconds
-                }
-
                 showScreen('workspace-detailed-screen');
                 loadOverviewData();
+                
+                // Open workspace in a new tab
+                const workspaceUrl = response.data.workspace_url;
+                window.open(workspaceUrl, '_blank');
             }
         } catch (error) {
             console.error('Error in workspace creation:', error);
