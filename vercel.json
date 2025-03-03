@@ -8,9 +8,23 @@
       "source": "/hetznerServer/api/:path*",
       "destination": "http://162.55.66.56:5000/api/:path*"
     },
+     
+    { 
+      "source": "/workspaces/:port/websockify", // /workspaces webSocket proxy rule (MUST BE Above the general /workspaces/port for precedence)
+      "destination": "/api/websockify-proxy" // Internal path to define proxy in "proxy" section
+    },
     {
       "source": "/workspaces/:port*",
       "destination": "http://162.55.66.56/workspaces/:port*"
     }
-  ]
+  ],
+  "proxy": {
+    "/api/websockify-proxy": {
+      "origin": "ws://162.55.66.56:7082", // Backend WebSocket server IP and PORT!
+      "headers": {
+        "X-Forwarded-Proto": "https" // If Vercel is using HTTPS, forward this
+      },
+      "upgrade": true // IMPORTANT: Enable WebSocket upgrade
+    }
+  }
 }
