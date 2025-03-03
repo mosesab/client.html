@@ -3,14 +3,6 @@
     {
       "source": "/api/:path*",
       "destination": "http://194.233.72.104:5000/api/:path*"
-    },
-    {
-      "source": "/hetznerServer/api/:path*",
-      "destination": "https://workspaces.fortal.io/api/:path*"
-    },
-    {
-      "source": "/workspaces/:port*",
-      "destination": "https://workspaces.fortal.io/workspaces/:port*"
     }
   ]
 }
