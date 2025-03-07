@@ -138,8 +138,8 @@
         
         </head>
         <body class="vscode-body vscode-light">
-            <p>This is a detailed handover documentation for the Fortal Browser project. It's designed to cover everything a new team or individual would need to know about its architecture, maintenance, troubleshooting, and ongoing operations.</p>
-<h1 id="fortal-browser-handover-documentation--runbook">Fortal Browser: Handover Documentation &amp; Runbook</h1>
+            <h1 id="fortal-browser-handover-documentation--runbook">Fortal Browser: Handover Documentation &amp; Runbook</h1>
+<p>This is a detailed handover documentation for the Fortal Browser project. It's designed to cover everything a new team or individual would need to know about its architecture, maintenance, troubleshooting, and ongoing operations.</p>
 <h2 id="1-introduction">1. Introduction</h2>
 <p>This document serves as a comprehensive resource for the Fortal Browser project. It aims to:</p>
 <ul>
@@ -151,6 +151,25 @@
 </ul>
 <h2 id="2-project-overview">2. Project Overview</h2>
 <p>Fortal Browser provides secure and controlled virtualized web browsing environments for sensitive tasks and collaborative projects. It uses containerization to isolate workspaces, applies website restrictions to control access, and incorporates security measures like popup blocking and keyboard shortcut limitations. The goal is to offer a secure, focused, and manageable browsing environment suitable for organizations requiring stringent data protection.</p>
+<h2 id="21-how-fortal-works-overview">2.1. How fortal works (Overview):</h2>
+<ul>
+<li>
+<p><strong>Server Deployment</strong>
+The backend is deployed on a cloud server like <strong>Hertzner</strong> or <strong>Contabo</strong> using command-line tools to automate the setup of the application and the required database.</p>
+</li>
+<li>
+<p><strong>NGINX Configuration</strong>
+An <strong>NGINX</strong> reverse proxy is configured to serve the application securely via HTTPS and manage incoming traffic effectively.</p>
+</li>
+<li>
+<p><strong>SSL Implementation</strong>
+<strong>Certbot</strong> automates setting up free SSL certificates, adding a layer of security.</p>
+</li>
+<li>
+<p><strong>Docker and Firefox Profiles</strong>
+The browser environment is containerized using <strong>Docker</strong>, along with customized <strong>Firefox profiles</strong> to enable add-ons and extensions, and secure the browsing environment.</p>
+</li>
+</ul>
 <h2 id="3-system-architecture">3. System Architecture</h2>
 <h3 id="31-high-level-diagram">3.1. High-Level Diagram</h3>
 <p><img src="https://imgur.com/Xm9ilj5.png" alt="Diagram: A basic diagram illustrating the overall system architecture."></p>
