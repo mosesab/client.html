@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Fortal Browser&colon; Handover Documentation &amp; Runbook</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>This is a detailed handover documentation for the Fortal Browser project. It's designed to cover everything a new team or individual would need to know about its architecture, maintenance, troubleshooting, and ongoing operations.</p>
+<h1 id="fortal-browser-handover-documentation--runbook">Fortal Browser: Handover Documentation &amp; Runbook</h1>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>This document serves as a comprehensive resource for the Fortal Browser project. It aims to:</p>
+<ul>
+<li><strong>Transfer Knowledge:</strong> Equip new team members or individuals with the necessary understanding to maintain and operate the system effectively.</li>
+<li><strong>Serve as a Runbook:</strong> Provide detailed procedures for managing, troubleshooting, and maintaining the Fortal Browser environment.</li>
+<li><strong>Document System Architecture:</strong> Explain the underlying structure, components, and design principles of the system.</li>
+<li><strong>Act as a Playbook:</strong> Offer documented processes and workflows for handling various operational scenarios.</li>
+<li><strong>Provide Handover Notes:</strong> Capture key insights and practical information about the system's behavior and maintenance needs.</li>
+</ul>
+<h2 id="2-project-overview">2. Project Overview</h2>
+<p>Fortal Browser provides secure and controlled virtualized web browsing environments for sensitive tasks and collaborative projects. It uses containerization to isolate workspaces, applies website restrictions to control access, and incorporates security measures like popup blocking and keyboard shortcut limitations. The goal is to offer a secure, focused, and manageable browsing environment suitable for organizations requiring stringent data protection.</p>
+<h2 id="3-system-architecture">3. System Architecture</h2>
+<h3 id="31-high-level-diagram">3.1. High-Level Diagram</h3>
+<p><img src="https://imgur.com/Xm9ilj5.png" alt="Diagram: A basic diagram illustrating the overall system architecture."></p>
+<h3 id="32-key-components">3.2. Key Components</h3>
+<ul>
+<li><strong>User Interface (UI)</strong>
+<ul>
+<li>Client-side applications built using HTML, CSS, and JavaScript.</li>
+<li><code>client.html</code>: Deployed to <code>vercel.app</code>. Provides a portal interface for users to access the workspaces allocated to them.</li>
+<li><code>admin-client.html</code>: Deployed to <code>vercel.app</code>. Admin interface for creating and managing users and workspaces.</li>
+<li><code>preview-client.html</code>: Used as a preview environment that emulates the normal user, for beta and priviliged access and features.</li>
+</ul>
+</li>
+<li><strong>Reverse Proxy (Nginx)</strong>
+<ul>
+<li>Acts as the entry point for all traffic.</li>
+<li>Configured to handle SSL termination, load balancing, and routing requests to the appropriate containers.</li>
+<li>Configuration files located in <code>/etc/nginx/sites-available/default</code>.</li>
+<li>Ensures secure connections with HTTPS.</li>
+</ul>
+</li>
+<li><strong>Application Server (FastAPI with uvicorn)</strong>
+<ul>
+<li>Provides the core business logic for managing users, workspaces, file sharing, and other functions.</li>
+<li>Implemented in Python using the FastAPI framework and Uvicorn.</li>
+<li>Codebase located in <code>/root/api</code>.</li>
+<li>Communicates with the database to persist data.</li>
+</ul>
+</li>
+<li><strong>Containerization (Docker)</strong>
+<ul>
+<li>Used to isolate and virtualize each browser workspace.</li>
+<li>Ensures consistency across environments.</li>
+<li>Images are built from Dockerfiles (<code>Dockerfile</code> at base directory.)</li>
+<li>Uses the noVNC container image.</li>
+</ul>
+</li>
+<li><strong>Database (SQLite)</strong>
+<ul>
+<li>Stores user accounts, workspace configurations, access rules, and other system-related data.</li>
+<li>Database file located at <code>./app.db</code> and is created automatically if absent.</li>
+</ul>
+</li>
+<li><strong>Firefox Browser</strong>
+<ul>
+<li>The user's browser will be running in container image on a remote server, and rendered to the user's screen using the noVNC client, with added custom Firefox profiles.</li>
+<li>Modified to enable extensions, and to create a more secure environment.</li>
+</ul>
+</li>
+<li><strong>Custom Firefox Profiles</strong>:</li>
+</ul>
+<pre><code>*   **Add-ons and Extensions**:
+    *   This folder contains all the add-ons and extensions intended to be enabled on the new Firefox browser.
+
+*  **userChrome Customization:**
+    * The  `userChrome.css` file customizes the look and feel of the Firefox browser. Key modifications include:
+    * Hiding unnecessary UI elements such as the bookmarks bar and certain menu items to simplify the browsing environment.
+    * Adjusting the browser's theme and appearance settings to enhance usability.
+
+*  **Configuration Settings with prefs.js:**
+    *  The  `prefs.js` file specifies various preference settings for the Firefox browser to enhance security and functionality:
+    *  Disabling developer tools to reduce attack surface and prevent unauthorized modification of the browser's behavior.
+    *  Turning off automatic updates and telemetry to control data sharing and maintain a stable browser environment.
+</code></pre>
+<h3 id="33-container-registry">3.3. Container Registry</h3>
+<p>Images are pulled from Docker Hub, and should be build with this command :</p>
+<pre><code>docker build -t novnc .
+</code></pre>
+<h3 id="34-apis">3.4. APIs</h3>
+<p>The system uses RESTful APIs for communication between different components. Some critical endpoints include:</p>
+<ul>
+<li><code>/api/workspaces/*</code>:  Manages workspace creation, listing, and termination.</li>
+<li><code>/api/superadmin/*</code>: Endpoints restricted to privileged superadmins, mainly to handle administrator management and all workspaces across the server.</li>
+<li><code>/api/chats/*</code>: Handles chat messaging functions.</li>
+<li><code>/api/files/*</code>:  Provides file uploading, downloading, and management services.</li>
+<li><code>/api/check/*</code>: Provide file count and chat counts.</li>
+</ul>
+<h3 id="35-data-flow">3.5. Data Flow</h3>
+<ol>
+<li>A user accesses the UI to start a new workspace.</li>
+<li>The UI sends an API request to the application server.</li>
+<li>The application server authenticates the user and creates the new workspace entry in the database.</li>
+<li>The application server instructs Docker to start a new container based on a pre-defined image.</li>
+<li>Nginx is configured to proxy traffic to the newly created container.</li>
+<li>The user connects to the workspace through the UI, which communicates with noVNC inside the container.</li>
+</ol>
+<h2 id="4-installation--setup">4. Installation &amp; Setup</h2>
+<h3 id="41-prerequisites">4.1. Prerequisites</h3>
+<ul>
+<li>A Linux server (e.g., Ubuntu, Debian).</li>
+<li>Docker Engine installed and running (see <a href="https://docs.docker.com/engine/install/">https://docs.docker.com/engine/install/</a>).</li>
+<li>Docker Compose installed.</li>
+<li>Python 3.7+ with pip.</li>
+<li>NGINX installed.</li>
+<li>Certbot installed and configured.</li>
+<li>FTP Installed (as per set up steps in z.txt)</li>
+<li>MySQL Installed and configured, along with remote connections (as per set up steps in z.txt)</li>
+</ul>
+<h3 id="42-setting-up-the-environment">4.2. Setting Up the Environment</h3>
+<ol>
+<li>
+<p><strong>Clone the Repository:</strong></p>
+<pre><code class="language-bash">git <span class="hljs-built_in">clone</span> &lt;repository_url&gt;
+<span class="hljs-built_in">cd</span> &lt;repository_directory&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Build the Workspaces Docker Container:</strong></p>
+<pre><code class="language-bash"><span class="hljs-built_in">cd</span> firefox &amp;&amp; <span class="hljs-built_in">ls</span>
+docker build novnc .
+</code></pre>
+</li>
+<li>
+<p><strong>Create Necessary Directories:</strong></p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">mkdir</span> /home/ftpuser/admin_fortal_files
+sudo <span class="hljs-built_in">chown</span> ftpuser:ftpuser /home/ftpuser/admin_fortal_files
+</code></pre>
+</li>
+<li>
+<p><strong>Install Python Packages:</strong></p>
+<pre><code class="language-bash">pip3 install --break-system-packages requests aiodocker fastapi uvicorn pydantic httpx python-multipart websockets
+</code></pre>
+</li>
+<li>
+<p><strong>Running <a href="http://app.py">app.py</a>:</strong></p>
+</li>
+</ol>
+<ul>
+<li>Start the Admin Dashboard Server (FastAPI).</li>
+</ul>
+<pre><code>```python
+python3 api/app.py
+```
+</code></pre>
+<ol start="6">
+<li>
+<p><strong>Configure Nginx:</strong></p>
+<ul>
+<li>
+<p>Remove the default Nginx configuration:</p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">rm</span> /etc/nginx/sites-enabled/default
+</code></pre>
+</li>
+<li>
+<p>Copy the provided <code>default.txt</code> to <code>/etc/nginx/sites-available/default</code>:</p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">mv</span> default.txt /etc/nginx/sites-available/default
+</code></pre>
+</li>
+<li>
+<p>Create a symbolic link to enable the site:</p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">ln</span> -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+</code></pre>
+</li>
+<li>
+<p>Restart Nginx:</p>
+<pre><code class="language-bash">sudo systemctl restart nginx
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Set Up SSL:</strong></p>
+<pre><code class="language-bash">sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d workspaces.fortal.io
+sudo certbot install --cert-name workspaces.fortal.io
+</code></pre>
+</li>
+<li>
+<p><strong>Set Up Automated Tasks (Cron):</strong></p>
+<pre><code class="language-bash">crontab -e
+<span class="hljs-comment"># Run every Sunday at midnight</span>
+0 0 * * 0 docker system prune -af --volumes
+</code></pre>
+</li>
+<li>
+<p><strong>Running <a href="http://app.py">app.py</a> in background:</strong></p>
+<ul>
+<li>Use <code>tmux</code> to persist <a href="http://app.py">app.py</a> to run.<pre><code class="language-bash"> sudo apt install tmux
+ (tmux kill-session -t flask_terminal)
+ tmux new-session -s flask_terminal
+ python3 app.py
+     Detach terminal session and leave it running perpetually:
+     Ctrl + B, <span class="hljs-keyword">then</span> D (just d).
+     Run tmux <span class="hljs-keyword">in</span> copy mode (<span class="hljs-keyword">for</span> scrolling):
+     Ctrl + B, <span class="hljs-keyword">then</span> [ (just [).
+ tmux attach-session -t flask_terminal
+ tmux <span class="hljs-built_in">ls</span>
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="5-usage-guide">5. Usage Guide</h2>
+<h3 id="51-starting-a-new-workspace">5.1. Starting a New Workspace</h3>
+<p>See section on &quot;Usage Guide&quot; in main instruction set.</p>
+<h3 id="52-listing-active-workspaces">5.2. Listing Active Workspaces</h3>
+<p>See section on &quot;Usage Guide&quot; in main instruction set.</p>
+<h3 id="53-stopping-a-workspace">5.3. Stopping a Workspace</h3>
+<ol>
+<li>Log in to the admin interface.</li>
+<li>Locate the workspace you want to stop.</li>
+<li>Click the &quot;Stop&quot; button next to the workspace.</li>
+<li>Confirm the action.</li>
+</ol>
+<h3 id="54-managing-user-accounts">5.4. Managing User Accounts</h3>
+<ol>
+<li>Log in to the admin interface.</li>
+<li>Navigate to the &quot;Users&quot; section.</li>
+<li>Create, edit, or delete user accounts as needed.</li>
+<li>Set the maximum number of workspaces for each user.</li>
+</ol>
+<h3 id="55-viewing-and-modifying-access-rules">5.5. Viewing and Modifying Access Rules</h3>
+<ol>
+<li>Access a workspace through the user interface.</li>
+<li>View the current access restrictions (whitelist or blacklist).</li>
+<li>To modify: Change mode, add/delete domains from the DOMAINS system environment variable.</li>
+<li>Use local whitelist, for adding specific website, or using global whitelist for global websites to add.</li>
+</ol>
+<h3 id="56-backups-and-recovery">5.6. Backups and Recovery</h3>
+<ul>
+<li>
+<p><strong>Database Backups:</strong> Schedule regular backups of the <code>app.db</code> file to prevent data loss.</p>
+<ul>
+<li>A simple backup script can be created to copy the database file to a safe location.</li>
+</ul>
+</li>
+<li>
+<p><strong>Container Data:</strong> Consider persistent volumes for the Docker containers to preserve data across restarts.</p>
+</li>
+</ul>
+<h2 id="6-monitoring-and-maintenance">6. Monitoring and Maintenance</h2>
+<h3 id="61-monitoring">6.1. Monitoring</h3>
+<ul>
+<li><strong>Container Status:</strong> Use <code>docker ps</code> to check the status of running containers.</li>
+<li><strong>Resource Usage:</strong> Monitor CPU, memory, and network usage of containers using <code>docker stats</code>.</li>
+<li><strong>Application Logs:</strong> Check the application logs for errors or warnings in <code>/tmp/app.log</code>.</li>
+<li><strong>Nginx Logs:</strong> Monitor Nginx access and error logs in <code>/var/log/nginx/</code>.</li>
+<li><strong>Container Logs:</strong> Check <code>startup.sh</code> for the filepaths to all the logs stored in the docker container.</li>
+</ul>
+<h3 id="62-maintenance-tasks">6.2. Maintenance Tasks</h3>
+<ul>
+<li>
+<p><strong>Regularly Update System Packages:</strong></p>
+<pre><code class="language-bash">sudo apt update
+sudo apt upgrade
+</code></pre>
+</li>
+<li>
+<p><strong>Check and Manage Disk Space:</strong></p>
+<ul>
+<li>Ensure there's sufficient disk space for containers, logs, and other data.</li>
+</ul>
+</li>
+<li>
+<p><strong>Security Audits:</strong></p>
+<ul>
+<li>Periodically review security configurations and apply necessary patches.</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-troubleshooting--faqs">7. Troubleshooting &amp; FAQs</h2>
+<h3 id="71-common-issues">7.1. Common Issues</h3>
+<ul>
+<li><strong>Cannot Access Workspace:</strong>
+<ul>
+<li>Verify that the container is running (<code>docker ps</code>).</li>
+<li>Check Nginx configuration and logs.</li>
+<li>Ensure firewall rules allow traffic to the container's port.</li>
+<li>Verify that there is a docker instance, and it is running correctly.</li>
+</ul>
+</li>
+<li><strong>Workspace is Unresponsive:</strong>
+<ul>
+<li>Check container resource usage (<code>docker stats</code>).</li>
+<li>Restart the container (<code>docker restart &lt;container_id&gt;</code>).</li>
+<li>Investigate application logs for errors.</li>
+</ul>
+</li>
+<li><strong>File Uploads Failing:</strong>
+<ul>
+<li>Check file size limits and permissions on the upload directory.</li>
+<li>Ensure the user has sufficient permissions to write to the directory.</li>
+</ul>
+</li>
+<li>&quot;New workspace&quot; keeps loading, but never loads:
+*Check docker containers, ensure all existing ones are turned off.</li>
+</ul>
+<h3 id="72-faqs">7.2. FAQs</h3>
+<ul>
+<li>
+<p><strong>How do I change the default password for workspaces?</strong></p>
+<ul>
+<li>Modify the Docker image or environment variables to set a new default password: (<code>docker exec -it &lt;container_id&gt; bash</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Can I add more security features to the browser environment?</strong></p>
+<ul>
+<li>Yes, you can customize the Firefox profile, add extensions, or implement other security measures within the Docker image.</li>
+</ul>
+</li>
+<li>
+<p><strong>How do I manage user permissions?</strong></p>
+<ul>
+<li>Use the admin interface to create, edit, and delete user accounts, and assign appropriate permissions.</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-security-considerations">8. Security Considerations</h2>
+<ul>
+<li><strong>Password Management:</strong> Ensure strong and unique passwords are used for all accounts. Implement password rotation policies.</li>
+<li><strong>Regular Updates:</strong> Keep the system and all its components (OS, Docker, Nginx, etc.) up-to-date with the latest security patches.</li>
+<li><strong>Access Control:</strong> Restrict access to the server and admin interface to authorized personnel only.</li>
+<li><strong>Firewall Configuration:</strong> Configure firewalls to allow only necessary traffic to the server and containers.</li>
+<li><strong>HTTPS Certificates:</strong> The use of HTTPS should be used everywhere to ensure no information is being transferred in transit.</li>
+<li><strong>Data Encryption:</strong> All user data should be encrypted in transit, and at rest using MySQL.</li>
+</ul>
+<h2 id="9-deployment">9. Deployment</h2>
+<p>The system and database should be installed on one dedicated server.</p>
+<h2 id="10-additional-resources">10. Additional Resources</h2>
+<ul>
+<li>Docker Documentation: <a href="https://docs.docker.com/">https://docs.docker.com/</a></li>
+<li>NGINX Documentation: <a href="https://nginx.org/en/docs/">https://nginx.org/en/docs/</a></li>
+<li>FastAPI Documentation: <a href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></li>
+<li>SQLite Documentation: <a href="https://www.sqlite.org/docs.html">https://www.sqlite.org/docs.html</a></li>
+<li>Certbot Documentation: <a href="https://certbot.eff.org/docs/">https://certbot.eff.org/docs/</a></li>
+<li>Novnc Project: <a href="https://github.com/novnc/noVNC">https://github.com/novnc/noVNC</a></li>
+</ul>
+
+            
+            
+        </body>
+        </html>
