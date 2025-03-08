@@ -545,6 +545,37 @@
             color: #999;
             font-size: 14px;
         }
+        .freelancer-panel{
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .freelancer-checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .freelancer-custom-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+        .freelancer-custom-checkbox:checked {
+            background-color: var(--primary-hover);
+        }
+        .freelancer-custom-checkbox:checked::after {
+            content: '\2713'; /* Checkmark */
+            font-size: 16px;
+            color: var(--dark-bg);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
         .file-action-buttons {
             display: flex;
@@ -3409,6 +3440,16 @@
                     </div>
                     <div class="freelancer-name">${f.name}</div>
                     <div class="freelancer-email">${f.email}</div>
+                    <div class="freelancer-panel">
+                        <div class="freelancer-checkbox-group">
+                            <label>Allow Mouse Control</label>
+                            <input type="checkbox" id="allow-mouse-control" class="freelancer-custom-checkbox">
+                        </div>
+                        <div class="freelancer-checkbox-group">
+                            <label>Block from Workspace</label>
+                            <input type="checkbox" id="block-from-workspace" class="freelancer-custom-checkbox">
+                        </div>
+                    </div>
                 </div>
             `;
         }).join(''));
@@ -3626,7 +3667,7 @@
             const projectDescription = $('.cd-form-group textarea').val().trim();
             const restrictionMode = $('.cd-dropdown-button').last().text().trim() === 'Blacklist' ? 1 : 0;
             const useExtensions = $('#fortal-extensions').is(':checked');
-
+            
             // Collect selected restricted domains
             const restrictedDomains = [];
             $('.cd-site-link-selected').each(function () {
