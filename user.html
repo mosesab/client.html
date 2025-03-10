@@ -3519,6 +3519,7 @@
         $('.freelancer-cards').on('change', '.view-only-checkbox', async function () {
           const viewOnly = this.checked;
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
+          if ($('.freelancer-panel').is(':hidden')) { return; }
           try {
             // Now calling the APP API endpoint
             const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_view_only", { user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId, freelancer_email: email, view_only: viewOnly });
@@ -3539,6 +3540,7 @@
         $('.freelancer-cards').on('change', '.block-workspace-checkbox', async function () {
           const blockAccess = this.checked;
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
+          if ($('.freelancer-panel').is(':hidden')) { return; }
           try {
             // Now calling the APP API endpoint
             const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_block_access", { user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId, freelancer_email: email, block_access: blockAccess });
@@ -3559,6 +3561,7 @@
           const email = $(this).find('.freelancer-email').data('email');
           const blockWorkspaceCheckbox = $(this).find('.block-workspace-checkbox')[0];
           const viewOnlyCheckbox = $(this).find('.view-only-checkbox')[0];
+          if ($('.freelancer-panel').is(':hidden')) { return; } // 
         
           try {
             // Now calling the APP API endpoints for initial state
@@ -3676,7 +3679,8 @@
             '--status-green': '#ffcccc',
             '--status-gradient-start': '#ffcccc'
         };
-        Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));      
+        Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));  
+        $('.freelancer-panel').hide();
         $('.status-badge').text('Ended');
         $('.action-buttons').hide();
         $('.chat-input').hide(); 
@@ -3690,6 +3694,7 @@
             '--status-gradient-start': '#c0da9e'
         };  
         Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));
+        $('.freelancer-panel').show();
         $('.status-badge').text('Active');
         $('.action-buttons').show();
         $('.chat-input').show();
