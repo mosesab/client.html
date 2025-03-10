@@ -3519,8 +3519,7 @@
         $('.freelancer-cards').on('change', '.view-only-checkbox', async function () {
           const viewOnly = this.checked;
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
-          // This ensures that if the element itself or any of its ancestors are hidden, the function exits.
-          if ($('.view-only-checkbox').closest(':hidden').length > 0) { return; }
+          if ($('.action-buttons').is(':hidden')) { return; } // it means the workspace has ended 
           try {
             // Now calling the APP API endpoint with query parameters inside the "params" object
             const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_view_only", {
@@ -3547,8 +3546,7 @@
         $('.freelancer-cards').on('change', '.block-workspace-checkbox', async function () {
           const blockAccess = this.checked;
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
-          // This ensures that if the element itself or any of its ancestors are hidden, the function exits.
-          if ($('.block-workspace-checkbox').closest(':hidden').length > 0) { return; }
+          if ($('.action-buttons').is(':hidden')) { return; } // it means the workspace has ended 
           try {
             // Now calling the APP API endpoint with query parameters inside the "params" object
             const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_block_access", {
@@ -3576,8 +3574,8 @@
           const email = $(this).find('.freelancer-email').data('email');
           const blockWorkspaceCheckbox = $(this).find('.block-workspace-checkbox')[0];
           const viewOnlyCheckbox = $(this).find('.view-only-checkbox')[0];
-          if ($('#freelancer-panel').is(':hidden')) { return; } // 
-        
+          if ($('.action-buttons').is(':hidden')) { $('.freelancer-panel').hide(); return; } // it means the workspace has ended     
+          $('.freelancer-panel').show();
           try {
             // Now calling the APP API endpoints for initial state
             const [blockedResponse, viewOnlyResponse] = await Promise.all([
