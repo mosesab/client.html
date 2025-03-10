@@ -2286,74 +2286,40 @@
 }
 
 
-/* Glow Noise Effect Class */
-.glow-noise {
-  position: relative;
-  overflow: hidden; /* Ensure the glow doesn't spill over */
-}
+/* Sheen Effect Class */
 
-.glow-noise::before {
+.sheen-effect {
+  position: relative;
+  overflow: hidden;
+}
+@keyframes sheen {
+  0% {
+    left: -150%;
+  }
+  50% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+.sheen-effect::after {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1; /* Place the glow behind the element's content */
-
-  animation: btn-glow-effect 5s linear infinite; /* Use a unique animation name to avoid conflicts */
+  left: -150%;
+  width: 150%;
+  height: 100%;
   background: linear-gradient(
-      -20deg,
-      #00f8f1,
-      #00f8f120 16.5%,
-      #00f8f1 33%,
-      #00f8f110 49.5%,
-      #00f8f1 66%,
-      #00f8f100 85.5%,
-      #00f8f1 100%
-    )
-    0 100% / 100% 200%;
-
-  filter: blur(5px);
-  opacity: 0; /* Initially hidden */
-  transition: opacity 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) 0s; /*  Same transition as the original hover effect */
-  border-radius: inherit; /* Inherit border-radius for seamless integration */
+    120deg, 
+    rgba(255, 255, 255, 0) 30%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: skewX(-25deg);
+  animation: sheen 3s infinite ease-in-out;
+  pointer-events: none;
 }
-
-.glow-noise:hover::before {
-  opacity: 1; /* Show on hover */
-}
-
-@keyframes btn-glow-effect { /* Renamed animation */
-  0% {
-    background-position: 0 100%;
-  }
-  100% {
-    background-position: 0 300%;
-  }
-}
-
-@keyframes noise-background {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  20% {
-    transform: translate3d(50px, 30px, 0);
-  }
-  40% {
-    transform: translate3d(10px, 50px, 0);
-   }
-   60% {
-    transform: translate3d(30px, 20px, 0);
-   }
-   80% {
-    transform: translate3d(50px, 0, 0);
-   }
-  100% {
-    transform: translate3d(100px, 0, 0);
-  }
-}
-
         /* MEDIA QUERIES FOR RESPONSIVENESS */
 
         /* Small screens (phones) */
@@ -2589,7 +2555,7 @@
         
 
         <div class="actions">
-            <button class="create-workspace" id="createWorkspaceBtn">
+            <button class="create-workspace sheen-effect" id="createWorkspaceBtn">
                 <i class="fas fa-plus"></i>
                 Create new workspace
             </button>          
@@ -2650,11 +2616,11 @@
             <div class="wo-welcome-section">
                 <h1 class="wo-welcome-title">Welcome, Sonia</h1>
                 <h2 class="wo-welcome-subtitle">Create your 1<sup>st</sup> Workspace</h2>
-                <button class="wo-create-workspace glow-noise" id="woCreateWorkspaceBtn">
+                <button class="wo-create-workspace sheen-effect" id="woCreateWorkspaceBtn">
                     <i class="fas fa-plus"></i>
                     Create new workspace
                 </button>
-                <button class="wo-view-workspace glow-noise" id="viewWorkspacesBtn">
+                <button class="wo-view-workspace sheen-effect" id="viewWorkspacesBtn">
                     <i class="fas fa-list"></i>
                     View my workspaces
                 </button>
@@ -2667,7 +2633,7 @@
 
     <main id="workspace-detailed-screen" class="screen wd-main-content">
         <div>
-            <div id="wd-home-button" class="wd-home-button">
+            <div id="wd-home-button" class="wd-home-button sheen-effect">
                 <i class="fas fa-home"></i>
             </div>
             <div class="wd-heading">
@@ -2675,7 +2641,7 @@
                     Welcome back, <span>Sonia</span>
                 </h3>
                 <div class="wd-heading-2">
-                    <button class="wd-create-workspace">
+                    <button class="wd-create-workspace sheen-effect">
                         <i class="fas fa-plus"></i>
                         Create new workspace
                     </button>  
@@ -2783,7 +2749,7 @@
 
     <main id="workspace-dashboard-screen" class="screen main-content">
         <div>
-            <div id="back-button" class="back-button">
+            <div id="back-button" class="back-button sheen-effect">
                 <i class="fas fa-arrow-left"></i>
             </div>
             <div class="heading">
@@ -2791,15 +2757,15 @@
                     Sonia 1 <span>Workspace</span>
                 </h3>
                 <div class="action-buttons">
-                    <button id="openUrlButton" class="btn btn-primary">
+                    <button id="openUrlButton" class="btn btn-primary sheen-effect">
                         <i class="fas fa-external-link-alt"></i>
                         Open
                     </button>
-                    <button id="shareUrlButton" class="btn btn-primary">
+                    <button id="shareUrlButton" class="btn btn-primary sheen-effect">
                         <i class="fas fa-clone"></i>
                         Share Link
                     </button>
-                    <button id="openDialogButton" class="btn btn-primary">
+                    <button id="openDialogButton" class="btn btn-primary sheen-effect">
                         <i class="fas fa-check-circle"></i>
                         End
                     </button>
@@ -3017,7 +2983,7 @@
     <main id="create-overview-screen" class="screen co-main-content">
         <header class="co-header">
             <img src="https://imgur.com/Fr5hOyG.png" alt="Fortal Io Logo" class="co-logo">
-            <button class="co-exit-btn">Exit</button>
+            <button class="co-exit-btn sheen-effect">Exit</button>
         </header>
     
         <div class="co-content">
@@ -3048,7 +3014,7 @@
                 </div>
             </div>
     
-            <button class="co-create-workspace">Get Started</button>
+            <button class="co-create-workspace sheen-effect">Get Started</button>
         </div>
     </main>
 
@@ -3057,7 +3023,7 @@
     <main id="create-detailed-screen" class="screen cd-main-content">
         <header class="cd-header">
             <img src="https://imgur.com/Fr5hOyG.png" alt="Logo" class="cd-logo">
-            <button class="cd-exit-btn">Exit</button>
+            <button class="cd-exit-btn sheen-effect">Exit</button>
         </header>
 
         <div class="cd-step active" data-step="1">
@@ -3170,9 +3136,9 @@
             </div>
 
             <div class="cd-progress-buttons">
-                <button class="cd-prev-btn">Previous</button>
+                <button class="cd-prev-btn sheen-effect">Previous</button>
                 <div></div>
-                <button class="cd-next-btn">Next <i class="cd-fa-solid fa-arrow-right"></i> </button>
+                <button class="cd-next-btn sheen-effect">Next <i class="cd-fa-solid fa-arrow-right"></i> </button>
             </div>
         </footer>
     </main>
@@ -3515,7 +3481,7 @@
                 <div class="freelancer-card">
                     <div class="card-header">
                         <img src="${f.avatar_url || 'https://i.pravatar.cc/150'}" alt="Avatar" class="avatar">
-                        <button onClick="openChatBtn()" class="chat-btn"><i class="fas fa-comments"></i> Chat</button>
+                        <button onClick="openChatBtn()" class="chat-btn sheen-effect"><i class="fas fa-comments"></i> Chat</button>
                     </div>
                     <div class="freelancer-name">${f.name}</div>
                     <div class="freelancer-email" data-email="${f.email}">${f.email}</div>
