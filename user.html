@@ -3515,51 +3515,64 @@
             .join('')
         );
         
-        // Attach delegated event listener for View Only checkbox
+        // For "View Only" checkbox:
         $('.freelancer-cards').on('change', '.view-only-checkbox', async function () {
           let viewOnly = this.checked;
-          viewOnly = `${viewOnly}`
+          viewOnly = `${viewOnly}`;
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
           if ($('.freelancer-panel').is(':hidden')) { return; }
           console.log(`viewOnly: ${viewOnly}`);
           try {
-            // Now calling the APP API endpoint
-            const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_view_only", { user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId, freelancer_email: email, view_only: viewOnly });
+            // Now calling the APP API endpoint with query parameters inside the "params" object
+            const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_view_only", {
+              params: {
+                user_name: currentUser.username,
+                workspace_id: currentWorkspace.workspaceId,
+                freelancer_email: email,
+                view_only: viewOnly,
+              }
+            });
             if (data.status !== 'success') {
               console.warn("View only update failed on server:", data);
               this.checked = !viewOnly;
             } else {
-              console.log(`View only for ${userEmail} set to: ${viewOnly}`);
+              console.log(`View only for ${email} set to: ${viewOnly}`);
             }
           } catch (error) {
             console.error("Error setting view only:", error);
             this.checked = !viewOnly;
           }
         });
-
-                
-        // Attach delegated event listener for Block access checkbox
+        
+        // For "Block Access" checkbox:
         $('.freelancer-cards').on('change', '.block-workspace-checkbox', async function () {
           let blockAccess = this.checked;
-          blockAccess = `${blockAccess}`
+          blockAccess = `${blockAccess}`;
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
           if ($('.freelancer-panel').is(':hidden')) { return; }
           console.log(`blockAccess: ${blockAccess}`);
           try {
-            // Now calling the APP API endpoint
-            const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_block_access", { user_name: currentUser.username, workspace_id: currentWorkspace.workspaceId, freelancer_email: email, block_access: blockAccess });
+            // Now calling the APP API endpoint with query parameters inside the "params" object
+            const { data } = await axios.get("https://workspaces.fortal.io/api/edit-workspace/freelancers/set_block_access", {
+              params: {
+                user_name: currentUser.username,
+                workspace_id: currentWorkspace.workspaceId,
+                freelancer_email: email,
+                block_access: blockAccess,
+              }
+            });
             if (data.status !== 'success') {
               console.warn("Block access update failed on server:", data);
               this.checked = !blockAccess;
             } else {
-              console.log(`Block access for ${userEmail} set to: ${blockAccess}`);
+              console.log(`Block access for ${email} set to: ${blockAccess}`);
             }
           } catch (error) {
             console.error("Error setting block access:", error);
             this.checked = !blockAccess;
           }
         });
-        
+
         // Initialize checkbox states
         $('.freelancer-cards .freelancer-card').each(async function() {
           const email = $(this).find('.freelancer-email').data('email');
