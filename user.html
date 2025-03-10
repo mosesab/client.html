@@ -3164,7 +3164,8 @@
         username: '',
         workspaces: [],
         totalFiles: 0,
-        totalFreelancers: 0
+        totalFreelancers: 0,
+        maxTabs: 0
     };
 
     let currentWorkspace = {
@@ -3272,6 +3273,7 @@
             currentUser.workspaces = workspaces; 
             currentUser.totalFreelancers = workspaces.reduce((acc, ws) => acc + (ws.freelancers ? ws.freelancers.length : 0), 0);
             currentUser.totalFiles = totalFilesLength;
+            currentUser.maxTabs = maxTabs;
 
             // log data
             // console.log("Workspaces data:", workspaces);
@@ -3294,9 +3296,6 @@
             // Update workspace remaining info
             $('.workspaces-remaining p').text(`${activeWorkspaces.length} out of ${maxWorkspaces} workspaces remaining`);
             
-            // Update max tabs info
-            $('#max-tab-info-text').text(`Limited to ${maxTabs} tabs`);
-
             // Toggle "View Workspaces" button visibility
             $('#viewWorkspacesBtn').toggle(activeWorkspaces.length > 0);
 
@@ -3482,6 +3481,10 @@
             siteItemsDiv.append(`<div class="site-link">${item}</div>`);
         });
         $('#stat-item-sites span').text(`${siteItems.length} `);
+
+        // Update max tabs info
+        $('#max-tab-info-text').text(`Limited to ${currentUser.maxTabs} tabs`);
+
 
         // Update Freelancers List   
         // Update Freelancers List and render freelancer cards with data attributes and class names
