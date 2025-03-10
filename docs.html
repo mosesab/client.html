@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fortal Browser: Handover Documentation & Runbook - For Non-Technical Admins</title>
+    <style>
+/* Styles (same as original for visual consistency) */
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+</style>
+<style>
+.task-list-item {
+list-style-type: none;
+}
+
+.task-list-item-checkbox {
+margin-left: -20px;
+vertical-align: middle;
+pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+
+</head>
+<body class="vscode-body vscode-light">
+    <h1 id="fortal-browser-handover-documentation--runbook">Fortal Browser: Handover Documentation & Runbook - For Non-Technical Admins</h1>
+    <p>Welcome to the handover documentation for the Fortal Browser project. This document is designed to help you, as a non-technical administrator, understand and manage the Fortal Browser system. It will explain how everything works in simple terms, without needing deep technical knowledge.</p>
+
+    <h2 id="1-introduction">1. Introduction: Understanding This Document</h2>
+    <p>This document is your guide to understanding and managing the Fortal Browser. Think of it as your operational manual. It's here to:</p>
+    <ul>
+        <li><strong>Help you take over:</strong>  If you are new to the project, this document will give you the knowledge you need to keep things running smoothly.</li>
+        <li><strong>Provide step-by-step instructions (Runbook):</strong> It includes clear instructions on how to perform common tasks, troubleshoot problems, and keep the system maintained.</li>
+        <li><strong>Explain how the system is built (System Architecture):</strong>  It gives you a simplified overview of the different parts of the system and how they work together.</li>
+        <li><strong>Act as a guide for different situations (Playbook):</strong> It outlines the processes and best practices for various operational scenarios you might encounter.</li>
+        <li><strong>Share important tips and tricks (Handover Notes):</strong>  It contains valuable insights and practical advice about the system's behavior and upkeep.</li>
+    </ul>
+
+    <h2 id="2-project-overview">2. What is Fortal Browser? (Project Overview)</h2>
+    <p>Imagine needing a super secure way for your team to browse the internet for sensitive work. That's what Fortal Browser is for.</p>
+    <p><strong>In simple terms, Fortal Browser provides a safe and controlled web browsing environment.</strong> It's like giving each user a private, locked-down web browser that is separate from their regular computer. This is especially useful for:</p>
+    <ul>
+        <li><strong>Sensitive Tasks:</strong>  When users are working with confidential information online.</li>
+        <li><strong>Collaborative Projects:</strong>  Ensuring everyone in a project team is browsing in a secure and consistent way.</li>
+    </ul>
+    <p><strong>How does it work?</strong> Fortal Browser uses special technology called "containerization" to create isolated workspaces. Think of containers like individual, secure boxes. Each user gets their own box with a web browser inside. This box:</p>
+    <ul>
+        <li><strong>Keeps things separate:</strong>  What happens in one user's browser box doesn't affect others or the main system.</li>
+        <li><strong>Controls website access:</strong> We can set rules to limit which websites users can visit, ensuring they only access approved sites.</li>
+        <li><strong>Adds security features:</strong>  It includes built-in security measures like blocking pop-up ads and limiting keyboard shortcuts to prevent accidental actions.</li>
+    </ul>
+    <p><strong>The main goal of Fortal Browser is to offer a secure, focused, and easy-to-manage browsing experience for organizations that need to protect their data.</strong></p>
+
+    <h2 id="21-how-fortal-works-overview">2.1. How Fortal Browser Works: The Big Picture</h2>
+    <p>Let's break down how Fortal Browser works behind the scenes, step-by-step:</p>
+    <ol>
+        <li>
+            <p><strong>Setting up the Brains (Server Deployment):</strong>
+                The main part of Fortal Browser, the "brain" that manages everything, is set up on a powerful computer in the cloud.  Think of this cloud computer as a central hub. We use tools to automatically install and configure Fortal Browser and its necessary database (a place to store information) on this cloud computer. We use cloud providers like <strong>Hertzner</strong> or <strong>Contabo</strong> – these are companies that rent out computer power in the cloud.</p>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><strong>Cloud Server:</strong>  A computer that is located in a data center (a building full of computers) and accessible over the internet. It's like renting computer space instead of owning your own server.</li>
+                <li><strong>Database:</strong>  An organized system for storing and managing information. In Fortal Browser, it stores user details, workspace settings, and other important data.</li>
+                <li><strong>Command-line tools:</strong> Programs that you use by typing commands instead of using a graphical interface (like clicking buttons). They are often used for automating tasks on servers.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Directing Traffic (NGINX Configuration):</strong>
+                We use a tool called <strong>NGINX</strong> to act like a traffic controller for Fortal Browser.  Imagine NGINX as a smart receptionist. It stands in front of the Fortal Browser system and does a few important things:</p>
+            <ul>
+                <li><strong>Secure Entry (HTTPS):</strong>  It makes sure that when users connect to Fortal Browser, the connection is secure and private (using HTTPS – like a security guard for internet traffic).</li>
+                <li><strong>Traffic Management (Reverse Proxy):</strong> It efficiently directs incoming requests from users to the right parts of the Fortal Browser system.</li>
+            </ul>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><strong>NGINX (Reverse Proxy):</strong>  A software that sits in front of web applications and manages incoming traffic. It improves security, performance, and reliability. Think of it as a gatekeeper for the system.</li>
+                <li><strong>HTTPS:</strong>  "Hypertext Transfer Protocol Secure".  It's the secure version of HTTP, the protocol used to transfer data over the web. HTTPS encrypts communication, making it secure from eavesdropping. You can recognize it by the padlock icon in your browser's address bar.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Security Certificates (SSL Implementation with Certbot):</strong>
+                To make sure the connections are secure (HTTPS), we need special digital certificates called <strong>SSL certificates</strong>. We use a tool called <strong>Certbot</strong> to automatically get and set up these certificates for free. This is like getting an official "security badge" for our website, proving it's trustworthy and secure.</p>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><strong>SSL Certificate:</strong> "Secure Sockets Layer" certificate. A digital certificate that verifies a website's identity and enables encrypted connections (HTTPS). It's essential for secure communication over the internet.</li>
+                <li><strong>Certbot:</strong>  A free, automated tool that makes it easy to get and renew SSL certificates. It simplifies the process of enabling HTTPS on websites.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Isolated Browsers (Docker and Firefox Profiles):</strong>
+                We use a technology called <strong>Docker</strong> to create those isolated "browser boxes" we talked about.  Docker lets us package up the Firefox browser and everything it needs to run in a self-contained unit (a "container"). We also customize <strong>Firefox profiles</strong> – these are like settings files for Firefox – to add extra security and features to these browser boxes.</p>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><strong>Docker:</strong> A platform that allows you to create, run, and manage applications in "containers." Containers are like lightweight virtual machines that isolate applications from each other and the host system, ensuring consistency and portability. Think of it as packaging an application and its dependencies into a box that can run anywhere.</li>
+                <li><strong>Firefox Profiles:</strong>  Sets of configurations and customizations for the Firefox web browser. Profiles allow you to have different settings, extensions, and bookmarks for different browsing environments. In Fortal Browser, custom profiles enhance security and functionality.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2 id="3-system-architecture">3. System Architecture:  The Parts of Fortal Browser</h2>
+    <p>Think of Fortal Browser as a building made of different components. Each component has a specific job and they all work together. Here's a simplified view:</p>
+
+    <h3 id="31-high-level-diagram">3.1. System Diagram</h3>
+    <p><img src="https://imgur.com/Xm9ilj5.png" alt="Diagram: A basic diagram illustrating the overall system architecture."></p>
+    <p>This diagram shows how the different parts of Fortal Browser are connected.</p>
+
+    <h3 id="32-key-components">3.2. Key Components:  What Each Part Does</h3>
+    <ul>
+        <li><strong>User Interface (UI): What you see and use</strong>
+            <ul>
+                <li><strong>What it is:</strong>  The screens and buttons you interact with to use Fortal Browser. It's built using web technologies like HTML, CSS, and JavaScript.</li>
+                <li><strong>Why it's important:</strong>  This is how users access and control workspaces. It needs to be user-friendly and secure.</li>
+                <li><strong>How it works:</strong>
+                    <ul>
+                        <li><code>client.html</code>: This is the main user portal where users log in and access their assigned workspaces. It's hosted on <code>vercel.app</code> (a platform for hosting websites).</li>
+                        <li><code>admin-client.html</code>:  This is the admin area. Only administrators can access this to manage users and workspaces. It's also hosted on <code>vercel.app</code>.</li>
+                        <li><code>preview-client.html</code>:  A special version of the user interface used for testing new features before they are released to all users.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><strong>Reverse Proxy (Nginx): The Traffic Manager</strong>
+            <ul>
+                <li><strong>What it is:</strong> As explained earlier, NGINX acts as the entry point for all web traffic to Fortal Browser.</li>
+                <li><strong>Why it's important:</strong>  It secures connections, manages traffic efficiently, and directs requests to the right place.</li>
+                <li><strong>How it works:</strong>
+                    <ul>
+                        <li><strong>SSL Security:</strong>  It handles the secure HTTPS connections.</li>
+                        <li><strong>Traffic Routing:</strong>  It directs user requests to the correct browser container.</li>
+                        <li><strong>Configuration:</strong>  Its settings are stored in files located at <code>/etc/nginx/sites-available/default</code> on the server.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><strong>Application Server (FastAPI with uvicorn): The Brains of the Operation</strong>
+            <ul>
+                <li><strong>What it is:</strong> This is the core of Fortal Browser. It's a program that handles all the important logic and tasks. It's built using Python (a programming language) and tools called FastAPI and Uvicorn.</li>
+                <li><strong>Why it's important:</strong>  It manages users, workspaces, file sharing, and all the main functions of Fortal Browser.</li>
+                <li><strong>How it works:</strong>
+                    <ul>
+                        <li><strong>Logic and Management:</strong>  It contains the rules and processes for how Fortal Browser operates.</li>
+                        <li><strong>Data Storage:</strong>  It communicates with the database to save and retrieve information.</li>
+                        <li><strong>Location:</strong> The code for this server is located in the <code>/root/api</code> directory on the server.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><strong>Containerization (Docker): The Isolation Boxes</strong>
+            <ul>
+                <li><strong>What it is:</strong> Docker is used to create and manage isolated containers for each browser workspace.</li>
+                <li><strong>Why it's important:</strong>  It ensures each workspace is separate and consistent, improving security and stability.</li>
+                <li><strong>How it works:</strong>
+                    <ul>
+                        <li><strong>Isolation:</strong> Each browser runs in its own container, separate from other workspaces and the main server.</li>
+                        <li><strong>Consistency:</strong>  Docker ensures every workspace starts from the same base setup.</li>
+                        <li><strong>Building Containers:</strong> Docker uses special files called <code>Dockerfile</code> (located in the main project directory) to build these container images.</li>
+                        <li><strong>Using noVNC:</strong> It uses a pre-built container image called "noVNC" which helps display the browser in the user's web browser.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><strong>Database (SQLite): The Information Storage</strong>
+            <ul>
+                <li><strong>What it is:</strong>  A database is used to store all the important information for Fortal Browser. In this case, it's SQLite, a simple and file-based database.</li>
+                <li><strong>Why it's important:</strong> It stores user accounts, workspace settings, access rules, and other system data that needs to be remembered.</li>
+                <li><strong>How it works:</strong>
+                    <ul>
+                        <li><strong>Storing Data:</strong> It saves all the necessary information in a structured way.</li>
+                        <li><strong>File Location:</strong> The database file is named <code>app.db</code> and is created in the project directory if it doesn't already exist.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><strong>Firefox Browser: The User's View</strong>
+            <ul>
+                <li><strong>What it is:</strong> The actual web browser that users interact with. It's Firefox, but running inside the Docker container on the server.</li>
+                <li><strong>Why it's important:</strong> This is the tool users use to browse the web securely.</li>
+                <li><strong>How it works:</strong>
+                    <ul>
+                        <li><strong>Remote Browser:</strong>  The browser runs on the server, not the user's computer. What users see is a visual stream of the browser window.</li>
+                        <li><strong>noVNC Client:</strong>  The noVNC technology is used to display the remote browser in the user's web browser.</li>
+                        <li><strong>Customized Firefox:</strong>  Firefox is modified with special settings and add-ons to enhance security and control.</li>
+                    </ul>
+                </li>
+        </ul>
+        <li><strong>Custom Firefox Profiles: Special Settings for Security and Control</strong>
+            <p>These are special configurations applied to Firefox to make it more secure and controlled:</p>
+            <pre><code>
+*   **Add-ons and Extensions**:
+    *   This folder contains extra features (add-ons and extensions) that are automatically installed in the Firefox browser to enhance its functionality.
+
+*  **userChrome Customization:**
+    * The  `userChrome.css` file is used to change how Firefox looks and feels.  We use it to:
+    * Hide unnecessary buttons and menus (like the bookmarks bar) to make the browser simpler and less cluttered.
+    * Change the browser's appearance to improve usability.
+
+*  **Configuration Settings with prefs.js:**
+    *  The  `prefs.js` file is used to set specific preferences for Firefox to improve security and control. We use it to:
+    *  Disable developer tools (which are used for advanced web development) to reduce the risk of unauthorized changes or attacks.
+    *  Turn off automatic updates and data sharing (telemetry) to maintain a consistent and private browsing environment.
+            </code></pre>
+        </li>
+    </ul>
+
+    <h3 id="33-container-registry">3.3. Container Registry: Where Browser Images Come From</h3>
+    <p>The "blueprint" for creating the browser containers (Docker images) is stored and managed. For Fortal Browser, these images are pulled from Docker Hub (a public repository of container images).</p>
+    <p>If you need to rebuild the browser image, you would use this command in the project directory:</p>
+    <pre><code>docker build -t novnc .
+</code></pre>
+    <p><strong>Technical Terms Explained:</strong></p>
+    <ul>
+        <li><strong>Docker Hub:</strong>  A service for finding and sharing container images. It's like an app store for Docker containers.</li>
+        <li><strong>Docker Image:</strong>  A template or blueprint used to create Docker containers. It contains everything needed to run an application, including the code, libraries, and settings.</li>
+        <li><code>docker build -t novnc .</code>: This is a command that tells Docker to build a new container image. <code>novnc</code> is the name we are giving to the image, and <code>.</code> means to use the Dockerfile in the current directory.</li>
+    </ul>
+
+    <h3 id="34-apis">3.4. APIs: How the Parts Communicate</h3>
+    <p>APIs (Application Programming Interfaces) are like messengers that allow different parts of Fortal Browser to talk to each other. We use RESTful APIs, which is a standard way for software systems to communicate over the internet.</p>
+    <p>Here are some important API "endpoints" (specific addresses for sending messages) that Fortal Browser uses:</p>
+    <ul>
+        <li><code>/api/workspaces/*</code>:  These are for managing workspaces. You can use these to create new workspaces, list existing ones, and shut down workspaces.</li>
+        <li><code>/api/superadmin/*</code>:  These are special endpoints only for super administrators. They are used for managing administrators themselves and overseeing all workspaces on the server.</li>
+        <li><code>/api/chats/*</code>:  These handle the chat messaging feature within workspaces.</li>
+        <li><code>/api/files/*</code>:  These are for uploading, downloading, and managing files within workspaces.</li>
+        <li><code>/api/check/*</code>:  These provide information like the number of files and chat messages.</li>
+    </ul>
+    <p><strong>Technical Terms Explained:</strong></p>
+    <ul>
+        <li><strong>API (Application Programming Interface):</strong>  A set of rules and specifications that software programs can follow to communicate with each other. APIs allow different parts of a system to work together. Think of it as a menu in a restaurant – it lists the available "requests" (API calls) you can make and what "responses" (data) you will get back.</li>
+        <li><strong>RESTful APIs:</strong>  A popular style of API design that uses standard web protocols (like HTTP) for communication. They are widely used because they are simple, scalable, and easy to understand.</li>
+        <li><strong>Endpoint:</strong>  A specific URL (web address) where an API "listens" for requests. Each endpoint is designed to handle a specific type of request and perform a particular action.</li>
+    </ul>
+
+    <h3 id="35-data-flow">3.5. Data Flow:  How it Works Step-by-Step</h3>
+    <p>Here's a step-by-step look at what happens when a user starts a new workspace:</p>
+    <ol>
+        <li><strong>User Request:</strong> You (a user) use the User Interface (UI) to request a new workspace.</li>
+        <li><strong>UI to Application Server:</strong> The UI sends a message (an API request) to the Application Server asking to start a workspace.</li>
+        <li><strong>Authentication and Database Update:</strong> The Application Server checks if you are authorized to create a workspace. If you are, it records the new workspace request in the database.</li>
+        <li><strong>Starting the Container:</strong> The Application Server tells Docker to create and start a new browser container based on the pre-defined image.</li>
+        <li><strong>Nginx Configuration:</strong> Nginx is automatically updated to direct web traffic to this new container.</li>
+        <li><strong>Workspace Connection:</strong> You connect to the new workspace through the UI. The UI communicates with the noVNC software inside the container to display the browser on your screen.</li>
+    </ol>
+
+    <h2 id="4-installation--setup">4. Installation & Setup:  Setting Up Fortal Browser (For Initial Setup - Usually Done Once)</h2>
+    <p>This section outlines the steps to install and set up Fortal Browser.  These steps are typically performed only once when setting up the system for the first time.</p>
+
+    <h3 id="41-prerequisites">4.1. What You Need Before You Start (Prerequisites)</h3>
+    <p>Before installing Fortal Browser, you need to have the following things ready on your server:</p>
+    <ul>
+        <li><strong>A Linux Server:</strong>  You'll need a server running a Linux operating system like Ubuntu or Debian.</li>
+        <li><strong>Docker Engine:</strong> Docker needs to be installed and running. Docker is the tool that creates and manages the browser containers. (See <a href="https://docs.docker.com/engine/install/">https://docs.docker.com/engine/install/</a> for instructions).</li>
+        <li><strong>Docker Compose:</strong>  A tool for managing Docker applications that consist of multiple containers (though not explicitly mentioned in the original instructions, it's often helpful for managing Docker setups).</li>
+        <li><strong>Python 3.7+:</strong>  Python version 3.7 or newer must be installed, along with <code>pip</code>, which is a package installer for Python.</li>
+        <li><strong>NGINX:</strong>  The NGINX web server needs to be installed.</li>
+        <li><strong>Certbot:</strong> Certbot should be installed to manage SSL certificates for secure HTTPS connections.</li>
+        <li><strong>FTP (File Transfer Protocol):</strong>  FTP needs to be installed as mentioned in the setup notes (<code>z.txt</code>). FTP is used for transferring files to and from the server.</li>
+        <li><strong>MySQL:</strong> MySQL database server should be installed and configured, including allowing remote connections, as detailed in the setup notes (<code>z.txt</code>).  MySQL is used for storing the application's data (Note: Original document mentions SQLite, but prerequisites list MySQL. Clarify which database is actually used and update documentation accordingly).</li>
+    </ul>
+
+    <h3 id="42-setting-up-the-environment">4.2. Step-by-Step Setup Guide</h3>
+    <p>Follow these steps to set up Fortal Browser on your server:</p>
+    <ol>
+        <li>
+            <p><strong>Get the Fortal Browser Files (Clone the Repository):</strong></p>
+            <p>First, you need to download the Fortal Browser software files from where they are stored (a "repository").  Use these commands in the server's command line:</p>
+            <pre><code class="language-bash">git <span class="hljs-built_in">clone</span> <repository_url>  # Replace <repository_url> with the actual web address of the repository
+<span class="hljs-built_in">cd</span> <repository_directory> # Replace <repository_directory> with the name of the folder created after cloning
+</code></pre>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><strong>Git:</strong> A system for tracking changes in code and collaborating on software projects. <code>git clone</code> is a command to download a copy of a repository.</li>
+                <li><strong>Repository:</strong> A storage location for code and other files, usually managed by Git. Think of it as a project folder with version control.</li>
+                <li><code>cd</code>: "Change Directory". A command in the command line to navigate to a different folder.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Build the Browser Container (Build the Workspaces Docker Container):</strong></p>
+            <p>Next, you need to build the Docker image for the browser workspaces.  Navigate to the <code>firefox</code> directory and run the Docker build command:</p>
+            <pre><code class="language-bash"><span class="hljs-built_in">cd</span> firefox && <span class="hljs-built_in">ls</span> # Go into the 'firefox' folder and list its contents (ls - list)
+docker build novnc . # Build the Docker image named 'novnc' using the Dockerfile in the current folder
+</code></pre>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><code>&&</code>: In command line, this means "run the next command only if the previous one was successful".</li>
+                <li><code>ls</code>: "List".  A command to list the files and folders in the current directory. It's used here to check the contents of the <code>firefox</code> directory.</li>
+                <li><code>docker build novnc .</code>:  As explained before, this command builds a Docker image.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Create a Folder for Admin Files (Create Necessary Directories):</strong></p>
+            <p>Create a directory for admin files and set the correct permissions.  Use these commands:</p>
+            <pre><code class="language-bash">sudo <span class="hljs-built_in">mkdir</span> /home/ftpuser/admin_fortal_files # Create a directory named 'admin_fortal_files'
+sudo <span class="hljs-built_in">chown</span> ftpuser:ftpuser /home/ftpuser/admin_fortal_files # Change ownership of the directory to the user 'ftpuser'
+</code></pre>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><code>sudo</code>: "Super User Do".  A command to run another command with administrator privileges.</li>
+                <li><code>mkdir</code>: "Make Directory". A command to create a new folder.</li>
+                <li><code>chown</code>: "Change Owner". A command to change the owner and group of a file or directory.</li>
+                <li><code>ftpuser:ftpuser</code>:  Specifies the new owner and group for the directory. In this case, both are set to <code>ftpuser</code>.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Install Python Libraries (Install Python Packages):</strong></p>
+            <p>Install the necessary Python libraries that the Application Server needs. Run this command:</p>
+            <pre><code class="language-bash">pip3 install --break-system-packages requests aiodocker fastapi uvicorn pydantic httpx python-multipart websockets
+</code></pre>
+            <p><strong>Technical Terms Explained:</strong></p>
+            <ul>
+                <li><code>pip3 install</code>:  A command to install Python packages using the <code>pip</code> package installer.</li>
+                <li><code>--break-system-packages</code>:  A flag sometimes needed to avoid conflicts with system-level Python packages (use with caution, and only if needed as per setup instructions).</li>
+                <li><code>requests</code>, <code>aiodocker</code>, <code>fastapi</code>, <code>uvicorn</code>, etc.: These are names of specific Python libraries (collections of code) that Fortal Browser uses.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Start the Admin Dashboard (Running app.py):</strong></p>
+            <p>Start the Application Server (Admin Dashboard) by running the <code>app.py</code> Python script:</p>
+            <pre><code>```python
+python3 api/app.py
+
+
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>python3 api/app.py</code>: This command runs the Python script <code>app.py</code>, which is located in the <code>api</code> directory. This starts the Application Server.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Nginx (Configure Nginx):</strong></p>
+<p>Set up Nginx to handle web traffic for Fortal Browser:</p>
+<ul>
+<li>
+<p><strong>Remove Default Nginx Configuration:</strong></p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">rm</span> /etc/nginx/sites-enabled/default # Remove the default Nginx configuration file
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>rm</code>: "Remove". A command to delete files or directories.</li>
+<li><code>/etc/nginx/sites-enabled/default</code>: The location of the default Nginx configuration file that we need to remove to replace it with our own.</li>
+</ul>
+</li>
+<li>
+<p><strong>Copy the Fortal Nginx Configuration:</strong></p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">mv</span> default.txt /etc/nginx/sites-available/default # Move the 'default.txt' file to the Nginx configuration directory and rename it to 'default'
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>mv</code>: "Move". A command to move or rename files or directories.</li>
+<li><code>default.txt</code>: The file containing the Nginx configuration for Fortal Browser.</li>
+<li><code>/etc/nginx/sites-available/default</code>: The standard directory in Nginx where configuration files for websites are stored.</li>
+</ul>
+</li>
+<li>
+<p><strong>Enable the Fortal Site:</strong></p>
+<pre><code class="language-bash">sudo <span class="hljs-built_in">ln</span> -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/ # Create a symbolic link to enable the Nginx configuration
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>ln -s</code>: "Link - Symbolic". A command to create a symbolic link (a shortcut) to a file or directory.</li>
+<li><code>/etc/nginx/sites-enabled/</code>: The directory in Nginx where symbolic links to enabled website configurations are placed.</li>
+</ul>
+</li>
+<li>
+<p><strong>Restart Nginx to Apply Changes:</strong></p>
+<pre><code class="language-bash">sudo systemctl restart nginx # Restart the Nginx service to load the new configuration
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>systemctl restart nginx</code>: A command to restart the Nginx service, which makes it reload its configuration files and apply the changes.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Set Up Secure Connections (Set Up SSL):</strong></p>
+<p>Enable HTTPS for secure connections using Certbot:</p>
+<pre><code class="language-bash">sudo apt install certbot python3-certbot-nginx # Install Certbot and its Nginx plugin
+sudo certbot --nginx -d workspaces.fortal.io # Run Certbot to get and configure SSL certificate for 'workspaces.fortal.io' using Nginx plugin
+sudo certbot install --cert-name workspaces.fortal.io # Install the SSL certificate (this line might be redundant, Certbot usually installs automatically)
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>sudo apt install certbot python3-certbot-nginx</code>: Installs Certbot and the Nginx plugin for Certbot using the <code>apt</code> package manager (common on Debian/Ubuntu Linux).</li>
+<li><code>certbot --nginx -d workspaces.fortal.io</code>: Runs Certbot, telling it to use the Nginx plugin and to get a certificate for the domain <code>workspaces.fortal.io</code> (replace with your actual domain name).</li>
+<li><code>certbot install --cert-name workspaces.fortal.io</code>: This command is likely redundant as Certbot usually installs the certificate automatically. If needed, it would explicitly install the certificate named <code>workspaces.fortal.io</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Schedule Automated Tasks (Set Up Automated Tasks (Cron)):</strong></p>
+<p>Set up automated tasks using <code>cron</code> to perform regular maintenance, like cleaning up old Docker data. Run this command to edit the cron schedule:</p>
+<pre><code class="language-bash">crontab -e # Edit the cron table (schedule of automated tasks)
+<span class="hljs-comment"># Run every Sunday at midnight</span>
+0 0 * * 0 docker system prune -af --volumes # This line, when added to crontab, will run the Docker cleanup command every Sunday at midnight
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>crontab -e</code>: Opens the cron table file for editing. Cron is a system in Linux to schedule commands to run automatically at specific times or intervals.</li>
+<li><code>0 0 * * 0 docker system prune -af --volumes</code>: This is a line added to the cron table.
+<ul>
+<li><code>0 0 * * 0</code>: This part defines the schedule: run at minute 0, hour 0 (midnight), every day of the month, every month, and on day 0 of the week (Sunday).</li>
+<li><code>docker system prune -af --volumes</code>: This is the command that will be run on the schedule. It's a Docker command to remove unused Docker data (like old containers, images, and volumes) to free up disk space.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Run the Application Server in the Background (Running app.py in background):</strong></p>
+<p>To keep the Application Server running even after you close your terminal session, use <code>tmux</code> (a terminal multiplexer):</p>
+<ul>
+<li>
+<p><strong>Install tmux:</strong></p>
+<pre><code class="language-bash"> sudo apt install tmux # Install tmux
+</code></pre>
+</li>
+<li>
+<p><strong>Start a tmux Session and Run app.py:</strong></p>
+<pre><code class="language-bash"> (tmux kill-session -t flask_terminal) # Optionally stop any existing tmux session named 'flask_terminal'
+tmux new-session -s flask_terminal # Create a new tmux session named 'flask_terminal'
+python3 app.py # Run the Application Server script
+Detach terminal session and leave it running perpetually:
+Ctrl + B, <span class="hljs-keyword">then</span> D (just d). # Press Ctrl+B, then D to detach from the tmux session (it will keep running in the background)
+Run tmux <span class="hljs-keyword">in</span> copy mode (<span class="hljs-keyword">for</span> scrolling):
+Ctrl + B, <span class="hljs-keyword">then</span> [ (just [). # Press Ctrl+B, then [ to enter copy mode in tmux, allowing you to scroll through the terminal output
+tmux attach-session -t flask_terminal # Re-attach to the tmux session named 'flask_terminal' to see its output again
+tmux <span class="hljs-built_in">ls</span> # List active tmux sessions
+</code></pre>
+<p><strong>Technical Terms Explained:</strong></p>
+<ul>
+<li><code>tmux</code>: "Terminal Multiplexer". A tool that allows you to run multiple terminal sessions within a single window. It also allows you to detach and re-attach to sessions, so processes can continue running even if you close your terminal window.</li>
+<li><code>tmux kill-session -t flask_terminal</code>: Kills (stops) a tmux session named <code>flask_terminal</code> if it exists. This is optional, to start fresh.</li>
+<li><code>tmux new-session -s flask_terminal</code>: Creates a new tmux session and names it <code>flask_terminal</code>.</li>
+<li><code>Ctrl + B, then D</code>: A shortcut in tmux to detach from the current session.</li>
+<li><code>Ctrl + B, then [</code>: A shortcut in tmux to enter copy mode, which allows you to scroll up and down in the terminal output.</li>
+<li><code>tmux attach-session -t flask_terminal</code>: Re-attaches to an existing tmux session named <code>flask_terminal</code>, allowing you to see its output and interact with it.</li>
+<li><code>tmux ls</code>: Lists all currently active tmux sessions.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<h2 id="5-usage-guide">5. Usage Guide:  How to Use Fortal Browser (Daily Operations)</h2>
+<p>This section explains how to perform common tasks in Fortal Browser on a day-to-day basis.</p>
+
+<h3 id="51-starting-a-new-workspace">5.1. Starting a New Workspace</h3>
+<p>Please refer to the "Usage Guide" section in the main instruction set document for detailed steps on starting a new workspace.  This guide will provide user-specific instructions.</p>
+
+<h3 id="52-listing-active-workspaces">5.2. Listing Active Workspaces</h3>
+<p>Please refer to the "Usage Guide" section in the main instruction set document for how to view a list of workspaces that are currently running.</p>
+
+<h3 id="53-stopping-a-workspace">5.3. Stopping a Workspace</h3>
+<ol>
+    <li><strong>Log in to the Admin Interface:</strong> Access the admin dashboard using your administrator credentials.</li>
+    <li><strong>Find the Workspace:</strong> Locate the workspace you wish to stop in the list of active workspaces.</li>
+    <li><strong>Click "Stop":</strong>  Click the "Stop" button or link associated with that workspace.</li>
+    <li><strong>Confirm Action:</strong>  You might be asked to confirm your action. Confirm to proceed with stopping the workspace.</li>
+</ol>
+
+<h3 id="54-managing-user-accounts">5.4. Managing User Accounts</h3>
+<ol>
+    <li><strong>Log in to the Admin Interface:</strong> Access the admin dashboard.</li>
+    <li><strong>Go to "Users" Section:</strong> Navigate to the "Users" or "User Management" section in the admin interface (the exact label may vary).</li>
+    <li><strong>Manage Users:</strong>
+        <ul>
+            <li><strong>Create User:</strong>  Click on "Create User" or similar button to add a new user account. You'll need to provide details like username, password, and potentially email.</li>
+            <li><strong>Edit User:</strong>  Find the user account you want to modify and click "Edit" or a similar option. You can then change user details or permissions.</li>
+            <li><strong>Delete User:</strong>  To remove a user account, locate the user and click "Delete" or a similar option. Be cautious when deleting users.</li>
+        </ul>
+    </li>
+    <li><strong>Set Workspace Limits:</strong>  When creating or editing a user, you should be able to set the maximum number of workspaces they can create. Configure this as needed.</li>
+</ol>
+
+<h3 id="55-viewing-and-modifying-access-rules">5.5. Viewing and Modifying Access Rules (Website Restrictions)</h3>
+<p>Access rules control which websites users can visit within Fortal Browser workspaces.</p>
+<ol>
+    <li><strong>Access a Workspace:</strong> Open a Fortal Browser workspace through the user interface.</li>
+    <li><strong>View Current Rules:</strong>  Within the workspace, you should be able to view the current access restrictions. This could be a "whitelist" (allowed sites) or a "blacklist" (blocked sites). The system might indicate whether it's using a whitelist or blacklist mode.</li>
+    <li><strong>Modify Rules (Admin Task - May Require Technical Steps):</strong>
+        <p>Modifying access rules might require some technical steps, depending on how it's set up. Generally:</p>
+        <ul>
+            <li><strong>Change Mode (Whitelist/Blacklist):</strong>  The mode (whitelist or blacklist) might be set through a system environment variable called <code>DOMAINS</code>.  You may need to adjust server configuration to switch between modes.</li>
+            <li><strong>Add/Remove Domains:</strong>  The list of websites in the whitelist or blacklist is likely also managed via the <code>DOMAINS</code> environment variable. To add or remove websites, you might need to:
+                <ul>
+                    <li>Access the server's configuration.</li>
+                    <li>Edit the <code>DOMAINS</code> environment variable to include or exclude website domain names.</li>
+                    <li>Restart the Application Server or relevant services for changes to take effect.</li>
+                </ul>
+            </li>
+            <li><strong>Local vs. Global Whitelist:</strong> The system might have options for "local" whitelists (specific to a workspace) and "global" whitelists (applied to all workspaces).  The method for managing these might vary.</li>
+        </ul>
+    </li>
+</ol>
+<p><strong>Important Note: Modifying access rules might require server access and configuration changes. If you are unsure, consult with a technical team member before making changes.</strong></p>
+
+<h3 id="56-backups-and-recovery">5.6. Backups and Recovery: Protecting Your Data</h3>
+<p>Regular backups are crucial to protect against data loss.</p>
+<ul>
+    <li>
+        <p><strong>Database Backups:</strong></p>
+        <ul>
+            <li><strong>Why:</strong>  The database (<code>app.db</code> or MySQL, clarify which is used) stores important data like user accounts and workspace settings. Backing it up regularly prevents losing this information if something goes wrong with the server.</li>
+            <li><strong>How:</strong>
+                <ul>
+                    <li><strong>Schedule Regular Backups:</strong> Set up a schedule for automatic database backups (e.g., daily or weekly).</li>
+                    <li><strong>Backup Script:</strong> You can create a simple script that copies the database file (<code>app.db</code> if using SQLite) or uses MySQL backup tools (like <code>mysqldump</code> if using MySQL) to a safe location. This location should be separate from the server itself, ideally on a different storage system or cloud backup service.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <p><strong>Container Data:</strong></p>
+        <ul>
+            <li><strong>Why:</strong>  If workspaces store important data within the containers, you need to consider backing up this data as well.</li>
+            <li><strong>How:</strong>
+                <ul>
+                    <li><strong>Persistent Volumes:</strong>  Docker allows you to use "persistent volumes" to store container data outside of the container itself. If persistent volumes are used for workspaces, you should back up these volumes.</li>
+                    <li><strong>Backup Strategy:</strong>  Develop a backup strategy for container data if it's critical. This might involve backing up Docker volumes or using container-aware backup solutions.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<h2 id="6-monitoring-and-maintenance">6. Monitoring & Maintenance: Keeping Fortal Browser Healthy</h2>
+<p>Regular monitoring and maintenance are essential to ensure Fortal Browser runs smoothly and securely.</p>
+
+<h3 id="61-monitoring">6.1. Monitoring: Checking System Health</h3>
+<p>Keep an eye on these things to make sure Fortal Browser is working correctly:</p>
+<ul>
+    <li><strong>Container Status:</strong>
+        <ul>
+            <li><strong>What to check:</strong>  Are the browser containers running?</li>
+            <li><strong>How to check:</strong> Use the command <code>docker ps</code> in the server's command line. This will show a list of running Docker containers and their status. You should see containers related to Fortal Browser workspaces listed as "running".</li>
+            <li><strong>What to look for:</strong>  Ensure the containers are listed and their status is "Up" or "Running". If any containers are missing or showing an error status, it indicates a problem.</li>
+        </ul>
+    </li>
+    <li><strong>Resource Usage:</strong>
+        <ul>
+            <li><strong>What to check:</strong> How much CPU (processing power), memory (RAM), and network bandwidth are the containers using?</li>
+            <li><strong>How to check:</strong> Use the command <code>docker stats</code> in the server's command line. This will show real-time resource usage for each container.</li>
+            <li><strong>What to look for:</strong>  Check for unusually high CPU or memory usage by any container. High usage might indicate a problem or a workspace consuming excessive resources.</li>
+        </ul>
+    </li>
+    <li><strong>Application Logs:</strong>
+        <ul>
+            <li><strong>What to check:</strong>  Are there any errors or warnings in the logs of the Application Server?</li>
+            <li><strong>How to check:</strong> Check the application log file, which is mentioned as <code>/tmp/app.log</code>. You can view this file using command-line tools on the server (e.g., <code>cat /tmp/app.log</code> or <code>less /tmp/app.log</code>).</li>
+            <li><strong>What to look for:</strong>  Look for lines in the log file that indicate errors ("ERROR") or warnings ("WARNING"). These messages can provide clues about problems in the Application Server.</li>
+        </ul>
+    </li>
+    <li><strong>Nginx Logs:</strong>
+        <ul>
+            <li><strong>What to check:</strong>  Are there any errors or unusual access patterns in the Nginx web server logs?</li>
+            <li><strong>How to check:</strong> Check the Nginx log files, usually located in <code>/var/log/nginx/</code>. There are typically two main logs: <code>access.log</code> (records all requests) and <code>error.log</code> (records errors). You can view these files using command-line tools.</li>
+            <li><strong>What to look for:</strong>  In <code>error.log</code>, look for error messages. In <code>access.log</code>, look for unusual patterns or a large number of errors (e.g., HTTP status codes like 404 Not Found or 500 Server Error).</li>
+        </ul>
+    </li>
+    <li><strong>Container Logs (Detailed Logs inside Containers):</strong>
+        <ul>
+            <li><strong>What to check:</strong>  For more detailed logs from inside the browser containers themselves.</li>
+            <li><strong>How to check:</strong>  The location of these logs is mentioned in the <code>startup.sh</code> script within the Docker container. You'll need to access the container's file system to find these logs. (This might require more technical steps to access container files).</li>
+            <li><strong>What to look for:</strong>  These logs can provide very specific information about what's happening inside a browser workspace, which can be helpful for troubleshooting complex issues.</li>
+        </ul>
+    </li>
+</ul>
+
+<h3 id="62-maintenance-tasks">6.2. Regular Maintenance Tasks</h3>
+<p>Perform these tasks regularly to keep Fortal Browser in good shape:</p>
+<ul>
+    <li>
+        <p><strong>Update System Packages:</strong></p>
+        <ul>
+            <li><strong>Why:</strong>  Keeping the server's operating system and software packages up-to-date is crucial for security and stability. Updates often include security patches and bug fixes.</li>
+            <li><strong>How:</strong>  Use these commands in the server's command line to update system packages (for Debian/Ubuntu Linux):
+                <pre><code class="language-bash">sudo apt update # Update the package lists
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
+
+sudo apt upgrade # Upgrade installed packages to their latest versions
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Check and Manage Disk Space:</strong></p>
+<ul>
+<li><strong>Why:</strong> Running out of disk space can cause problems. Containers, logs, and database files all consume disk space.</li>
+<li><strong>How:</strong>
+<ul>
+<li><strong>Check Disk Usage:</strong> Use commands like <code>df -h</code> (disk free - human-readable) in the command line to check disk space usage.</li>
+<li><strong>Clean Up Unused Data:</strong> Regularly clean up old Docker containers, images, and volumes using commands like <code>docker system prune</code> (which you've already scheduled as a cron job). Also, review and manage log files to prevent them from growing too large.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Security Audits:</strong></p>
+<ul>
+<li><strong>Why:</strong> Periodically review security configurations to ensure the system remains secure and protected against vulnerabilities.</li>
+<li><strong>How:</strong>
+<ul>
+<li><strong>Review Configurations:</strong> Check Nginx configuration, firewall settings, user access controls, and other security-related configurations.</li>
+<li><strong>Apply Security Patches:</strong> Stay informed about security updates for all components (OS, Docker, Nginx, etc.) and apply them promptly.</li>
+<li><strong>Security Scanning:</strong> Consider using security scanning tools to automatically check for vulnerabilities in the system.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h2 id="7-troubleshooting--faqs">7. Troubleshooting & FAQs:  Solving Common Problems</h2>
+<p>This section provides solutions to common issues and answers frequently asked questions.</p>
+
+<h3 id="71-common-issues">7.1. Common Issues and Solutions</h3>
+<ul>
+    <li><strong>Cannot Access Workspace:</strong>
+        <ul>
+            <li><strong>Possible Causes:</strong>  You try to access a workspace, but it doesn't load or you get an error message.</li>
+            <li><strong>Troubleshooting Steps:</strong>
+                <ul>
+                    <li><strong>Check Container Status:</strong>  Use <code>docker ps</code> to see if the workspace container is running. If it's not running, there's likely a problem with the container.</li>
+                    <li><strong>Check Nginx Configuration and Logs:</strong>  Review the Nginx configuration (<code>/etc/nginx/sites-available/default</code>) and Nginx logs (<code>/var/log/nginx/error.log</code>) for any errors or misconfigurations that might be preventing access.</li>
+                    <li><strong>Firewall Rules:</strong>  Ensure that the server's firewall is configured to allow traffic to the port that the workspace container is using.</li>
+                    <li><strong>Docker Instance Running:</strong>  Verify that the Docker service itself is running correctly on the server. You can check Docker's status using commands like <code>sudo systemctl status docker</code>.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+    <li><strong>Workspace is Unresponsive (Slow or Freezing):</strong>
+        <ul>
+            <li><strong>Possible Causes:</strong>  A workspace starts, but it becomes slow, unresponsive, or freezes.</li>
+            <li><strong>Troubleshooting Steps:</strong>
+                <ul>
+                    <li><strong>Check Container Resource Usage:</strong> Use <code>docker stats</code> to see if the container is using too much CPU or memory. High resource usage can cause unresponsiveness.</li>
+                    <li><strong>Restart the Container:</strong>  Try restarting the workspace container using <code>docker restart <container_id></code> (replace <code><container_id></code> with the actual container ID from <code>docker ps</code>). Restarting can sometimes resolve temporary issues.</li>
+                    <li><strong>Investigate Application Logs:</strong> Check the Application Server logs (<code>/tmp/app.log</code>) for any errors or performance issues that might be affecting workspace responsiveness.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+    <li><strong>File Uploads Failing:</strong>
+        <ul>
+            <li><strong>Possible Causes:</strong>  You try to upload a file to a workspace, but the upload fails.</li>
+            <li><strong>Troubleshooting Steps:</strong>
+                <ul>
+                    <li><strong>File Size Limits:</strong> Check if there are any file size limits configured for uploads. If the file is too large, it might be rejected.</li>
+                    <li><strong>Directory Permissions:</strong>  Verify that the user account within the workspace has the necessary permissions to write files to the upload directory. Check file permissions on the server if needed.</li>
+                    <li><strong>Disk Space:</strong>  Ensure there is enough free disk space on the server where files are being uploaded.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+    <li><strong>"New Workspace" Keeps Loading, But Never Loads:</strong>
+        <ul>
+            <li><strong>Possible Causes:</strong> You click "New Workspace," but it gets stuck loading and never starts.</li>
+            <li><strong>Troubleshooting Steps:</strong>
+                <ul>
+                    <li><strong>Check Docker Containers:</strong> Use <code>docker ps -a</code> (to show all containers, running and stopped). Ensure that there aren't any old, stopped workspace containers that might be interfering. Clean up stopped containers if necessary (using <code>docker container prune</code> or similar commands).</li>
+                    <li><strong>Server Resources:</strong> Check if the server is overloaded on resources (CPU, memory, disk space). If the server is struggling, it might not be able to start new containers.</li>
+                    <li><strong>Application Server Logs:</strong> Check the Application Server logs (<code>/tmp/app.log</code>) for errors that might be occurring when trying to create a new workspace.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+</ul>
+
+<h3 id="72-faqs">7.2. Frequently Asked Questions (FAQs)</h3>
+<ul>
+    <li>
+        <p><strong>How do I change the default password for workspaces?</strong></p>
+        <ul>
+            <li><strong>Answer:</strong>  The default password for workspaces is likely configured within the Docker image itself. To change it, you would need to:
+                <ul>
+                    <li><strong>Access the Docker Container:</strong>  Use the command <code>docker exec -it <container_id> bash</code> to get inside a running workspace container (replace <code><container_id></code>).</li>
+                    <li><strong>Modify Configuration:</strong>  Once inside the container, you'll need to find the configuration file where the default password is set (the location will depend on how the image is built). It might be in a configuration file or an environment variable.</li>
+                    <li><strong>Rebuild Image (If Necessary):</strong>  After changing the password, you might need to rebuild the Docker image to make the change permanent for all new workspaces.</li>
+                    <li><strong>Environment Variables:</strong>  Alternatively, the password might be set using environment variables when the container is started. In this case, you would need to adjust the Docker Compose configuration or the script that starts the containers to change the password.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+    <li>
+        <p><strong>Can I add more security features to the browser environment?</strong></p>
+        <ul>
+            <li><strong>Answer:</strong> Yes, you can enhance security by:
+                <ul>
+                    <li><strong>Customizing the Firefox Profile:</strong>  You can further customize the Firefox profile used in the Docker image. This includes adding more extensions, tweaking security settings, and disabling features.</li>
+                    <li><strong>Adding Extensions:</strong>  Install security-focused Firefox extensions within the Docker image to provide extra protection.</li>
+                    <li><strong>Implement Security Measures in Docker Image:</strong>  You can build additional security measures directly into the Docker image, such as network restrictions, process limitations, or security scanning tools.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+    <li>
+        <p><strong>How do I manage user permissions?</strong></p>
+        <ul>
+            <li><strong>Answer:</strong> User permissions are primarily managed through the Admin Interface. You can:
+                <ul>
+                    <li><strong>Create User Accounts:</strong>  Add new user accounts with specific usernames and passwords.</li>
+                    <li><strong>Edit User Accounts:</strong>  Modify user details, such as roles or workspace limits.</li>
+                    <li><strong>Delete User Accounts:</strong>  Remove user accounts when necessary.</li>
+                    <li><strong>Assign Permissions (If Applicable):</strong>  Depending on the system's features, you might be able to assign different levels of permissions to users, controlling what they can access and do within Fortal Browser.</li>
+                </ul>
+            </li>
+    </ul>
+    </li>
+</ul>
+
+<h2 id="8-security-considerations">8. Security Considerations:  Keeping Fortal Browser Secure</h2>
+<p>Security is paramount for Fortal Browser. Here are important security practices to follow:</p>
+<ul>
+    <li><strong>Password Management:</strong>
+        <ul>
+            <li><strong>Strong Passwords:</strong>  Use strong, unique passwords for all accounts (user accounts, admin accounts, server access).</li>
+            <li><strong>Password Rotation:</strong>  Implement a policy for regularly changing passwords, especially for administrator accounts.</li>
+            <li><strong>Secure Storage:</strong> Store passwords securely. Avoid storing passwords in plain text.</li>
+        </ul>
+    </li>
+    <li><strong>Regular Updates:</strong>
+        <ul>
+            <li><strong>Keep Everything Updated:</strong>  Regularly update the server's operating system, Docker, Nginx, and all other software components. Updates often include critical security patches.</li>
+            <li><strong>Automate Updates (Where Possible):</strong>  Use automated update mechanisms where appropriate to ensure timely patching.</li>
+        </ul>
+    </li>
+    <li><strong>Access Control:</strong>
+        <ul>
+            <li><strong>Restrict Access:</strong>  Limit access to the server and the admin interface to only authorized personnel. Use strong authentication methods (like SSH keys for server access).</li>
+            <li><strong>Principle of Least Privilege:</strong>  Grant users and administrators only the minimum level of access they need to perform their tasks.</li>
+        </ul>
+    </li>
+    <li><strong>Firewall Configuration:</strong>
+        <ul>
+            <li><strong>Configure Firewalls:</strong>  Set up firewalls on the server to allow only necessary network traffic. Block all unnecessary ports and services.</li>
+            <li><strong>Network Segmentation:</strong>  If possible, segment the network to isolate the Fortal Browser server and containers from other less secure systems.</li>
+        </ul>
+    </li>
+    <li><strong>HTTPS Certificates:</strong>
+        <ul>
+            <li><strong>Use HTTPS Everywhere:</strong>  Ensure that HTTPS is enabled for all communication with Fortal Browser (both user access and API communication). This encrypts data in transit.</li>
+            <li><strong>Valid Certificates:</strong>  Use valid SSL/TLS certificates from a trusted Certificate Authority (like Let's Encrypt, which Certbot helps with).</li>
+        </ul>
+    </li>
+    <li><strong>Data Encryption:</strong>
+        <ul>
+            <li><strong>Encryption in Transit (HTTPS):</strong> HTTPS, as mentioned, encrypts data while it's being transmitted over the network.</li>
+            <li><strong>Encryption at Rest (Database):</strong>  If using MySQL (as per prerequisites), ensure that data at rest in the database is also encrypted. MySQL supports encryption features. (If using SQLite, consider encryption options for SQLite databases as well, if sensitive data is stored).</li>
+        </ul>
+    </li>
+</ul>
+
+<h2 id="9-deployment">9. Deployment: Where to Install Fortal Browser</h2>
+<p>For best performance and security, it's recommended to install the entire Fortal Browser system (both the application and the database) on a single, dedicated server. This server should be properly secured and maintained.</p>
+
+<h2 id="10-additional-resources">10. Additional Resources:  Further Reading</h2>
+<p>For more in-depth information, you can refer to the official documentation of the technologies used in Fortal Browser:</p>
+<ul>
+    <li>Docker Documentation: <a href="https://docs.docker.com/">https://docs.docker.com/</a></li>
+    <li>NGINX Documentation: <a href="https://nginx.org/en/docs/">https://nginx.org/en/docs/</a></li>
+    <li>FastAPI Documentation: <a href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></li>
+    <li>SQLite Documentation: <a href="https://www.sqlite.org/docs.html">https://www.sqlite.org/docs.html</a></li>
+    <li>Certbot Documentation: <a href="https://certbot.eff.org/docs/">https://certbot.eff.org/docs/</a></li>
+    <li>Novnc Project: <a href="https://github.com/novnc/noVNC">https://github.com/novnc/noVNC</a></li>
+</ul>
+
+</body>
+</html>
