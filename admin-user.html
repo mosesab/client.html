@@ -102,6 +102,10 @@
             background-color: var(--primary);
         }
 
+        .tag-secondary {
+            background-color: var(--accent);
+        }
+
         .btn-primary {
             background: var(--primary);
             border: none;
@@ -407,6 +411,10 @@
                         <label for="new-admin-max-workspace">Maximum Workspaces:</label>
                         <input type="number" min="1" max="10" class="form-control" id="new-admin-max-workspace" placeholder="Enter workspace limit">    
                     </div>
+                    <div class="mb-3">
+                        <label for="new-admin-max-tab">Maximum Tabs:</label>
+                        <input type="number" min="2" max="10" class="form-control" id="new-admin-max-tab" placeholder="Enter tabs limit">    
+                    </div>
                     <button type="submit" class="btn btn-primary">Create Admin</button>
                 </form>
 
@@ -704,9 +712,15 @@
                 adminTag.className = 'badge tag-primary text-white ms-2'; // Bootstrap style or custom
                 adminTag.textContent = admin[1];
 
+                // Create the tag for admin[2]
+                const adminSecondTag = document.createElement('span');
+                adminSecondTag.className = 'badge tag-secondary text-white ms-2'; // Bootstrap style or custom
+                adminSecondTag.textContent = admin[2];
+
                 // Add admin[0] text and the tag to the <li>
                 li.textContent = admin[0];
                 li.appendChild(adminTag);
+                li.appendChild(adminSecondTag);
 
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'btn btn-danger btn-sm ms-auto';
@@ -730,9 +744,12 @@
 
         const newAdminMaxWorkspace = document.getElementById('new-admin-max-workspace').value;
         if (!newAdminMaxWorkspace) return updateStatus('Please enter a limit for the maximum allowed workspaces.');
+        
+        const newAdminMaxTab = document.getElementById('new-admin-max-tab').value;
+        if (!newAdminMaxTab) return updateStatus('Please enter a limit for the maximum allowed tabs.');
 
         try {
-            await axios.get(`https://workspaces.fortal.io/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}`);
+            await axios.get(`https://workspaces.fortal.io/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}&max_tab=${newAdminMaxTab}`);
             updateStatus('Admin created successfully.');
             loadAdmins();
         } catch (error) {
