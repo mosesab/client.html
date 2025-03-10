@@ -3693,11 +3693,11 @@
             '--status-gradient-start': '#ffcccc'
         };
         Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));  
-        $('.freelancer-panel').hide();
         $('.status-badge').text('Ended');
         $('.action-buttons').hide();
         $('.chat-input').hide(); 
-        $('.return-button-wrapper').hide();    
+        $('.return-button-wrapper').hide(); 
+        $('.freelancer-panel').hide();
     };
 
     window.changeStatusToActive= () => {
@@ -3707,11 +3707,11 @@
             '--status-gradient-start': '#c0da9e'
         };  
         Object.entries(cssVars).forEach(([prop, value]) => document.documentElement.style.setProperty(prop, value));
-        $('.freelancer-panel').show();
         $('.status-badge').text('Active');
         $('.action-buttons').show();
         $('.chat-input').show();
         $('.return-button-wrapper').show(); 
+        $('.freelancer-panel').show();
     };
 
     // Tab navigation
