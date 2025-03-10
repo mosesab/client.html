@@ -2828,6 +2828,13 @@
                                     <div class="info-text">2 months</div>
                                 </div>
                             </div>
+                            <div class="info-item">
+                                <i class="fas fa-clone"></i>
+                                <div class="info-content">
+                                    <div class="info-label">Tabs Limit</div>
+                                    <div id="max-tab-info-text" class="info-text">Limited to 3 tabs</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
             
@@ -3250,6 +3257,7 @@
             // Extract data safely
             let workspaces = workspacesRes.status === "fulfilled" ? workspacesRes.value?.data?.workspaces || [] : [];
             let maxWorkspaces = maxWorkspacesRes.status === "fulfilled" ? maxWorkspacesRes.value?.data?.max_workspace || 0 : 0;
+            let maxTabs = maxWorkspacesRes.status === "fulfilled" ? maxWorkspacesRes.value?.data?.max_tab || 0 : 0;
             let workspaceFiles = filesRes.status === "fulfilled" ? filesRes.value?.data?.files || []: [];
 
             // Accumulate the length of all files
@@ -3285,6 +3293,9 @@
 
             // Update workspace remaining info
             $('.workspaces-remaining p').text(`${activeWorkspaces.length} out of ${maxWorkspaces} workspaces remaining`);
+            
+            // Update max tabs info
+            $('#max-tab-info-text').text(`Limited to ${maxTabs} tabs`);
 
             // Toggle "View Workspaces" button visibility
             $('#viewWorkspacesBtn').toggle(activeWorkspaces.length > 0);
