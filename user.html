@@ -3517,7 +3517,8 @@
         
         // Attach delegated event listener for View Only checkbox
         $('.freelancer-cards').on('change', '.view-only-checkbox', async function () {
-          const viewOnly = this.checked;
+          let viewOnly = this.checked;
+          viewOnly = `${viewOnly}`
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
           if ($('.freelancer-panel').is(':hidden')) { return; }
           console.log(`viewOnly: ${viewOnly}`);
@@ -3539,7 +3540,8 @@
                 
         // Attach delegated event listener for Block access checkbox
         $('.freelancer-cards').on('change', '.block-workspace-checkbox', async function () {
-          const blockAccess = this.checked;
+          let blockAccess = this.checked;
+          blockAccess = `${blockAccess}`
           const email = $(this).closest('.freelancer-card').find('.freelancer-email').data('email');
           if ($('.freelancer-panel').is(':hidden')) { return; }
           console.log(`blockAccess: ${blockAccess}`);
