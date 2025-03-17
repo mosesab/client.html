@@ -106,6 +106,10 @@
             background-color: var(--accent);
         }
 
+        .tag-tertiary {
+            background-color: #0dcaf0;
+        }
+
         .btn-primary {
             background: var(--primary);
             border: none;
@@ -415,6 +419,10 @@
                         <label for="new-admin-max-tab">Maximum Tabs:</label>
                         <input type="number" min="2" max="50" class="form-control" id="new-admin-max-tab" placeholder="Enter tabs limit">    
                     </div>
+                    <div class="mb-3">
+                        <label for="new-admin-max-freelancer">Maximum Freelancers:</label>
+                        <input type="number" min="2" max="50" class="form-control" id="new-admin-max-freelancer" placeholder="Enter freelancers limit">    
+                    </div>
                     <button type="submit" class="btn btn-primary">Create Admin</button>
                 </form>
 
@@ -717,10 +725,17 @@
                 adminSecondTag.className = 'badge tag-secondary text-white ms-2'; // Bootstrap style or custom
                 adminSecondTag.textContent = admin[2];
 
+                
+                // Create the tag for admin[3]
+                const adminThirdTag = document.createElement('span');
+                adminThirdTag.className = 'badge tag-tertiary text-white ms-2';
+                adminThirdTag.textContent = admin[3];
+
                 // Add admin[0] text and the tag to the <li>
                 li.textContent = admin[0];
                 li.appendChild(adminTag);
                 li.appendChild(adminSecondTag);
+                li.appendChild(adminThirdTag);
 
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'btn btn-danger btn-sm ms-auto';
@@ -747,9 +762,12 @@
         
         const newAdminMaxTab = document.getElementById('new-admin-max-tab').value;
         if (!newAdminMaxTab) return updateStatus('Please enter a limit for the maximum allowed tabs.');
+ 
+        const newAdminMaxFreelancers = document.getElementById('new-admin-max-freelancer').value;
+        if (!newAdminMaxFreelancers) return updateStatus('Please enter a limit for the maximum allowed freelancers.');
 
         try {
-            await axios.get(`https://workspaces.fortal.io/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}&max_tab=${newAdminMaxTab}`);
+            await axios.get(`https://workspaces.fortal.io/api/superadmin/users/create_admin?super_admin_username=${username}&user_name=${newAdminUsername}&max_workspace=${newAdminMaxWorkspace}&max_tab=${newAdminMaxTab}&max_freelancer=${newAdminMaxFreelancers}`);
             updateStatus('Admin created successfully.');
             loadAdmins();
         } catch (error) {
