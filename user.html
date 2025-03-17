@@ -2835,6 +2835,13 @@
                                     <div id="max-tab-info-text" class="info-text">Limited to 3 tabs</div>
                                 </div>
                             </div>
+                            <div class="info-item">
+                                <i class="fas fa-clone"></i>
+                                <div class="info-content">
+                                    <div class="info-label">Freelancers Limit</div>
+                                    <div id="max-freelancer-info-text" class="info-text">Limited to 3 freelancers</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
             
@@ -3165,7 +3172,8 @@
         workspaces: [],
         totalFiles: 0,
         totalFreelancers: 0,
-        maxTabs: 0
+        maxTabs: 0,
+        maxFreelancers: 0
     };
 
     let currentWorkspace = {
@@ -3259,6 +3267,7 @@
             let workspaces = workspacesRes.status === "fulfilled" ? workspacesRes.value?.data?.workspaces || [] : [];
             let maxWorkspaces = maxWorkspacesRes.status === "fulfilled" ? maxWorkspacesRes.value?.data?.max_workspace || 0 : 0;
             let maxTabs = maxWorkspacesRes.status === "fulfilled" ? maxWorkspacesRes.value?.data?.max_tab || 0 : 0;
+            let maxFreelancers = maxWorkspacesRes.status === "fulfilled" ? maxWorkspacesRes.value?.data?.max_freelancer || 0 : 0;
             let workspaceFiles = filesRes.status === "fulfilled" ? filesRes.value?.data?.files || []: [];
 
             // Accumulate the length of all files
@@ -3274,6 +3283,7 @@
             currentUser.totalFreelancers = workspaces.reduce((acc, ws) => acc + (ws.freelancers ? ws.freelancers.length : 0), 0);
             currentUser.totalFiles = totalFilesLength;
             currentUser.maxTabs = maxTabs;
+            currentUser.maxFreelancers = maxFreelancers;
 
             // log data
             // console.log("Workspaces data:", workspaces);
@@ -3484,6 +3494,9 @@
 
         // Update max tabs info
         $('#max-tab-info-text').text(`Limited to ${currentUser.maxTabs} tabs`);
+
+        // Update max freelancers info
+        $('#max-freelancer-info-text').text(`Limited to ${currentUser.maxFreelancers} freelancers`);
 
 
         // Update Freelancers List   
